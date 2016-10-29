@@ -2,6 +2,8 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Guest;
+use Doctrine\ORM\EntityManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,6 +18,17 @@ class DefaultController extends Controller
         // replace this example code with whatever you need
 
         $name = $request->get('name');
+
+        /** @var EntityManager $em */
+        $em = $this->get('doctrine.orm.default_entity_manager');
+
+        $guest1 = new Guest();
+
+        $guest1->setName($name);
+
+        $em->persist($guest1);
+
+        $em->flush();
 
         return $this->render('default/index.html.twig',
             array(
