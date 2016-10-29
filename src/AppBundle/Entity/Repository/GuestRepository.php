@@ -1,0 +1,31 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: csabi
+ * Date: 10/29/16
+ * Time: 11:44 AM
+ */
+
+namespace AppBundle\Entity\Repository;
+
+use Doctrine\ORM\EntityRepository;
+
+class GuestRepository extends EntityRepository
+{
+    public function getAllWithNameShorterThen(&$holder, $length = 100)
+    {
+        $query = $this->_em->createQuery('
+                SELECT guest
+                FROM AppBundle\Entity\Guest guest 
+                WHERE LENGTH(guest.name) <= :length
+           ');
+
+        $query->setParameter('length', (int) $length);
+
+        $result = $query->getResult();
+
+        $holder[] = $result;
+
+        return $result;
+    }
+}

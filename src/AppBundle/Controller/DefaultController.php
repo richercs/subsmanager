@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Guest;
+use AppBundle\Entity\Repository\GuestRepository;
 use Doctrine\ORM\EntityManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -22,12 +23,20 @@ class DefaultController extends Controller
         /** @var EntityManager $em */
         $em = $this->get('doctrine.orm.default_entity_manager');
 
-        $guestBalu = $em->find('AppBundle\Entity\Guest', 2);
+        /** @var GuestRepository $repo */
+        $repo = $em->getRepository('AppBundle\Entity\Guest');
+
+
+        $array = array();
+
+        $user = $repo->getAllWithNameShorterThen($array);
+
+        dump($array);die;
 
         return $this->render('default/index.html.twig',
             array(
             'base_dir' => realpath($this->container->getParameter('kernel.root_dir').'/..').DIRECTORY_SEPARATOR,
-            'name' => $guestBalu->getName()
+            'name' => $user->getName()
         ));
     }
 }
