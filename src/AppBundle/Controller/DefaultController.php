@@ -22,18 +22,12 @@ class DefaultController extends Controller
         /** @var EntityManager $em */
         $em = $this->get('doctrine.orm.default_entity_manager');
 
-        $guest1 = new Guest();
-
-        $guest1->setName($name);
-
-        $em->persist($guest1);
-
-        $em->flush();
+        $guestBalu = $em->find('AppBundle\Entity\Guest', 2);
 
         return $this->render('default/index.html.twig',
             array(
             'base_dir' => realpath($this->container->getParameter('kernel.root_dir').'/..').DIRECTORY_SEPARATOR,
-            'name' => $name
+            'name' => $guestBalu->getName()
         ));
     }
 }
