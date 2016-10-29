@@ -3,8 +3,11 @@
 {% block body %}
     <div id="wrapper">
         <div id="container">
-            <b> Hello {{ name }}</b>
-
+            {% for guest in guests %}
+                <b> {{ guest.name }}</b>
+                <p>Létrehozva: <b>{{ guest.created|date('Y-m-d H:i:s') }}</b></p>
+                <p>Kategória: <i>  {% if guest.category is not empty %} {{ guest.category.categoryName }} {% endif %}</i></p>
+            {% endfor %}
         </div>
     </div>
 {% endblock %}

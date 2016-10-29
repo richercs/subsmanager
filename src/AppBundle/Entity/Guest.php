@@ -34,6 +34,30 @@ class Guest
     protected $created;
 
     /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\GuestCategory")
+     * @ORM\JoinColumn(name="category_id", referencedColumnName="id")
+     */
+    protected $category;
+
+    /**
+     * @return mixed
+     */
+    public function getCategory()
+    {
+        return $this->category;
+    }
+
+    /**
+     * @param mixed $category
+     */
+    public function setCategory($category)
+    {
+        $this->category = $category;
+
+        return $this;
+    }
+
+    /**
      * @return mixed
      */
     public function getId()

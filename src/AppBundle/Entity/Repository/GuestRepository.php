@@ -12,7 +12,7 @@ use Doctrine\ORM\EntityRepository;
 
 class GuestRepository extends EntityRepository
 {
-    public function getAllWithNameShorterThen(&$holder, $length = 100)
+    public function getAllWithNameShorterThen($length = 100)
     {
         $query = $this->_em->createQuery('
                 SELECT guest
@@ -23,8 +23,6 @@ class GuestRepository extends EntityRepository
         $query->setParameter('length', (int) $length);
 
         $result = $query->getResult();
-
-        $holder[] = $result;
 
         return $result;
     }

@@ -26,17 +26,21 @@ class DefaultController extends Controller
         /** @var GuestRepository $repo */
         $repo = $em->getRepository('AppBundle\Entity\Guest');
 
+        $users = $repo->getAllWithNameShorterThen();
 
-        $array = array();
+        /** @var Guest $user */
+        foreach ($users as $user) {
+            $user->setCategory($em->find('AppBundle\Entity\GuestCategory', 1));
 
-        $user = $repo->getAllWithNameShorterThen($array);
+            $em->persist($user);
+        }
 
-        dump($array);die;
+        $em->flush();
 
         return $this->render('default/index.html.twig',
             array(
             'base_dir' => realpath($this->container->getParameter('kernel.root_dir').'/..').DIRECTORY_SEPARATOR,
-            'name' => $user->getName()
+            'guests' => $users
         ));
     }
 }
