@@ -5,7 +5,7 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="AppBundle\Entity\Repository\GuestRepository")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\GuestRepository")
  * @ORM\Table(name="guest")
  * @ORM\HasLifecycleCallbacks
  */
