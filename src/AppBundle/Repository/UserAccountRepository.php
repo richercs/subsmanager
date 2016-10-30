@@ -10,7 +10,7 @@ namespace AppBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
 
-class GuestRepository extends EntityRepository
+class UserAccountRepository extends EntityRepository
 {
     public function getAllWithNameShorterThen($length = 100)
     {

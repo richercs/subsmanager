@@ -2,8 +2,8 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Entity\Guest;
-use AppBundle\Entity\Repository\GuestRepository;
+use AppBundle\Entity\UserAccount;
+use AppBundle\Entity\Subscription;
 use Doctrine\ORM\EntityManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
