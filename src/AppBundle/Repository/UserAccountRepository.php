@@ -12,12 +12,12 @@ use Doctrine\ORM\EntityRepository;
 
 class UserAccountRepository extends EntityRepository
 {
-    public function getAllWithNameShorterThen($length = 100)
+    public function getAllWithNameShorterThen($length = 5)
     {
         $query = $this->_em->createQuery('
-                SELECT guest
-                FROM AppBundle\Entity\Guest guest 
-                WHERE LENGTH(guest.name) <= :length
+                SELECT user_acc
+                FROM AppBundle\Entity\UserAccount user_acc 
+                WHERE LENGTH(user_acc.first_name) <= :length
            ');
 
         $query->setParameter('length', (int) $length);

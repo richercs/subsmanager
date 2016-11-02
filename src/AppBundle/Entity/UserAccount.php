@@ -37,6 +37,16 @@ class UserAccount
     private $last_name;
 
     /**
+     * @ORM\Column(type="datetime", nullable = true)
+     */
+    protected $updated;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    protected $created;
+
+    /**
      * @var Subscription
      *
      * @ORM\OneToOne(targetEntity="AppBundle\Entity\Subscription", inversedBy="subscription_owner")
@@ -51,16 +61,6 @@ class UserAccount
      * @ORM\JoinColumn(name="used_subscription_id", referencedColumnName="id")
      */
     private $used_subscription;
-
-    /**
-     * @ORM\Column(type="datetime", nullable = true)
-     */
-    protected $updated;
-
-    /**
-     * @ORM\Column(type="datetime")
-     */
-    protected $created;
 
     /**
      * @return mixed

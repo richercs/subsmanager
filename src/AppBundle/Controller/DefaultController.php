@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\UserAccount;
 use AppBundle\Entity\Subscription;
+use AppBundle\Repository\UserAccountRepository;
 use Doctrine\ORM\EntityManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -23,14 +24,24 @@ class DefaultController extends Controller
         /** @var EntityManager $em */
         $em = $this->get('doctrine.orm.default_entity_manager');
 
-        /** @var GuestRepository $repo */
-        $repo = $em->getRepository('AppBundle\Entity\Guest');
+        $user_account = new UserAccount();
 
-        $users = $repo->getAllWithNameShorterThen();
+        $user_account->setFirstName($name);
 
-        /** @var Guest $user */
+        $user_account->setLastName(strrev($name));
+
+        $em->persist($user_account);
+
+        $em->flush();
+
+        /** @var UserAccountRepository $user_repo */
+        $user_repo = $em->getRepository('AppBundle\Entity\UserAccount');
+
+        $users = $user_repo->getAllWithNameShorterThen();
+
+        /** @var UserAccount $user */
         foreach ($users as $user) {
-            $user->setCategory($em->find('AppBundle\Entity\GuestCategory', 1));
+            $user->setLastName("rövid volt");
 
             $em->persist($user);
         }
@@ -40,7 +51,7 @@ class DefaultController extends Controller
         return $this->render('default/index.html.twig',
             array(
             'base_dir' => realpath($this->container->getParameter('kernel.root_dir').'/..').DIRECTORY_SEPARATOR,
-            'guests' => $users
+            'users' => $users
         ));
     }
 }
