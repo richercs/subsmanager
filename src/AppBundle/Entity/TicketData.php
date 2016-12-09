@@ -5,13 +5,13 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * UserAccount
+ * TicketData
  *
- * @ORM\Table(name="user_account")
- * @ORM\Entity(repositoryClass="AppBundle\Repository\UserAccountRepository")
+ * @ORM\Table(name="ticket_data")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\TicketDataRepository")
  * @ORM\HasLifecycleCallbacks
  */
-class UserAccount
+class TicketData
 {
     /**
      * @var int
@@ -23,20 +23,19 @@ class UserAccount
     private $id;
 
     /**
-     * @var string
+     * @var Subscription
      *
-     * @ORM\Column(length=140, name="first_name")
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\Subscription", inversedBy="ticket")
+     * @ORM\JoinColumn(name="subscription_in_use_id", referencedColumnName="id")
      */
-    protected $first_name;
+    protected $subscription;
 
     /**
-     * @var string
+     * @var boolean
      *
-     * @ORM\Column(length=140, name="last_name")
+     * @ORM\Column(type="boolean", length=2, name="is_monthly_ticket")
      */
-    protected $last_name;
-
-    //TODO: Beírás?
+    protected $isMonthlyTicket;
 
     /**
      * @ORM\Column(type="datetime", nullable = true)
@@ -49,7 +48,7 @@ class UserAccount
     protected $created;
 
     /**
-     * @return int
+     * @return mixed
      */
     public function getId()
     {
@@ -57,7 +56,7 @@ class UserAccount
     }
 
     /**
-     * @param int $id
+     * @param mixed $id
      */
     public function setId($id)
     {
@@ -65,35 +64,35 @@ class UserAccount
     }
 
     /**
-     * @return string
+     * @return Subscription
      */
-    public function getFirstName()
+    public function getSubscription()
     {
-        return $this->first_name;
+        return $this->subscription;
     }
 
     /**
-     * @param string $first_name
+     * @param Subscription $subscription
      */
-    public function setFirstName($first_name)
+    public function setSubscription($subscription)
     {
-        $this->first_name = $first_name;
+        $this->subscription = $subscription;
     }
 
     /**
-     * @return string
+     * @return boolean
      */
-    public function getLastName()
+    public function isIsMonthlyTicket()
     {
-        return $this->last_name;
+        return $this->isMonthlyTicket;
     }
 
     /**
-     * @param string $last_name
+     * @param boolean $isMonthlyTicket
      */
-    public function setLastName($last_name)
+    public function setIsMonthlyTicket($isMonthlyTicket)
     {
-        $this->last_name = $last_name;
+        $this->isMonthlyTicket = $isMonthlyTicket;
     }
 
     /**
@@ -106,12 +105,10 @@ class UserAccount
 
     /**
      * @param mixed $created
-     * @return UserAccount
      */
     public function setCreated($created)
     {
         $this->created = $created;
-        return $this;
     }
 
     /**
@@ -124,12 +121,10 @@ class UserAccount
 
     /**
      * @param mixed $updated
-     * @return UserAccount
      */
     public function setUpdated($updated)
     {
         $this->updated = $updated;
-        return $this;
     }
 
     /**

@@ -1,17 +1,18 @@
 <?php
 
+
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * UserAccount
+ * SessionData
  *
- * @ORM\Table(name="user_account")
- * @ORM\Entity(repositoryClass="AppBundle\Repository\UserAccountRepository")
+ * @ORM\Table(name="session_data")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\SessionDataRepository")
  * @ORM\HasLifecycleCallbacks
  */
-class UserAccount
+class SessionData
 {
     /**
      * @var int
@@ -22,21 +23,19 @@ class UserAccount
      */
     private $id;
 
+    // TODO: Óratípus?
+
     /**
-     * @var string
-     *
-     * @ORM\Column(length=140, name="first_name")
+     * @ORM\Column(type="datetime", nullable = true, name="scheduled_date")
      */
-    protected $first_name;
+    protected $scheduledDate;
 
     /**
      * @var string
      *
-     * @ORM\Column(length=140, name="last_name")
+     * @ORM\Column(length=140, name="location")
      */
-    protected $last_name;
-
-    //TODO: Beírás?
+    protected $location;
 
     /**
      * @ORM\Column(type="datetime", nullable = true)
@@ -65,35 +64,35 @@ class UserAccount
     }
 
     /**
+     * @return mixed
+     */
+    public function getScheduledDate()
+    {
+        return $this->scheduledDate;
+    }
+
+    /**
+     * @param mixed $scheduledDate
+     */
+    public function setScheduledDate($scheduledDate)
+    {
+        $this->scheduledDate = $scheduledDate;
+    }
+
+    /**
      * @return string
      */
-    public function getFirstName()
+    public function getLocation()
     {
-        return $this->first_name;
+        return $this->location;
     }
 
     /**
-     * @param string $first_name
+     * @param string $location
      */
-    public function setFirstName($first_name)
+    public function setLocation($location)
     {
-        $this->first_name = $first_name;
-    }
-
-    /**
-     * @return string
-     */
-    public function getLastName()
-    {
-        return $this->last_name;
-    }
-
-    /**
-     * @param string $last_name
-     */
-    public function setLastName($last_name)
-    {
-        $this->last_name = $last_name;
+        $this->location = $location;
     }
 
     /**
@@ -106,7 +105,7 @@ class UserAccount
 
     /**
      * @param mixed $created
-     * @return UserAccount
+     * @return SessionData
      */
     public function setCreated($created)
     {
@@ -124,7 +123,7 @@ class UserAccount
 
     /**
      * @param mixed $updated
-     * @return UserAccount
+     * @return SessionData
      */
     public function setUpdated($updated)
     {

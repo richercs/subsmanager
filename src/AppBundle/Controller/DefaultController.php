@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\UserAccount;
 use AppBundle\Entity\Subscription;
+use AppBundle\Repository\SubscriptionRepository;
 use AppBundle\Repository\UserAccountRepository;
 use Doctrine\ORM\EntityManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -53,5 +54,22 @@ class DefaultController extends Controller
             'base_dir' => realpath($this->container->getParameter('kernel.root_dir').'/..').DIRECTORY_SEPARATOR,
             'users' => $users
         ));
+    }
+
+    /**
+     * @Route("/dummy/{name}", name="dummy")
+     */
+    public function dummyAction(Request $request)
+    {
+        /** @var EntityManager $em */
+        $em = $this->get('doctrine.orm.default_entity_manager');
+
+        /** @var SubscriptionRepository $sr */
+        $sr = $em->getRepository('AppBundle\Entity\Subscription');
+
+        $a = $sr->getRunningSubs();
+
+        dump($a);
+        die;
     }
 }

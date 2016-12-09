@@ -5,13 +5,13 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * UserAccount
+ * EventSession
  *
- * @ORM\Table(name="user_account")
- * @ORM\Entity(repositoryClass="AppBundle\Repository\UserAccountRepository")
+ * @ORM\Table(name="event_session")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\EventSessionRepository")
  * @ORM\HasLifecycleCallbacks
  */
-class UserAccount
+class EventSession
 {
     /**
      * @var int
@@ -23,20 +23,24 @@ class UserAccount
     private $id;
 
     /**
-     * @var string
+     * @var SessionData
      *
-     * @ORM\Column(length=140, name="first_name")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\SessionData")
+     * @ORM\JoinColumn(name="session_data_id", referencedColumnName="id")
      */
-    protected $first_name;
+    protected $sessionData;
+
+    /**
+     * @ORM\Column(type="datetime", nullable = true, name="actual_date")
+     */
+    protected $actualDate;
 
     /**
      * @var string
      *
-     * @ORM\Column(length=140, name="last_name")
+     * @ORM\Column(length=140, name="location")
      */
-    protected $last_name;
-
-    //TODO: Beírás?
+    protected $location;
 
     /**
      * @ORM\Column(type="datetime", nullable = true)
@@ -65,35 +69,51 @@ class UserAccount
     }
 
     /**
+     * @return SessionData
+     */
+    public function getSessionData()
+    {
+        return $this->sessionData;
+    }
+
+    /**
+     * @param SessionData $sessionData
+     */
+    public function setSessionData($sessionData)
+    {
+        $this->sessionData = $sessionData;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getActualDate()
+    {
+        return $this->actualDate;
+    }
+
+    /**
+     * @param mixed $actualDate
+     */
+    public function setActualDate($actualDate)
+    {
+        $this->actualDate = $actualDate;
+    }
+
+    /**
      * @return string
      */
-    public function getFirstName()
+    public function getLocation()
     {
-        return $this->first_name;
+        return $this->location;
     }
 
     /**
-     * @param string $first_name
+     * @param string $location
      */
-    public function setFirstName($first_name)
+    public function setLocation($location)
     {
-        $this->first_name = $first_name;
-    }
-
-    /**
-     * @return string
-     */
-    public function getLastName()
-    {
-        return $this->last_name;
-    }
-
-    /**
-     * @param string $last_name
-     */
-    public function setLastName($last_name)
-    {
-        $this->last_name = $last_name;
+        $this->location = $location;
     }
 
     /**
@@ -106,7 +126,7 @@ class UserAccount
 
     /**
      * @param mixed $created
-     * @return UserAccount
+     * @return EventSession
      */
     public function setCreated($created)
     {
@@ -124,7 +144,7 @@ class UserAccount
 
     /**
      * @param mixed $updated
-     * @return UserAccount
+     * @return EventSession
      */
     public function setUpdated($updated)
     {

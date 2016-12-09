@@ -5,13 +5,13 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Discount
+ * BreakEvent
  *
- * @ORM\Table(name="discount")
- * @ORM\Entity(repositoryClass="AppBundle\Repository\DiscountRepository")
+ * @ORM\Table(name="break_event")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\BreakEventRepository")
  * @ORM\HasLifecycleCallbacks
  */
-class Discount
+class BreakEvent
 {
     /**
      * @var int
@@ -22,7 +22,7 @@ class Discount
      */
     private $id;
 
-    // TODO: define discount type as time period when monthly tickets are not chargeable.
+    // TODO: define break event as time period when monthly tickets are not chargeable. They get postponed to the end date of break.
 
 
     /**
@@ -45,7 +45,7 @@ class Discount
 
     /**
      * @param mixed $created
-     * @return Guest
+     * @return BreakEvent
      */
     public function setCreated($created)
     {
@@ -63,7 +63,7 @@ class Discount
 
     /**
      * @param mixed $updated
-     * @return Guest
+     * @return BreakEvent
      */
     public function setUpdated($updated)
     {

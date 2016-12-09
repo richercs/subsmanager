@@ -17,8 +17,7 @@ class Subscription
 
     public function __construct()
     {
-        $this->monthly_subscriptions = new ArrayCollection();
-        $this->casual_subscriptionss = new ArrayCollection();
+
     }
 
     /**
@@ -31,36 +30,24 @@ class Subscription
     private $id;
 
     /**
-     * @var UserAccount
+     * @var TicketData
      *
-     * @ORM\OneToOne(targetEntity="AppBundle\Entity\UserAccount", mappedBy="owned_subscription")
-     * @ORM\JoinColumn(name="subscription_owner_id", referencedColumnName="id")
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\TicketData", mappedBy="subscription")
+     * @ORM\JoinColumn(name="ticket_id", referencedColumnName="id")
      */
-    protected $subscription_owner;
+    protected $ticket;
+
+    // TODO: Kezdet?
 
     /**
      * @var UserAccount
      *
-     * @ORM\OneToOne(targetEntity="AppBundle\Entity\UserAccount", mappedBy="used_subscription")
-     * @ORM\JoinColumn(name="subscription_user_id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\UserAccount")
+     * @ORM\JoinColumn(name="attendee_id", referencedColumnName="id")
      */
-    protected $subscription_user;
+    protected $attendee;
 
-    /**
-     * @var MonthlyTicket
-     *
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\MonthlyTicket", mappedBy="subscription")
-     * @ORM\JoinColumn(name="monthly_subscriptions", referencedColumnName="id")
-     */
-    private $monthly_subscriptions;
-
-    /**
-     * @var CasualTicket
-     *
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\CasualTicket", mappedBy="subscription")
-     * @ORM\JoinColumn(name="casual_subscriptions", referencedColumnName="id")
-     */
-    private $casual_subscriptions;
+    // TODO: Beírás?
 
     /**
      * @ORM\Column(type="datetime", nullable = true)
@@ -82,84 +69,42 @@ class Subscription
 
     /**
      * @param mixed $id
-     * @return Subscription
      */
     public function setId($id)
     {
         $this->id = $id;
-        return $this;
+    }
+
+    /**
+     * @return TicketData
+     */
+    public function getTicket()
+    {
+        return $this->ticket;
+    }
+
+    /**
+     * @param TicketData $ticket
+     */
+    public function setTicket($ticket)
+    {
+        $this->ticket = $ticket;
     }
 
     /**
      * @return UserAccount
      */
-    public function getSubscriptionOwner()
+    public function getAttendee()
     {
-        return $this->subscription_owner;
+        return $this->attendee;
     }
 
     /**
-     * @param UserAccount $subscription_owner
-     * @return Subscription
+     * @param UserAccount $attendee
      */
-    public function setSubscriptionOwner($subscription_owner)
+    public function setAttendee($attendee)
     {
-        $this->subscription_owner = $subscription_owner;
-        return $this;
-    }
-
-    /**
-     * @return UserAccount
-     */
-    public function getSubscriptionUser()
-    {
-        return $this->subscription_user;
-    }
-
-    /**
-     * @param UserAccount $subscription_user
-     * @return Subscription
-     */
-    public function setSubscriptionUser($subscription_user)
-    {
-        $this->subscription_user = $subscription_user;
-        return $this;
-    }
-
-    /**
-     * @return MonthlyTicket
-     */
-    public function getMonthlySubscriptions()
-    {
-        return $this->monthly_subscriptions;
-    }
-
-    /**
-     * @param MonthlyTicket $monthly_subscriptions
-     * @return Subscription
-     */
-    public function setMonthlySubscriptions($monthly_subscriptions)
-    {
-        $this->monthly_subscriptions = $monthly_subscriptions;
-        return $this;
-    }
-
-    /**
-     * @return CasualTicket
-     */
-    public function getCasualSubscriptions()
-    {
-        return $this->casual_subscriptions;
-    }
-
-    /**
-     * @param CasualTicket $casual_subscriptions
-     * @return Subscription
-     */
-    public function setCasualSubscriptions($casual_subscriptions)
-    {
-        $this->casual_subscriptions = $casual_subscriptions;
-        return $this;
+        $this->attendee = $attendee;
     }
 
     /**
@@ -172,12 +117,10 @@ class Subscription
 
     /**
      * @param mixed $created
-     * @return Guest
      */
     public function setCreated($created)
     {
         $this->created = $created;
-        return $this;
     }
 
     /**
@@ -190,12 +133,10 @@ class Subscription
 
     /**
      * @param mixed $updated
-     * @return Guest
      */
     public function setUpdated($updated)
     {
         $this->updated = $updated;
-        return $this;
     }
 
     /**
