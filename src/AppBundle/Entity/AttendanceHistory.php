@@ -47,8 +47,6 @@ class AttendanceHistory
      */
     protected $subscription;
 
-    // TODO: Beírás?
-
     /**
      * @ORM\Column(type="datetime", nullable = true)
      */

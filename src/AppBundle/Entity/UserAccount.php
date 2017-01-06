@@ -36,8 +36,6 @@ class UserAccount
      */
     protected $last_name;
 
-    //TODO: Beírás?
-
     /**
      * @ORM\Column(type="datetime", nullable = true)
      */

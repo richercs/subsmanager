@@ -30,12 +30,12 @@ class Subscription
     private $id;
 
     /**
-     * @var TicketData
+     * @var boolean
      *
-     * @ORM\OneToOne(targetEntity="AppBundle\Entity\TicketData", mappedBy="subscription")
-     * @ORM\JoinColumn(name="ticket_id", referencedColumnName="id")
+     * @ORM\Column(type="boolean")
+     *
      */
-    protected $ticket;
+    protected $isMonthlyTicket;
 
     // TODO: Kezdet?
 
@@ -46,8 +46,6 @@ class Subscription
      * @ORM\JoinColumn(name="attendee_id", referencedColumnName="id")
      */
     protected $attendee;
-
-    // TODO: Beírás?
 
     /**
      * @ORM\Column(type="datetime", nullable = true)
@@ -76,19 +74,19 @@ class Subscription
     }
 
     /**
-     * @return TicketData
+     * @return boolean
      */
-    public function getTicket()
+    public function isIsMonthlyTicket()
     {
-        return $this->ticket;
+        return $this->isMonthlyTicket;
     }
 
     /**
-     * @param TicketData $ticket
+     * @param boolean $isMonthlyTicket
      */
-    public function setTicket($ticket)
+    public function setIsMonthlyTicket($isMonthlyTicket)
     {
-        $this->ticket = $ticket;
+        $this->isMonthlyTicket = $isMonthlyTicket;
     }
 
     /**
