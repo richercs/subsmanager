@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * BreakEvent
@@ -34,6 +35,8 @@ class BreakEvent
      * @ORM\Column(name="date_created", type="datetime")
      */
     protected $created;
+
+    // TODO toString functions
 
     /**
      * @return mixed

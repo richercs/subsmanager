@@ -4,6 +4,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * SessionData
@@ -46,6 +47,8 @@ class SessionData
      * @ORM\Column(name="date_created", type="datetime")
      */
     protected $created;
+
+    // TODO toString functions
 
     /**
      * @return int

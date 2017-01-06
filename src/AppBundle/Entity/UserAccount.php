@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * UserAccount
@@ -37,6 +38,15 @@ class UserAccount
     protected $last_name;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="email", type="string", length=140)
+     * @Assert\NotBlank()
+     * @Assert\Email()
+     */
+    protected $email;
+
+    /**
      * @ORM\Column(name="date_updated", type="datetime", nullable = true)
      */
     protected $updated;
@@ -45,6 +55,8 @@ class UserAccount
      * @ORM\Column(name="date_created", type="datetime")
      */
     protected $created;
+
+    // TODO toString functions
 
     /**
      * @return int
