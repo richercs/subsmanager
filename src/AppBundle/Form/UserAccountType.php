@@ -9,19 +9,27 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class UserAccountType extends AbstractType
 {
-    /**
-     * @var UserAccount
-     */
-    protected $loggedInUser;
+//    /**
+//     * @var UserAccount
+//     */
+//    protected $loggedInUser;
+//
+//    /**
+//     * Constructor
+//     *
+//     * @param UserAccount $loggedInUser
+//     */
+//    public function __construct(UserAccount $loggedInUser)
+//    {
+//        $this->loggedInUser = $loggedInUser;
+//    }
 
     /**
-     * Constructor
-     *
-     * @param UserAccount $loggedInUser
+     * @return string
      */
-    public function __construct(UserAccount $loggedInUser)
+    public function getName()
     {
-        $this->loggedInUser = $loggedInUser;
+        return 'app_user_account';
     }
 
     /**
@@ -34,6 +42,7 @@ class UserAccountType extends AbstractType
             ->add('first_name', 'text')
             ->add('last_name', 'text')
             ->add('email', 'text')
+            ->add('save', 'submit', array('label' => 'Save User Account'));
         ;
     }
     

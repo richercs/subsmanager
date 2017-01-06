@@ -27,6 +27,7 @@ class UserAccount
      * @var string
      *
      * @ORM\Column(name="first_name", type="string", length=140)
+     * @Assert\NotBlank()
      */
     protected $first_name;
 
@@ -34,6 +35,7 @@ class UserAccount
      * @var string
      *
      * @ORM\Column(name="last_name", type="string", length=140)
+     * @Assert\NotBlank()
      */
     protected $last_name;
 
@@ -104,6 +106,22 @@ class UserAccount
     public function setLastName($last_name)
     {
         $this->last_name = $last_name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    /**
+     * @param string $email
+     */
+    public function setEmail($email)
+    {
+        $this->email = $email;
     }
 
     /**
