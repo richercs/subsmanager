@@ -32,7 +32,7 @@ class Subscription
     /**
      * @var boolean
      *
-     * @ORM\Column(name="is_mothly_ticket", type="boolean")
+     * @ORM\Column(name="is_monthly_ticket", type="boolean")
      *
      */
     protected $isMonthlyTicket;
