@@ -20,7 +20,7 @@ class EventSession
      * @ORM\Column(name="id", type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
 
     /**
      * @var SessionData
@@ -31,24 +31,24 @@ class EventSession
     protected $sessionData;
 
     /**
-     * @ORM\Column(type="datetime", nullable = true, name="actual_date")
+     * @ORM\Column(name="actual_date", type="datetime", nullable = true)
      */
     protected $actualDate;
 
     /**
      * @var string
      *
-     * @ORM\Column(length=140, name="location")
+     * @ORM\Column(name="location", length=140)
      */
     protected $location;
 
     /**
-     * @ORM\Column(type="datetime", nullable = true)
+     * @ORM\Column(name="date_updated", type="datetime", nullable = true)
      */
     protected $updated;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(name="date_created", type="datetime")
      */
     protected $created;
 

@@ -21,7 +21,7 @@ class AttendanceHistory
      * @ORM\Column(name="id", type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
 
     /**
      * @var EventSession
@@ -48,12 +48,12 @@ class AttendanceHistory
     protected $subscription;
 
     /**
-     * @ORM\Column(type="datetime", nullable = true)
+     * @ORM\Column(name="date_updated", type="datetime", nullable = true)
      */
     protected $updated;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(name="date_created", type="datetime")
      */
     protected $created;
 

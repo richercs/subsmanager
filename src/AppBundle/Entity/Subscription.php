@@ -27,12 +27,12 @@ class Subscription
      * @ORM\Column(name="id", type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
 
     /**
      * @var boolean
      *
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(name="is_mothly_ticket", type="boolean")
      *
      */
     protected $isMonthlyTicket;
@@ -48,12 +48,12 @@ class Subscription
     protected $attendee;
 
     /**
-     * @ORM\Column(type="datetime", nullable = true)
+     * @ORM\Column(name="date_updated", type="datetime", nullable = true)
      */
     protected $updated;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(name="date_created", type="datetime")
      */
     protected $created;
 

@@ -20,29 +20,29 @@ class UserAccount
      * @ORM\Column(name="id", type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
 
     /**
      * @var string
      *
-     * @ORM\Column(length=140, name="first_name")
+     * @ORM\Column(name="first_name", type="string", length=140)
      */
     protected $first_name;
 
     /**
      * @var string
      *
-     * @ORM\Column(length=140, name="last_name")
+     * @ORM\Column(name="last_name", type="string", length=140)
      */
     protected $last_name;
 
     /**
-     * @ORM\Column(type="datetime", nullable = true)
+     * @ORM\Column(name="date_updated", type="datetime", nullable = true)
      */
     protected $updated;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(name="date_created", type="datetime")
      */
     protected $created;
 

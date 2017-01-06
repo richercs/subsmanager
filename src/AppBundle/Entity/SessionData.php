@@ -21,29 +21,29 @@ class SessionData
      * @ORM\Column(name="id", type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    protected $id;
 
     // TODO: Óratípus?
 
     /**
-     * @ORM\Column(type="datetime", nullable = true, name="scheduled_date")
+     * @ORM\Column(name="scheduled_date", type="datetime", nullable = true)
      */
     protected $scheduledDate;
 
     /**
      * @var string
      *
-     * @ORM\Column(length=140, name="location")
+     * @ORM\Column(name="location", length=140)
      */
     protected $location;
 
     /**
-     * @ORM\Column(type="datetime", nullable = true)
+     * @ORM\Column(name="date_updated", type="datetime", nullable = true)
      */
     protected $updated;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(name="date_created", type="datetime")
      */
     protected $created;
 
