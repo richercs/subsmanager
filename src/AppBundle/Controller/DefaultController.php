@@ -18,40 +18,20 @@ use Symfony\Component\HttpFoundation\Request;
 class DefaultController extends Controller
 {
     /**
-     * @Route("/hello/{name}", name="homepage")
+     * @Route("/homepage", name="homepage")
+     *
+     * @param Request request
+     * @return array
      */
     public function indexAction(Request $request)
     {
-        // replace this example code with whatever you need
-
-        $name = $request->get('name');
-
         /** @var EntityManager $em */
         $em = $this->get('doctrine.orm.default_entity_manager');
-
-        $user_account = new UserAccount();
-
-        $user_account->setFirstName($name);
-
-        $user_account->setLastName(strrev($name));
-
-        $em->persist($user_account);
-
-        $em->flush();
 
         /** @var UserAccountRepository $user_repo */
         $user_repo = $em->getRepository('AppBundle\Entity\UserAccount');
 
-        $users = $user_repo->getAllWithNameShorterThen();
-
-        /** @var UserAccount $user */
-        foreach ($users as $user) {
-            $user->setLastName("rövid volt");
-
-            $em->persist($user);
-        }
-
-        $em->flush();
+        $users = $user_repo->findAll();
 
         return $this->render('default/index.html.twig',
             array(
@@ -60,22 +40,22 @@ class DefaultController extends Controller
         ));
     }
 
-    /**
-     * @Route("/dummy/{name}", name="dummy")
-     */
-    public function dummyAction(Request $request)
-    {
-        /** @var EntityManager $em */
-        $em = $this->get('doctrine.orm.default_entity_manager');
-
-        /** @var SubscriptionRepository $sr */
-        $sr = $em->getRepository('AppBundle\Entity\Subscription');
-
-        $a = $sr->getRunningSubs();
-
-        dump($a);
-        die;
-    }
+//    /**
+//     * @Route("/dummy/{name}", name="dummy")
+//     */
+//    public function dummyAction(Request $request)
+//    {
+//        /** @var EntityManager $em */
+//        $em = $this->get('doctrine.orm.default_entity_manager');
+//
+//        /** @var SubscriptionRepository $sr */
+//        $sr = $em->getRepository('AppBundle\Entity\Subscription');
+//
+//        $a = $sr->getRunningSubs();
+//
+//        dump($a);
+//        die;
+//    }
 
     /**
      * @Route("/add_user_form", name="add_user_account")
@@ -102,12 +82,12 @@ class DefaultController extends Controller
         if ($form->isValid())
         {
             $em->persist($new_user);
-            return $this->redirectToRoute('homepage',array('name' => 'CsabiValid'));
+            $em->flush();
+            return $this->redirectToRoute('homepage');
         }
 
-        return $this->render('UserAccount/addUserAccount.html.twig',
+        return $this->render('users/addUserAccount.html.twig',
             array(
-                //'base_dir' => realpath($this->container->getParameter('kernel.root_dir').'/..').DIRECTORY_SEPARATOR,
                 'new_user' => $new_user,
                 'form' => $form->createView()
             ));
