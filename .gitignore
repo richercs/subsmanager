@@ -11,6 +11,5 @@
 /bin/
 /composer.phar
 /.idea/*
-/.bowerrc
 /npm-debug.log
 /web/assets/
