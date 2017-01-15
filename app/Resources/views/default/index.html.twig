@@ -1,15 +1,14 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <div id="wrapper">
-        <div id="container">
-            {% for user in users %}
-                <b> {{ user.firstName }}</b>
-                <b> {{ user.lastName }}</b>
-                <p>Created At: <b>{{ user.created|date('Y-m-d H:i:s') }}</b></p>
-                <p>First Name: <i>  {% if user.firstName is not empty %} {{ user.firstName }} {% endif %}</i></p>
-            {% endfor %}
-        </div>
+    <h1>Home Page</h1>
+    <div id="yellow-wrapper">
+        {% for user in users %}
+            <b> {{ user.firstName }}</b>
+            <b> {{ user.lastName }}</b>
+            <p>Created At: <b>{{ user.created|date('Y-m-d H:i:s') }}</b></p>
+            <p>First Name: <i>  {% if user.firstName is not empty %} {{ user.firstName }} {% endif %}</i></p>
+        {% endfor %}
     </div>
 {% endblock %}
 

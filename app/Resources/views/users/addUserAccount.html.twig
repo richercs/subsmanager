@@ -1,10 +1,10 @@
 {% extends 'users/layout.html.twig' %}
 
 {% block body %}
-    <div id="wrapper">
-        <div id="container">
-            {{ form(form) }}
-        </div>
+    {{ parent() }}
+    <h3>Add User</h3>
+    <div id="yellow-wrapper">
+        {{ form(form) }}
     </div>
 {% endblock %}
 
