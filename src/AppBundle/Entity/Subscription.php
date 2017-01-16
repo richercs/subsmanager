@@ -38,7 +38,10 @@ class Subscription
      */
     protected $isMonthlyTicket;
 
-    // TODO: Kezdet?
+    /**
+     * @ORM\Column(name="date_start_date", type="datetime", nullable = true)
+     */
+    protected $start_date;
 
     /**
      * @var UserAccount
@@ -90,6 +93,22 @@ class Subscription
     public function setIsMonthlyTicket($isMonthlyTicket)
     {
         $this->isMonthlyTicket = $isMonthlyTicket;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStartDate()
+    {
+        return $this->start_date;
+    }
+
+    /**
+     * @param mixed $start_date
+     */
+    public function setStartDate($start_date)
+    {
+        $this->start_date = $start_date;
     }
 
     /**

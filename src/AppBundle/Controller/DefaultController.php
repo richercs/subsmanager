@@ -8,6 +8,7 @@ use AppBundle\Entity\Subscription;
 use AppBundle\Repository\SubscriptionRepository;
 use AppBundle\Repository\UserAccountRepository;
 use AppBundle\Form\UserAccountType;
+use AppBundle\Form\SubscriptionType;
 use DateTime;
 use Doctrine\ORM\EntityManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -56,6 +57,43 @@ class DefaultController extends Controller
 //        dump($a);
 //        die;
 //    }
+
+    /**
+     * @Route("/add_subscription", name="add_subscription")
+     *
+     * @param Request request
+     * @return array
+     */
+    public function addSubscriptionAction(Request $request)
+    {
+//        /** @var UserAccount $loggedInUser */
+//        $loggedInUser = $this->getUser();
+
+        /** @var EntityManager $em */
+        $em = $this->get('doctrine.orm.default_entity_manager');
+
+        /** @var UserAccountRepository $userAccountRepository */
+        $userAccountRepository = $em->getRepository('AppBundle\Entity\UserAccount');
+
+        $new_subscription = new Subscription();
+
+        $form = $this->createForm(new SubscriptionType(), $new_subscription);
+        $form->handleRequest($request);
+
+        if ($form->isValid())
+        {
+            $em->persist($new_subscription);
+            $em->flush();
+            return $this->redirectToRoute('homepage');
+        }
+
+        return $this->render('subscription/addSubscription.html.twig',
+            array(
+                'new_subscription' => $new_subscription,
+                'form' => $form->createView()
+            ));
+
+    }
 
     /**
      * @Route("/add_user_form", name="add_user_account")

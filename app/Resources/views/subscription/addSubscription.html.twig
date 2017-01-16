@@ -1,0 +1,13 @@
+{% extends 'subscription/layout.html.twig' %}
+
+{% block body %}
+    {{ parent() }}
+    <h3>Add Subscription</h3>
+    <div id="yellow-wrapper">
+        {{ form(form) }}
+    </div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}

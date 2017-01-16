@@ -58,7 +58,13 @@ class UserAccount
      */
     protected $created;
 
-    // TODO toString functions
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->getFirstName() . ' ' . $this->getLastName() . ' [' . $this->getId() . ']';
+    }
 
     /**
      * @return int
