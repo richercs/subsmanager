@@ -12,21 +12,21 @@ code { background: #F5F5F5; max-width: 100px; padding: 2px 6px; word-wrap: break
 #icon-status, #icon-book { float: left; height: 64px; margin-right: 1em; margin-top: -4px; width: 64px; }
 #icon-book { display: none; }
 
-.row { background: ghostwhite; min-height: 100em;}
+.row { background: ghostwhite; min-height: 100em; }
 .grid-menu {}
-.grid-content {background: lightslategray;min-height: 90em !important;}
+.grid-content { background: lightslategray; min-height: 90em !important; }
 
 @media (min-width: 992px) {
-    #yellow-wrapper {width: 80%; margin: 2em 2em; }
+    #yellow-wrapper { width: 80%; margin: 2em 2em; }
     #icon-book { display: inline-block; }
     #status a, #next a { display: block; }
 
     @-webkit-keyframes fade-in { 0% { opacity: 0; } 100% { opacity: 1; } }
     @keyframes fade-in { 0% { opacity: 0; } 100% { opacity: 1; } }
-    .sf-toolbar { opacity: 0; -webkit-animation: fade-in 1s .2s forwards; animation: fade-in 1s .2s forwards;}
+    .sf-toolbar { opacity: 0; -webkit-animation: fade-in 1s .2s forwards; animation: fade-in 1s .2s forwards; }
 }
 
 @media (max-width: 991px) {
-    #sidebar-items {margin-bottom: 0em !important;}
-    .grid-content { padding-top: 1px !important;} /* TODO: How to replace margin with something else? */
+    #sidebar-items { margin-bottom: 0em !important; }
+    .grid-content { padding-top: 1px !important; } /* TODO: How to replace margin with something else? */
 }
