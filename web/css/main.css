@@ -1,12 +1,12 @@
 body { background: #F5F5F5; font: 18px/1.5 sans-serif; }
 h1, h2 { line-height: 1.2; margin: 0 0 .5em; }
-h1 { font-size: 36px; }
+h1 { font-size: 36px; padding-top: 20px; !important; }
 h2 { font-size: 21px; margin-bottom: 1em; }
 p { margin: 0 0 1em 0; }
 a { color: #0000F0; }
 a:hover { text-decoration: none; }
 code { background: #F5F5F5; max-width: 100px; padding: 2px 6px; word-wrap: break-word; }
-#yellow-wrapper { background: lightyellow; padding: 2em; margin: auto 2em; max-width: 800px; width: 80%; }
+#yellow-wrapper { background: lightyellow; padding: 2em; margin: 2em 2em; max-width: 800px; width: 80%; }
 #welcome, #status { margin-bottom: 2em; }
 #welcome h1 span { display: block; font-size: 75%; }
 #icon-status, #icon-book { float: left; height: 64px; margin-right: 1em; margin-top: -4px; width: 64px; }
@@ -16,17 +16,125 @@ code { background: #F5F5F5; max-width: 100px; padding: 2px 6px; word-wrap: break
 .grid-menu {}
 .grid-content { background: lightslategray; min-height: 90em !important; }
 
+
+/* SIDEBAR SNIPPET */
+body,html{
+    height: 100%;
+}
+
+nav.sidebar, .main{
+    -webkit-transition: margin 200ms ease-out;
+    -moz-transition: margin 200ms ease-out;
+    -o-transition: margin 200ms ease-out;
+    transition: margin 200ms ease-out;
+}
+
+.main{
+    padding: 10px 10px 0 10px;
+}
+
 @media (min-width: 992px) {
-    #yellow-wrapper { width: 80%; margin: 2em 2em; }
-    #icon-book { display: inline-block; }
-    #status a, #next a { display: block; }
 
-    @-webkit-keyframes fade-in { 0% { opacity: 0; } 100% { opacity: 1; } }
-    @keyframes fade-in { 0% { opacity: 0; } 100% { opacity: 1; } }
-    .sf-toolbar { opacity: 0; -webkit-animation: fade-in 1s .2s forwards; animation: fade-in 1s .2s forwards; }
+    .main{
+        position: absolute;
+        width: calc(100% - 40px);
+        margin-left: 40px;
+        float: right;
+    }
+
+    nav.sidebar:hover + .main{
+        margin-left: 200px;
+    }
+
+    nav.sidebar.navbar.sidebar>.container .navbar-brand, .navbar>.container-fluid .navbar-brand {
+        margin-left: 0px;
+    }
+
+    nav.sidebar .navbar-brand, nav.sidebar .navbar-header{
+        text-align: center;
+        width: 100%;
+        margin-left: 0px;
+    }
+
+    nav.sidebar a{
+        padding-right: 13px;
+    }
+
+    nav.sidebar .navbar-nav > li:first-child{
+        border-top: 1px #e5e5e5 solid;
+    }
+
+    nav.sidebar .navbar-nav > li{
+        border-bottom: 1px #e5e5e5 solid;
+    }
+
+    nav.sidebar .navbar-nav .open .dropdown-menu {
+        position: static;
+        float: none;
+        width: auto;
+        margin-top: 0;
+        background-color: transparent;
+        border: 0;
+        -webkit-box-shadow: none;
+        box-shadow: none;
+    }
+
+    nav.sidebar .navbar-collapse, nav.sidebar .container-fluid{
+        padding: 0 0px 0 0px;
+    }
+
+    .navbar-inverse .navbar-nav .open .dropdown-menu>li>a {
+        color: #777;
+    }
+
+    nav.sidebar{
+        width: 200px;
+        height: 100%;
+        margin-left: -160px;
+        float: left;
+        margin-bottom: 0px;
+    }
+
+    nav.sidebar li {
+        width: 100%;
+    }
+
+    nav.sidebar:hover{
+        margin-left: 0px;
+    }
+
+    .forAnimate{
+        opacity: 0;
+    }
 }
 
-@media (max-width: 991px) {
-    #sidebar-items { margin-bottom: 0em !important; }
-    .grid-content { padding-top: 1px !important; } /* TODO: How to replace margin with something else? */
+@media (min-width: 992px) {
+
+    .main{
+        width: calc(100% - 200px);
+        margin-left: 200px;
+    }
+
+    nav.sidebar{
+        margin-left: 0px;
+        float: left;
+    }
+
+    nav.sidebar .forAnimate{
+        opacity: 1;
+    }
 }
+
+nav.sidebar .navbar-nav .open .dropdown-menu>li>a:hover, nav.sidebar .navbar-nav .open .dropdown-menu>li>a:focus {
+    color: #CCC;
+    background-color: transparent;
+}
+
+nav:hover .forAnimate{
+    opacity: 1;
+}
+section{
+    padding-left: 15px;
+}
+
+/* SIDEBAR SNIPPET */
