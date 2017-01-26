@@ -39,7 +39,7 @@ class Subscription
     protected $isMonthlyTicket;
 
     /**
-     * @ORM\Column(name="date_start_date", type="datetime", nullable = true)
+     * @ORM\Column(name="date_start_date", type="datetime", nullable = false)
      */
     protected $start_date;
 
@@ -47,9 +47,17 @@ class Subscription
      * @var UserAccount
      *
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\UserAccount")
-     * @ORM\JoinColumn(name="attendee_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="owner_id", referencedColumnName="id", nullable=false)
      */
-    protected $attendee;
+    protected $owner;
+
+    /**
+     * @var UserAccount
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\UserAccount")
+     * @ORM\JoinColumn(name="buyer_id", referencedColumnName="id", nullable=false)
+     */
+    protected $buyer;
 
     /**
      * @ORM\Column(name="date_updated", type="datetime", nullable = true)
@@ -114,17 +122,33 @@ class Subscription
     /**
      * @return UserAccount
      */
-    public function getAttendee()
+    public function getOwner()
     {
-        return $this->attendee;
+        return $this->owner;
     }
 
     /**
-     * @param UserAccount $attendee
+     * @param UserAccount $owner
      */
-    public function setAttendee($attendee)
+    public function setOwner($owner)
     {
-        $this->attendee = $attendee;
+        $this->owner = $owner;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBuyer()
+    {
+        return $this->buyer;
+    }
+
+    /**
+     * @param mixed $buyer
+     */
+    public function setBuyer($buyer)
+    {
+        $this->buyer = $buyer;
     }
 
     /**
