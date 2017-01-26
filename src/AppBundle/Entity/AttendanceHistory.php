@@ -25,12 +25,12 @@ class AttendanceHistory
     protected $id;
 
     /**
-     * @var EventSession
+     * @var SessionEvent
      *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\EventSession")
-     * @ORM\JoinColumn(name="event_session_id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\SessionEvent")
+     * @ORM\JoinColumn(name="session_event_id", referencedColumnName="id")
      */
-    protected $event_session;
+    protected $session_event;
 
     /**
      * @var UserAccount
@@ -77,19 +77,19 @@ class AttendanceHistory
     }
 
     /**
-     * @return EventSession
+     * @return SessionEvent
      */
-    public function getEventSession()
+    public function getSessionEvent()
     {
-        return $this->event_session;
+        return $this->session_event;
     }
 
     /**
-     * @param EventSession $event_session
+     * @param SessionEvent $session_event
      */
-    public function setEventSession($event_session)
+    public function setSessionEvent($session_event)
     {
-        $this->event_session = $event_session;
+        $this->session_event = $session_event;
     }
 
     /**

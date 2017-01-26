@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\ScheduleItem;
 use AppBundle\Entity\SessionData;
 use AppBundle\Entity\UserAccount;
 use AppBundle\Entity\Subscription;
@@ -18,28 +19,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class DefaultController extends Controller
 {
-    /**
-     * @Route("/homepage", name="homepage")
-     *
-     * @param Request request
-     * @return array
-     */
-    public function indexAction(Request $request)
-    {
-        /** @var EntityManager $em */
-        $em = $this->get('doctrine.orm.default_entity_manager');
 
-        /** @var UserAccountRepository $user_repo */
-        $user_repo = $em->getRepository('AppBundle\Entity\UserAccount');
-
-        $users = $user_repo->findAll();
-
-        return $this->render('default/index.html.twig',
-            array(
-            'base_dir' => realpath($this->container->getParameter('kernel.root_dir').'/..').DIRECTORY_SEPARATOR,
-            'users' => $users
-        ));
-    }
 
 //    /**
 //     * @Route("/dummy/{name}", name="dummy")
@@ -84,7 +64,11 @@ class DefaultController extends Controller
         {
             $em->persist($new_subscription);
             $em->flush();
-            return $this->redirectToRoute('homepage');
+            $this->addFlash(
+                'notice',
+                'Your changes were saved!'
+            );
+            return $this->redirectToRoute('add_subsscription');
         }
 
         return $this->render('subscription/addSubscription.html.twig',
@@ -121,7 +105,11 @@ class DefaultController extends Controller
         {
             $em->persist($new_user);
             $em->flush();
-            return $this->redirectToRoute('homepage');
+            $this->addFlash(
+                'notice',
+                'Your changes were saved!'
+            );
+            return $this->redirectToRoute('add_user_account');
         }
 
         return $this->render('users/addUserAccount.html.twig',
@@ -149,11 +137,11 @@ class DefaultController extends Controller
         $em->persist($genUser);
         $em->flush();
 
-        $session = new SessionData();
-        $session->setLocation('Vitál');
-        $session->setScheduledDate(DateTime::createFromFormat('Y-m-d', '2016-01-01'));
+        $schedule_item = new ScheduleItem();
+        $schedule_item->setLocation('Vitál');
+        $schedule_item->setScheduledDate(DateTime::createFromFormat('Y-m-d', '2016-01-01'));
 
-        $em->persist($session);
+        $em->persist($schedule_item);
         $em->flush();
 
         $subscription = new Subscription();

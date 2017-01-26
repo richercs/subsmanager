@@ -7,13 +7,13 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * SessionData
+ * ScheduleItem
  *
- * @ORM\Table(name="session_data")
- * @ORM\Entity(repositoryClass="AppBundle\Repository\SessionDataRepository")
+ * @ORM\Table(name="schedule_item")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\ScheduleItemRepository")
  * @ORM\HasLifecycleCallbacks
  */
-class SessionData
+class ScheduleItem
 {
     /**
      * @var int
@@ -108,7 +108,7 @@ class SessionData
 
     /**
      * @param mixed $created
-     * @return SessionData
+     * @return ScheduleItem
      */
     public function setCreated($created)
     {
@@ -126,7 +126,7 @@ class SessionData
 
     /**
      * @param mixed $updated
-     * @return SessionData
+     * @return ScheduleItem
      */
     public function setUpdated($updated)
     {

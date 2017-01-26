@@ -6,13 +6,13 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * EventSession
+ * SessionEvent
  *
- * @ORM\Table(name="event_session")
- * @ORM\Entity(repositoryClass="AppBundle\Repository\EventSessionRepository")
+ * @ORM\Table(name="session_event")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\SessionEventRepository")
  * @ORM\HasLifecycleCallbacks
  */
-class EventSession
+class SessionEvent
 {
     /**
      * @var int
@@ -24,12 +24,12 @@ class EventSession
     protected $id;
 
     /**
-     * @var SessionData
+     * @var ScheduleItem
      *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\SessionData")
-     * @ORM\JoinColumn(name="session_data_id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\ScheduleItem")
+     * @ORM\JoinColumn(name="schedule_item_id", referencedColumnName="id")
      */
-    protected $sessionData;
+    protected $scheduleItem;
 
     /**
      * @ORM\Column(name="actual_date", type="datetime", nullable = true)
@@ -72,19 +72,19 @@ class EventSession
     }
 
     /**
-     * @return SessionData
+     * @return ScheduleItem
      */
-    public function getSessionData()
+    public function getScheduleItem()
     {
-        return $this->sessionData;
+        return $this->scheduleItem;
     }
 
     /**
-     * @param SessionData $sessionData
+     * @param ScheduleItem $scheduleItem
      */
-    public function setSessionData($sessionData)
+    public function setScheduleItem($scheduleItem)
     {
-        $this->sessionData = $sessionData;
+        $this->scheduleItem = $scheduleItem;
     }
 
     /**
@@ -129,7 +129,7 @@ class EventSession
 
     /**
      * @param mixed $created
-     * @return EventSession
+     * @return SessionEvent
      */
     public function setCreated($created)
     {
@@ -147,7 +147,7 @@ class EventSession
 
     /**
      * @param mixed $updated
-     * @return EventSession
+     * @return SessionEvent
      */
     public function setUpdated($updated)
     {
