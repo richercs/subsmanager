@@ -1,0 +1,24 @@
+{% extends 'users/layout.html.twig' %}
+
+{% block body %}
+    {{ parent() }}
+    <h3>List All User Accounts</h3>
+    <div id="yellow-wrapper">
+        <div class="list-group">
+            {% for user in users %}
+                <a href="#" class="list-group-item">
+                    {#<b> {{ user.firstName }}</b>#}
+                    {#<b> {{ user.lastName }}</b>#}
+                    {#<b>Created At: <b>{{ user.created|date('Y-m-d H:i:s') }}</b></b>#}
+                    {#<b>First Name: <i>  {% if user.firstName is not empty %} {{ user.firstName }} {% endif %}</i></b>#}
+                    {{ user }}
+                    <b>Created At: <b>{{ user.created|date('Y-m-d H:i:s') }}</b></b>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}

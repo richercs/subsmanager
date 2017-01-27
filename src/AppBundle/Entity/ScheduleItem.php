@@ -58,7 +58,10 @@ class ScheduleItem
      */
     public function __toString()
     {
-        return $this->getScheduledItemName() . ' ' . $this->getScheduledDate()->format('Y-m-d H:i:s ') . ' [' . $this->getId() . ']';
+        return $this->getScheduledItemName()
+        . ' (' . $this->getScheduledDate()->format('Y-m-d H:i') .')'
+        . ' ' . $this->getLocation()
+        . ' [' . $this->getId() . ']';
     }
 
     /**

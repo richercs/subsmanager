@@ -3,12 +3,12 @@
 {% block body %}
     <h1>Home Page</h1>
     <div id="yellow-wrapper">
-        {% for user in users %}
-            <b> {{ user.firstName }}</b>
-            <b> {{ user.lastName }}</b>
-            <p>Created At: <b>{{ user.created|date('Y-m-d H:i:s') }}</b></p>
-            <p>First Name: <i>  {% if user.firstName is not empty %} {{ user.firstName }} {% endif %}</i></p>
-        {% endfor %}
+        <p><b>This is my yellow wrapper</b></p>
+        <p>We currently have:</p>
+        <p>{{ count_users }} users</p>
+        <p>{{ count_subscriptions }} subscriptions</p>
+        <p>{{ count_scheduleItems }} items in the schedule</p>
+        <p>and {{ count_sessionEvents }} events registered.</p>
     </div>
 {% endblock %}
 

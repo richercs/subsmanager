@@ -51,7 +51,7 @@ class SessionEvent
      */
     public function __toString()
     {
-        return $this->getScheduleItem(). ' ' . $this->getSessionEventDate()->format('Y-m-d H:i:s ') . ' [' . $this->getId() . ']';
+        return $this->getScheduleItem(). ' ' . $this->getSessionEventDate()->format('Y-m-d H:i') . ' [' . $this->getId() . ']';
     }
 
     /**

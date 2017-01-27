@@ -20,6 +20,29 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 class SessionEventController extends Controller
 {
     /**
+     * @Route("/session_events_list_all", name="session_events_list_all")
+     *
+     * @param Request request
+     * @return array
+     */
+    public function listAllSessionEventsAction(Request $request)
+    {
+        /** @var EntityManager $em */
+        $em = $this->get('doctrine.orm.default_entity_manager');
+
+        /** @var UserAccountRepository $user_repo */
+        $sessionEvent_repo = $em->getRepository('AppBundle\Entity\SessionEvent');
+
+        $events = $sessionEvent_repo->findAll();
+
+        return $this->render('event/listAllSessionEvents.html.twig',
+            array(
+                'base_dir' => realpath($this->container->getParameter('kernel.root_dir').'/..').DIRECTORY_SEPARATOR,
+                'events' => $events
+            ));
+    }
+
+    /**
      * @Route("/session_add_event", name="session_add_event")
      *
      * @param Request request

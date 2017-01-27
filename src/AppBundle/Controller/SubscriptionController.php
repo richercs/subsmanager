@@ -15,6 +15,29 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 class SubscriptionController extends Controller
 {
     /**
+     * @Route("/subscription_list_all", name="subscription_list_all")
+     *
+     * @param Request request
+     * @return array
+     */
+    public function listAllSubscriptionsAction(Request $request)
+    {
+        /** @var EntityManager $em */
+        $em = $this->get('doctrine.orm.default_entity_manager');
+
+        /** @var UserAccountRepository $user_repo */
+        $subscription_repo = $em->getRepository('AppBundle\Entity\Subscription');
+
+        $subscriptions = $subscription_repo->findAll();
+
+        return $this->render('subscription/listAllSubscriptions.html.twig',
+            array(
+                'base_dir' => realpath($this->container->getParameter('kernel.root_dir').'/..').DIRECTORY_SEPARATOR,
+                'subscriptions' => $subscriptions
+            ));
+    }
+
+    /**
      * @Route("/subscription_add_subscription", name="subscription_add_subscription")
      *
      * @param Request request

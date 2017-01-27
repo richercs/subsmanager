@@ -18,7 +18,7 @@ class Subscription
 
     public function __construct()
     {
-
+        //$this->owner_email = $this->getOwner()->getEmail();
     }
 
     /**
@@ -52,6 +52,12 @@ class Subscription
     protected $owner;
 
     /**
+     * @var string
+     *
+     */
+    protected $owner_email;
+
+    /**
      * @var UserAccount
      *
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\UserAccount")
@@ -69,7 +75,18 @@ class Subscription
      */
     protected $created;
 
-    // TODO toString functions
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return 'Owner name: ' . $this->getOwner()
+        . ' Owner email: ' . $this->getOwner()->getEmail()
+        . ' Buyer: ' . $this->getBuyer() . ' '
+        . $this->isIsMonthlyTicket() . ' '
+        . ' (' . $this->getStartDate()->format('Y-m-d H:i') .')'
+        . ' [' . $this->getId() . ']';
+    }
 
     /**
      * @return mixed
@@ -137,6 +154,22 @@ class Subscription
 
     /**
      * @return mixed
+     */
+    public function getOwnerEmail()
+    {
+        return $this->owner_email;
+    }
+
+    /**
+     * @param mixed $owner_email
+     */
+    public function setOwnerEmail($owner_email)
+    {
+        $this->owner_email = $owner_email;
+    }
+
+    /**
+     * @return UserAccount
      */
     public function getBuyer()
     {

@@ -15,6 +15,29 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 class ScheduleItemController extends Controller
 {
     /**
+     * @Route("/schedule_list_all", name="schedule_list_all")
+     *
+     * @param Request request
+     * @return array
+     */
+    public function listAllScheduleItemsAction(Request $request)
+    {
+        /** @var EntityManager $em */
+        $em = $this->get('doctrine.orm.default_entity_manager');
+
+        /** @var UserAccountRepository $user_repo */
+        $scheduleItem_repo = $em->getRepository('AppBundle\Entity\ScheduleItem');
+
+        $items = $scheduleItem_repo->findAll();
+
+        return $this->render('schedule/listAllItems.html.twig',
+            array(
+                'base_dir' => realpath($this->container->getParameter('kernel.root_dir').'/..').DIRECTORY_SEPARATOR,
+                'items' => $items
+            ));
+    }
+
+    /**
      * @Route("/schedule_add_item", name="schedule_add_item")
      *
      * @param Request request

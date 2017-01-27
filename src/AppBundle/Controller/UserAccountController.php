@@ -12,6 +12,28 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 class UserAccountController extends Controller
 {
+    /**
+     * @Route("/useraccount_list_all", name="useraccount_list_all")
+     *
+     * @param Request request
+     * @return array
+     */
+    public function listAllUserAccountsAction(Request $request)
+    {
+        /** @var EntityManager $em */
+        $em = $this->get('doctrine.orm.default_entity_manager');
+
+        /** @var UserAccountRepository $user_repo */
+        $user_repo = $em->getRepository('AppBundle\Entity\UserAccount');
+
+        $users = $user_repo->findAll();
+
+        return $this->render('users/listAllUserAccounts.html.twig',
+            array(
+                'base_dir' => realpath($this->container->getParameter('kernel.root_dir').'/..').DIRECTORY_SEPARATOR,
+                'users' => $users
+            ));
+    }
 
     /**
      * @Route("/useraccount_add_user", name="useraccount_add_user")

@@ -1,0 +1,24 @@
+{% extends 'subscription/layout.html.twig' %}
+
+{% block body %}
+    {{ parent() }}
+    <h3>List All Subscriptions</h3>
+    <div id="yellow-wrapper">
+        <div class="list-group">
+            {% for subscription in subscriptions %}
+                <a href="#" class="list-group-item">
+                    <b>Owner: {{ subscription.owner }}</b><br/>
+                    <b>Owner email: {{ subscription.owneremail }} VALAMIÉRT NEM MÜKSZIK!! O.o</b><br/>
+                    Buyer: {{ subscription.buyer }}<br/>
+                    Monthly Ticket: <b>{% if subscription.ismonthlyticket == 0 %} No {% else %} Yes {% endif %}</b>
+                    (start date:<i>{{ subscription.startdate|date('Y-m-d H:i') }}</i>)
+                    <p>Created At: <b>{{ subscription.created|date('Y-m-d H:i:s') }}</b></p>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
