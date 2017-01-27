@@ -27,21 +27,14 @@ class SessionEvent
      * @var ScheduleItem
      *
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\ScheduleItem")
-     * @ORM\JoinColumn(name="schedule_item_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="schedule_item_id", referencedColumnName="id", nullable=false)
      */
     protected $scheduleItem;
 
     /**
-     * @ORM\Column(name="actual_date", type="datetime", nullable = true)
+     * @ORM\Column(name="session_event_date", type="datetime", nullable = false)
      */
-    protected $actualDate;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="location", length=140)
-     */
-    protected $location;
+    protected $sessionEventDate;
 
     /**
      * @ORM\Column(name="date_updated", type="datetime", nullable = true)
@@ -53,7 +46,13 @@ class SessionEvent
      */
     protected $created;
 
-    // TODO toString functions
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->getScheduleItem(). ' ' . $this->getSessionEventDate()->format('Y-m-d H:i:s ') . ' [' . $this->getId() . ']';
+    }
 
     /**
      * @return int
@@ -90,33 +89,17 @@ class SessionEvent
     /**
      * @return mixed
      */
-    public function getActualDate()
+    public function getSessionEventDate()
     {
-        return $this->actualDate;
+        return $this->sessionEventDate;
     }
 
     /**
-     * @param mixed $actualDate
+     * @param mixed $sessionEventDate
      */
-    public function setActualDate($actualDate)
+    public function setSessionEventDate($sessionEventDate)
     {
-        $this->actualDate = $actualDate;
-    }
-
-    /**
-     * @return string
-     */
-    public function getLocation()
-    {
-        return $this->location;
-    }
-
-    /**
-     * @param string $location
-     */
-    public function setLocation($location)
-    {
-        $this->location = $location;
+        $this->sessionEventDate = $sessionEventDate;
     }
 
     /**

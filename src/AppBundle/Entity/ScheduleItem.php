@@ -24,17 +24,22 @@ class ScheduleItem
      */
     protected $id;
 
-    // TODO: Óratípus?
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="item_name", nullable = false)
+     */
+    protected $scheduledItemName; // TODO: Óratípus?
 
     /**
-     * @ORM\Column(name="scheduled_date", type="datetime", nullable = true)
+     * @ORM\Column(name="scheduled_date", type="datetime", nullable = false)
      */
     protected $scheduledDate;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="location", length=140)
+     * @ORM\Column(name="location", length=140, nullable = false)
      */
     protected $location;
 
@@ -48,7 +53,13 @@ class ScheduleItem
      */
     protected $created;
 
-    // TODO toString functions
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->getScheduledItemName() . ' ' . $this->getScheduledDate()->format('Y-m-d H:i:s ') . ' [' . $this->getId() . ']';
+    }
 
     /**
      * @return int
@@ -64,6 +75,22 @@ class ScheduleItem
     public function setId($id)
     {
         $this->id = $id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getScheduledItemName()
+    {
+        return $this->scheduledItemName;
+    }
+
+    /**
+     * @param mixed $scheduledItemName
+     */
+    public function setScheduledItemName($scheduledItemName)
+    {
+        $this->scheduledItemName = $scheduledItemName;
     }
 
     /**

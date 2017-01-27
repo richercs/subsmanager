@@ -6,16 +6,8 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class SubscriptionType extends AbstractType
+class ScheduleItemType extends AbstractType
 {
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return 'app_subscription';
-    }
-
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
@@ -23,11 +15,10 @@ class SubscriptionType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('owner') // TODO: How to not show a default value? / This should be a text field where you start typing and it filters the possible names
-            ->add('buyer')
-            ->add('isMonthlyTicket')
-            ->add('start_date')
-            ->add('save', 'submit', array('label' => 'Save Subscription'));
+            ->add('scheduledItemName')
+            ->add('scheduledDate')
+            ->add('location', 'text')
+            ->add('save', 'submit', array('label' => 'Save Item'));
         ;
     }
     
@@ -37,7 +28,17 @@ class SubscriptionType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'AppBundle\Entity\Subscription'
+            'data_class' => 'AppBundle\Entity\ScheduleItem'
         ));
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getBlockPrefix()
+    {
+        return 'appbundle_scheduleitem';
+    }
+
+
 }
