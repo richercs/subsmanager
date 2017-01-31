@@ -27,7 +27,7 @@ class AttendanceHistory
     /**
      * @var SessionEvent
      *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\SessionEvent")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\SessionEvent", inversedBy="attendees")
      * @ORM\JoinColumn(name="session_event_id", referencedColumnName="id")
      */
     protected $session_event;

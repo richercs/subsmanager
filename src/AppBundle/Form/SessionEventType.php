@@ -17,6 +17,16 @@ class SessionEventType extends AbstractType
         $builder
             ->add('sessionEventDate')
             ->add('scheduleItem')
+            ->add(
+                'attendees', 'entity',
+                [
+                    'class' => 'AppBundle\Entity\AttendanceHistory',
+                    'property' => 'attendee',
+                    'multiple' => TRUE,
+                    'expanded' => TRUE,
+                    'label' => 'Attendees',
+                ]
+            )
             ->add('save', 'submit', array('label' => 'Save Session Event'));
         ;
     }

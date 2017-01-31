@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -14,6 +15,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class SessionEvent
 {
+
+    public function __construct() {
+        $this->attendees = new ArrayCollection();
+    }
+
     /**
      * @var int
      *
@@ -35,6 +41,12 @@ class SessionEvent
      * @ORM\Column(name="session_event_date", type="datetime", nullable = false)
      */
     protected $sessionEventDate;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\AttendanceHistory", mappedBy="session_event")
+     */
+    protected $attendees;
 
     /**
      * @ORM\Column(name="date_updated", type="datetime", nullable = true)
@@ -100,6 +112,22 @@ class SessionEvent
     public function setSessionEventDate($sessionEventDate)
     {
         $this->sessionEventDate = $sessionEventDate;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAttendees()
+    {
+        return $this->attendees;
+    }
+
+    /**
+     * @param mixed $attendees
+     */
+    public function setAttendees($attendees)
+    {
+        $this->attendees = $attendees;
     }
 
     /**
