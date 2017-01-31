@@ -8,7 +8,7 @@
             {% for subscription in subscriptions %}
                 <a href="#" class="list-group-item">
                     <b>Owner: {{ subscription.owner }}</b><br/>
-                    <b>Owner email: {{ subscription.owneremail }} VALAMIÉRT NEM MÜKSZIK!! O.o</b><br/>
+                    <b>Owner email: {{ subscription.owner.email }}</b><br/>
                     Buyer: {{ subscription.buyer }}<br/>
                     Monthly Ticket: <b>{% if subscription.ismonthlyticket == 0 %} No {% else %} Yes {% endif %}</b>
                     (start date:<i>{{ subscription.startdate|date('Y-m-d H:i') }}</i>)

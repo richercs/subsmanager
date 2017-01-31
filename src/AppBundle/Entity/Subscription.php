@@ -18,7 +18,7 @@ class Subscription
 
     public function __construct()
     {
-        //$this->owner_email = $this->getOwner()->getEmail();
+
     }
 
     /**
@@ -50,12 +50,6 @@ class Subscription
      * @ORM\JoinColumn(name="owner_id", referencedColumnName="id", nullable=false)
      */
     protected $owner;
-
-    /**
-     * @var string
-     *
-     */
-    protected $owner_email;
 
     /**
      * @var UserAccount
@@ -150,22 +144,6 @@ class Subscription
     public function setOwner($owner)
     {
         $this->owner = $owner;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getOwnerEmail()
-    {
-        return $this->owner_email;
-    }
-
-    /**
-     * @param mixed $owner_email
-     */
-    public function setOwnerEmail($owner_email)
-    {
-        $this->owner_email = $owner_email;
     }
 
     /**

@@ -19,6 +19,9 @@ class HomePageController extends Controller
      */
     public function showAction(Request $request)
     {
+
+        $this->getUser();
+
         /** @var EntityManager $em */
         $em = $this->get('doctrine.orm.default_entity_manager');
 
