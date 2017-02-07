@@ -1,5 +1,14 @@
 {% extends 'event/layout.html.twig' %}
 
+{% form_theme form _self %}
+
+{% block integer_widget %}
+    <div class="integer_widget">
+        {% set type = type|default('number') %}
+        {{ block('form_widget_simple') }}
+    </div>
+{% endblock %}
+
 {% block body %}
     {{ parent() }}
     <h3>Add Session Event</h3>

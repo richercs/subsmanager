@@ -49,6 +49,18 @@ class SessionEvent
     protected $attendees;
 
     /**
+     * @var int
+     * @ORM\Column(name="session_fee_numbers_sold", type="integer", nullable = true)
+     */
+    protected $sessionFeeNumbersSold;
+
+    /**
+     * @var int
+     * @ORM\Column(name="session_fee_revenue_sold", type="integer", nullable = true)
+     */
+    protected $sessionFeeRevenueSold;
+
+    /**
      * @ORM\Column(name="date_updated", type="datetime", nullable = true)
      */
     protected $updated;
@@ -128,6 +140,38 @@ class SessionEvent
     public function setAttendees($attendees)
     {
         $this->attendees = $attendees;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSessionFeeNumbersSold()
+    {
+        return $this->sessionFeeNumbersSold;
+    }
+
+    /**
+     * @param mixed $sessionFeeNumbersSold
+     */
+    public function setSessionFeeNumbersSold($sessionFeeNumbersSold)
+    {
+        $this->sessionFeeNumbersSold = $sessionFeeNumbersSold;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSessionFeeRevenueSold()
+    {
+        return $this->sessionFeeRevenueSold;
+    }
+
+    /**
+     * @param mixed $sessionFeeRevenueSold
+     */
+    public function setSessionFeeRevenueSold($sessionFeeRevenueSold)
+    {
+        $this->sessionFeeRevenueSold = $sessionFeeRevenueSold;
     }
 
     /**

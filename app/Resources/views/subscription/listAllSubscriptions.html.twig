@@ -10,8 +10,10 @@
                     <b>Owner: {{ subscription.owner }}</b><br/>
                     <b>Owner email: {{ subscription.owner.email }}</b><br/>
                     Buyer: {{ subscription.buyer }}<br/>
-                    Monthly Ticket: <b>{% if subscription.ismonthlyticket == 0 %} No {% else %} Yes {% endif %}</b>
-                    (start date:<i>{{ subscription.startdate|date('Y-m-d H:i') }}</i>)
+                    Monthly Ticket: <b>{% if subscription.ismonthlyticket == 0 %} No {% else %} Yes {% endif %}</b><br/>
+                    Price: {{ subscription.price }}<br/>
+                    Status: {{ subscription.status }}<br/>
+                    (start date: <i>{{ subscription.startdate|date('Y-m-d H:i') }}</i>)
                     <p>Created At: <b>{{ subscription.created|date('Y-m-d H:i:s') }}</b></p>
                 </a>
             {% endfor %}

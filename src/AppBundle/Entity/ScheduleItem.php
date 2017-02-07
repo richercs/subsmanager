@@ -44,6 +44,13 @@ class ScheduleItem
     protected $location;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="session_name", length=140, nullable = true)
+     */
+    protected $session_name;
+
+    /**
      * @ORM\Column(name="date_updated", type="datetime", nullable = true)
      */
     protected $updated;
@@ -126,6 +133,22 @@ class ScheduleItem
     public function setLocation($location)
     {
         $this->location = $location;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSessionName()
+    {
+        return $this->session_name;
+    }
+
+    /**
+     * @param mixed $session_name
+     */
+    public function setSessionName($session_name)
+    {
+        $this->session_name = $session_name;
     }
 
     /**

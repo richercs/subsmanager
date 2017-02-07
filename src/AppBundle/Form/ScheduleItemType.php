@@ -18,6 +18,9 @@ class ScheduleItemType extends AbstractType
             ->add('scheduledItemName')
             ->add('scheduledDate')
             ->add('location', 'text')
+            ->add('session_name', 'text', array(
+                'required' => false
+            ))
             ->add('save', 'submit', array('label' => 'Save Item'));
         ;
     }

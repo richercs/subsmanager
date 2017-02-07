@@ -60,6 +60,18 @@ class Subscription
     protected $buyer;
 
     /**
+     * @var int
+     * @ORM\Column(name="price", type="integer")
+     */
+    protected $price;
+
+    /**
+     * @var string
+     * @ORM\Column(name="status", type="string")
+     */
+    protected $status;
+
+    /**
      * @ORM\Column(name="date_updated", type="datetime", nullable = true)
      */
     protected $updated;
@@ -160,6 +172,38 @@ class Subscription
     public function setBuyer($buyer)
     {
         $this->buyer = $buyer;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPrice()
+    {
+        return $this->price;
+    }
+
+    /**
+     * @param mixed $price
+     */
+    public function setPrice($price)
+    {
+        $this->price = $price;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param mixed $status
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
     }
 
     /**

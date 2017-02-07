@@ -3,6 +3,7 @@
 namespace AppBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -27,6 +28,14 @@ class SubscriptionType extends AbstractType
             ->add('buyer')
             ->add('isMonthlyTicket')
             ->add('start_date')
+            ->add('price')
+            ->add('status',ChoiceType::class, array(
+                'choices' => array(
+                    'active' => 'Active',
+                    'inactive' => 'Inactive',
+                    'expired' => 'Expired'
+                ),
+            ))
             ->add('save', 'submit', array('label' => 'Save Subscription'));
         ;
     }
