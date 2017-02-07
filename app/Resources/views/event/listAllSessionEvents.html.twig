@@ -7,10 +7,6 @@
         <div class="list-group">
             {% for event in events %}
                 <a href="#" class="list-group-item">
-                    {#<b> {{ user.firstName }}</b>#}
-                    {#<b> {{ user.lastName }}</b>#}
-                    {#<b>Created At: <b>{{ user.created|date('Y-m-d H:i:s') }}</b></b>#}
-                    {#<b>First Name: <i>  {% if user.firstName is not empty %} {{ user.firstName }} {% endif %}</i></b>#}
                     {{ event }}<br/>
                     <b>Created At: <b>{{ event.created|date('Y-m-d H:i:s') }}</b></b>
                 </a>
