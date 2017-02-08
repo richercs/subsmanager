@@ -6,7 +6,7 @@
     <div id="yellow-wrapper">
         <div class="list-group">
             {% for item in items %}
-                <a href="#" class="list-group-item">
+                <a href="{{ path('schedule_edit_item', {'id': item.id}) }}" class="list-group-item">
                     {{ item }}
                     <b>Created At: <b>{{ item.created|date('Y-m-d H:i:s') }}</b></b>
                 </a>

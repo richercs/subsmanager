@@ -6,7 +6,7 @@
     <div id="yellow-wrapper">
         <div class="list-group">
             {% for subscription in subscriptions %}
-                <a href="#" class="list-group-item">
+                <a href="{{ path('subscription_edit_subscription', {'id': subscription.id}) }}" class="list-group-item">
                     <b>Owner: {{ subscription.owner }}</b><br/>
                     <b>Owner email: {{ subscription.owner.email }}</b><br/>
                     Buyer: {{ subscription.buyer }}<br/>
