@@ -20,7 +20,7 @@
 
         <h3>Attendees</h3>
         <ul class="attendees">
-            {# iterate over each existing tag and render its only field: name #}
+
             {% for attendee in form.attendees %}
                 <li>{{ form_row(attendee.firstName) }}</li>
                 <li>{{ form_row(attendee.lastName) }}</li>
