@@ -9,11 +9,13 @@
 namespace AppBundle\Controller;
 
 
+use AppBundle\Entity\AttendanceHistory;
 use AppBundle\Entity\SessionEvent;
 use AppBundle\Entity\UserAccount;
 use AppBundle\Form\SessionEventType;
 use AppBundle\Repository\SessionEventRepository;
 use AppBundle\Repository\UserAccountRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -114,10 +116,29 @@ class SessionEventController extends Controller
             return $this->redirectToRoute('session_event_list_all');
         }
 
+        $originalAttendees = new ArrayCollection();
+
+        // Create an ArrayCollection of the current Attendance objects in the database
+        foreach ($sessionevent->getAttendees() as $attendee) {
+            $originalAttendees->add($attendee);
+        }
+
         $form = $this->createForm(new SessionEventType(), $sessionevent);
         $form->handleRequest($request);
 
         if ($form->isValid()) {
+            // remove the relationship between the attendee and the Session event
+            foreach ($originalAttendees as $attendee) {
+                if (false === $sessionevent->getAttendees()->contains($attendee)) {
+                    // remove the Session event from the Attendee
+                    $attendee->setSessionEvent(null);
+
+                    $em->persist($attendee);
+
+                    // to delete the attendee entirely
+                    // $em->remove($attendee);
+                }
+            }
             $em->persist($sessionevent);
             $em->flush();
             $this->addFlash(

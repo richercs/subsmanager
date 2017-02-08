@@ -44,7 +44,7 @@ class SessionEvent
 
     /**
      * @var ArrayCollection
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\AttendanceHistory", mappedBy="session_event")
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\AttendanceHistory", mappedBy="session_event", cascade={"persist"})
      */
     protected $attendees;
 
@@ -76,6 +76,18 @@ class SessionEvent
     public function __toString()
     {
         return $this->getScheduleItem(). ' ' . $this->getSessionEventDate()->format('Y-m-d H:i') . ' [' . $this->getId() . ']';
+    }
+
+    public function addAttendee(AttendanceHistory $attendance)
+    {
+        $attendance->setSessionEvent($this);
+
+        $this->attendees->add($attendance);
+    }
+
+    public function removeAttendee(AttendanceHistory $attendance)
+    {
+        $this->attendees->removeElement($attendance);
     }
 
     /**

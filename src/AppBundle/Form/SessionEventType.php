@@ -20,10 +20,18 @@ class SessionEventType extends AbstractType
             ->add('scheduleItem')
             // TODO: This needs to be a list of users mapped to the subscription they use to attend.
             // TODO: Both the user needs to be selected, then the subscription or session fee option.
+                // TODO: Pending solution is complete.
             ->add(
-                'attendees', CollectionType::class, array(
+                'attendees', 'collection', array(
                     'entry_type' => AttendanceHistoryType::class,
                     'label' => 'Attendees',
+                    'allow_add' => true,
+                    'allow_delete' => true,
+                    'prototype' => true,
+                    'attr' => array(
+                        'class' => 'my-selector',
+                    ),
+                    'by_reference' => false,
                 )
             )
             ->add('sessionFeeNumbersSold')

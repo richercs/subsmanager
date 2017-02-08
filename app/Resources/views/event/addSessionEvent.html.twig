@@ -1,6 +1,7 @@
 {% extends 'event/layout.html.twig' %}
 
 {#{% form_theme form _self %}#}
+{% form_theme form 'plugin/jquery.collection.html.twig' %}
 
 {#{% block integer_widget %}#}
     {#<div class="integer_widget">#}
@@ -13,25 +14,7 @@
     {{ parent() }}
     <h3>Add Session Event</h3>
     <div id="yellow-wrapper">
-        {{ form_start(form) }}
-
-        {{ form_row(form.sessionEventDate) }}
-        {{ form_row(form.scheduleItem) }}
-
-        <h3>Attendees</h3>
-        <ul class="attendees">
-
-            {% for attendee in form.attendees %}
-                <li>{{ form_row(attendee.session_event) }}</li>
-                <li>{{ form_row(attendee.attendee) }}</li>
-                <li>{{ form_row(attendee.subscription) }}</li>
-            {% endfor %}
-        </ul>
-
-        {{ form_row(form.sessionFeeNumbersSold) }}
-        {{ form_row(form.sessionFeeRevenueSold) }}
-
-        {{ form_end(form) }}
+        {{ form(form) }}
     </div>
 {% endblock %}
 
