@@ -43,7 +43,7 @@ class AttendanceHistory
     /**
      * @var Subscription
      *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\UserAccount")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Subscription")
      * @ORM\JoinColumn(name="subscription_in_use_id", referencedColumnName="id")
      */
     protected $subscription;

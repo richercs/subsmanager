@@ -3,6 +3,7 @@
 namespace AppBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -18,13 +19,10 @@ class SessionEventType extends AbstractType
             ->add('sessionEventDate')
             ->add('scheduleItem')
             // TODO: This needs to be a list of users mapped to the subscription they use to attend.
-            // TODO: Both the user needs to be selected, then the subscription or session fee.
+            // TODO: Both the user needs to be selected, then the subscription or session fee option.
             ->add(
-                'attendees', 'entity', array(
-                    'class' => 'AppBundle\Entity\AttendanceHistory',
-                    'property' => 'attendee',
-                    'multiple' => TRUE,
-                    'expanded' => TRUE,
+                'attendees', CollectionType::class, array(
+                    'entry_type' => AttendanceHistoryType::class,
                     'label' => 'Attendees',
                 )
             )

@@ -13,7 +13,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 class UserAccountController extends Controller
 {
     /**
-     * @Route("/useraccount_list_all", name="useraccount_list_all")
+     * @Route("/useraccount/list_all", name="useraccount_list_all")
      *
      * @param Request request
      * @return array
@@ -36,7 +36,7 @@ class UserAccountController extends Controller
     }
 
     /**
-     * @Route("/useraccount_add_user", name="useraccount_add_user")
+     * @Route("useraccount/add_useraccount", name="useraccount_add_user")
      *
      * @param Request request
      * @return array
@@ -73,8 +73,55 @@ class UserAccountController extends Controller
                 'new_user' => $new_user,
                 'form' => $form->createView()
             ));
-
     }
 
 
+    /**
+     * Opens edit page for user account with passed $id.
+     *
+     * @Route("/useraccount/{id}", name="useraccount_edit_user", defaults={"id" = -1})
+     *
+     * @param $id
+     * @param Request $request
+     * @return array
+     */
+    public function editUserAccountAction($id, Request $request) {
+        /** @var UserAccount $loggedInUser */
+        $loggedInUser = $this->getUser();
+        /** @var EntityManager $em */
+        $em = $this->get('doctrine.orm.default_entity_manager');
+        /** @var UserAccountRepository $userAccountRepository */
+        $userAccountRepository = $em->getRepository('AppBundle\Entity\UserAccount');
+
+        if ($id > -1) {
+            // Editing user account
+            /** @var UserAccount $useraccount */
+            $useraccount = $userAccountRepository->find($id);
+        } else {
+            $this->addFlash(
+                'error',
+                'No user found with id: ' . $id . '!'
+            );
+            return $this->redirectToRoute('useraccount_list_all');
+        }
+
+        $form = $this->createForm(new UserAccountType(), $useraccount);
+        $form->handleRequest($request);
+
+        if ($form->isValid()) {
+            $em->persist($useraccount);
+            $em->flush();
+            $this->addFlash(
+                'notice',
+                'Your changes were saved!'
+            );
+            return $this->redirectToRoute('useraccount_list_all');
+        }
+
+        return $this->render('users/editUserAccount.html.twig',
+            array(
+                'useraccount' => $useraccount,
+                'form' => $form->createView()
+            ));
+    }
 }

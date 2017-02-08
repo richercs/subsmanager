@@ -5,7 +5,9 @@ namespace AppBundle\Controller;
 
 
 use AppBundle\Entity\ScheduleItem;
+use AppBundle\Entity\UserAccount;
 use AppBundle\Form\ScheduleItemType;
+use AppBundle\Repository\ScheduleItemRepository;
 use AppBundle\Repository\UserAccountRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Doctrine\ORM\EntityManager;
@@ -15,7 +17,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 class ScheduleItemController extends Controller
 {
     /**
-     * @Route("/schedule_list_all", name="schedule_list_all")
+     * @Route("/schedule/list_all", name="schedule_list_all")
      *
      * @param Request request
      * @return array
@@ -38,7 +40,7 @@ class ScheduleItemController extends Controller
     }
 
     /**
-     * @Route("/schedule_add_item", name="schedule_add_item")
+     * @Route("/schedule/add_item", name="schedule_add_item")
      *
      * @param Request request
      * @return array
@@ -76,6 +78,55 @@ class ScheduleItemController extends Controller
                 'form' => $form->createView()
             ));
 
+    }
+
+    /**
+     * Opens edit page for schedule items with passed $id.
+     *
+     * @Route("/schedule/{id}", name="schedule_edit_item", defaults={"id" = -1})
+     *
+     * @param $id
+     * @param Request $request
+     * @return array
+     */
+    public function editScheduleItemAction($id, Request $request) {
+        /** @var UserAccount $loggedInUser */
+        $loggedInUser = $this->getUser();
+        /** @var EntityManager $em */
+        $em = $this->get('doctrine.orm.default_entity_manager');
+        /** @var ScheduleItemRepository $scheduleRepository */
+        $scheduleItemRepository = $em->getRepository('AppBundle\Entity\ScheduleItem');
+
+        if ($id > -1) {
+            // Editing schedule item
+            /** @var ScheduleItem $schedule_item */
+            $schedule_item = $scheduleItemRepository->find($id);
+        } else {
+            $this->addFlash(
+                'error',
+                'No schedule item found with id: ' . $id . '!'
+            );
+            return $this->redirectToRoute('schedule_list_all');
+        }
+
+        $form = $this->createForm(new ScheduleItemType(), $schedule_item);
+        $form->handleRequest($request);
+
+        if ($form->isValid()) {
+            $em->persist($schedule_item);
+            $em->flush();
+            $this->addFlash(
+                'notice',
+                'Your changes were saved!'
+            );
+            return $this->redirectToRoute('schedule_list_all');
+        }
+
+        return $this->render('schedule/editItem.html.twig',
+            array(
+                'schedule_item' => $schedule_item,
+                'form' => $form->createView()
+            ));
     }
 
 

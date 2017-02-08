@@ -10,7 +10,9 @@ namespace AppBundle\Controller;
 
 
 use AppBundle\Entity\SessionEvent;
+use AppBundle\Entity\UserAccount;
 use AppBundle\Form\SessionEventType;
+use AppBundle\Repository\SessionEventRepository;
 use AppBundle\Repository\UserAccountRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Doctrine\ORM\EntityManager;
@@ -20,7 +22,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 class SessionEventController extends Controller
 {
     /**
-     * @Route("/session_events_list_all", name="session_events_list_all")
+     * @Route("/sessionevent/list_all", name="session_event_list_all")
      *
      * @param Request request
      * @return array
@@ -43,7 +45,7 @@ class SessionEventController extends Controller
     }
 
     /**
-     * @Route("/session_add_event", name="session_add_event")
+     * @Route("/sessionevent/add_session_event", name="session_add_session_event")
      *
      * @param Request request
      * @return array
@@ -83,6 +85,53 @@ class SessionEventController extends Controller
 
     }
 
+    /**
+     * Opens edit page for session events with passed $id.
+     *
+     * @Route("/sessionevent/{id}", name="session_edit_session_event", defaults={"id" = -1})
+     *
+     * @param $id
+     * @param Request $request
+     * @return array
+     */
+    public function editSessionEventAction($id, Request $request) {
+        /** @var UserAccount $loggedInUser */
+        $loggedInUser = $this->getUser();
+        /** @var EntityManager $em */
+        $em = $this->get('doctrine.orm.default_entity_manager');
+        /** @var SessionEventRepository $sessionEventRepository */
+        $sessionEventRepository = $em->getRepository('AppBundle\Entity\SessionEvent');
 
+        if ($id > -1) {
+            // Editing session event
+            /** @var SessionEvent $sessionevent */
+            $sessionevent = $sessionEventRepository->find($id);
+        } else {
+            $this->addFlash(
+                'error',
+                'No session event found with id: ' . $id . '!'
+            );
+            return $this->redirectToRoute('session_event_list_all');
+        }
+
+        $form = $this->createForm(new SessionEventType(), $sessionevent);
+        $form->handleRequest($request);
+
+        if ($form->isValid()) {
+            $em->persist($sessionevent);
+            $em->flush();
+            $this->addFlash(
+                'notice',
+                'Your changes were saved!'
+            );
+            return $this->redirectToRoute('session_event_list_all');
+        }
+
+        return $this->render('event/editSessionEvent.html.twig',
+            array(
+                'sessionevent' => $sessionevent,
+                'form' => $form->createView()
+            ));
+    }
 
 }

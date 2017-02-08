@@ -5,7 +5,9 @@ namespace AppBundle\Controller;
 
 
 use AppBundle\Entity\Subscription;
+use AppBundle\Entity\UserAccount;
 use AppBundle\Form\SubscriptionType;
+use AppBundle\Repository\SubscriptionRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use AppBundle\Repository\UserAccountRepository;
 use Doctrine\ORM\EntityManager;
@@ -15,7 +17,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 class SubscriptionController extends Controller
 {
     /**
-     * @Route("/subscription_list_all", name="subscription_list_all")
+     * @Route("/subscription/list_all", name="subscription_list_all")
      *
      * @param Request request
      * @return array
@@ -38,7 +40,7 @@ class SubscriptionController extends Controller
     }
 
     /**
-     * @Route("/subscription_add_subscription", name="subscription_add_subscription")
+     * @Route("/subscription/add_subscription", name="subscription_add_subscription")
      *
      * @param Request request
      * @return array
@@ -78,4 +80,52 @@ class SubscriptionController extends Controller
 
     }
 
+    /**
+     * Opens edit page for subscriptions with passed $id.
+     *
+     * @Route("/subscription/{id}", name="subscription_edit_subscription", defaults={"id" = -1})
+     *
+     * @param $id
+     * @param Request $request
+     * @return array
+     */
+    public function editSubscriptionAction($id, Request $request) {
+        /** @var UserAccount $loggedInUser */
+        $loggedInUser = $this->getUser();
+        /** @var EntityManager $em */
+        $em = $this->get('doctrine.orm.default_entity_manager');
+        /** @var SubscriptionRepository $subscriptionRepository */
+        $subscriptionRepository = $em->getRepository('AppBundle\Entity\Subscription');
+
+        if ($id > -1) {
+            // Editing subscription
+            /** @var Subscription $subscription */
+            $subscription = $subscriptionRepository->find($id);
+        } else {
+            $this->addFlash(
+                'error',
+                'No subscription found with id: ' . $id . '!'
+            );
+            return $this->redirectToRoute('subscription_list_all');
+        }
+
+        $form = $this->createForm(new SubscriptionType(), $subscription);
+        $form->handleRequest($request);
+
+        if ($form->isValid()) {
+            $em->persist($subscription);
+            $em->flush();
+            $this->addFlash(
+                'notice',
+                'Your changes were saved!'
+            );
+            return $this->redirectToRoute('subscription_list_all');
+        }
+
+        return $this->render('subscription/editSubscription.html.twig',
+            array(
+                'subscription' => $subscription,
+                'form' => $form->createView()
+            ));
+    }
 }
