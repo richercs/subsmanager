@@ -17,6 +17,8 @@ class SessionEventType extends AbstractType
         $builder
             ->add('sessionEventDate')
             ->add('scheduleItem')
+            // TODO: This needs to be a list of users mapped to the subscription they use to attend.
+            // TODO: Both the user needs to be selected, then the subscription or session fee.
             ->add(
                 'attendees', 'entity', array(
                     'class' => 'AppBundle\Entity\AttendanceHistory',

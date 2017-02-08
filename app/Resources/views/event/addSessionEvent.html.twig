@@ -1,19 +1,36 @@
 {% extends 'event/layout.html.twig' %}
 
-{% form_theme form _self %}
+{#{% form_theme form _self %}#}
 
-{% block integer_widget %}
-    <div class="integer_widget">
-        {% set type = type|default('number') %}
-        {{ block('form_widget_simple') }}
-    </div>
-{% endblock %}
+{#{% block integer_widget %}#}
+    {#<div class="integer_widget">#}
+        {#{% set type = type|default('number') %}#}
+        {#{{ block('form_widget_simple') }}#}
+    {#</div>#}
+{#{% endblock %}#}
 
 {% block body %}
     {{ parent() }}
     <h3>Add Session Event</h3>
     <div id="yellow-wrapper">
-        {{ form(form) }}
+        {{ form_start(form) }}
+
+        {{ form_row(form.sessionEventDate) }}
+        {{ form_row(form.scheduleItem) }}
+
+        <h3>Attendees</h3>
+        <ul class="attendees">
+            {# iterate over each existing tag and render its only field: name #}
+            {% for attendee in form.attendees %}
+                <li>{{ form_row(attendee.firstName) }}</li>
+                <li>{{ form_row(attendee.lastName) }}</li>
+            {% endfor %}
+        </ul>
+
+        {{ form_row(form.sessionFeeNumbersSold) }}
+        {{ form_row(form.sessionFeeRevenueSold) }}
+
+        {{ form_end(form) }}
     </div>
 {% endblock %}
 
