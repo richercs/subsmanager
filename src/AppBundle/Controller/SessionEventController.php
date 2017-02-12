@@ -131,12 +131,11 @@ class SessionEventController extends Controller
             foreach ($originalAttendees as $attendee) {
                 if (false === $sessionevent->getAttendees()->contains($attendee)) {
                     // remove the Session event from the Attendee
-                    $attendee->setSessionEvent(null);
-
-                    $em->persist($attendee);
+                    // $attendee->setSessionEvent(null);
+                    // $em->persist($attendee);
 
                     // to delete the attendee entirely
-                    // $em->remove($attendee);
+                    $em->remove($attendee);
                 }
             }
             $em->persist($sessionevent);
