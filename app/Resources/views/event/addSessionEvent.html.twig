@@ -1,7 +1,7 @@
 {% extends 'event/layout.html.twig' %}
 
 {#{% form_theme form _self %}#}
-{% form_theme form 'plugin/jquery.collection.html.twig' %}
+{% form_theme form '@ninsuo/jquery.collection.html.twig' %}
 
 {#{% block integer_widget %}#}
     {#<div class="integer_widget">#}
@@ -20,4 +20,16 @@
 
 {% block stylesheets %}
     {{ parent() }}
+{% endblock %}
+
+
+{% block javascript %}
+    <script src="{{ asset('assets/vendor/symfony-collection/jquery.collection.js') }}"></script>
+{% endblock %}
+
+
+{% block body_end_javascripts %}
+    <script type="text/javascript">
+        $('.my-selector').collection();
+    </script>
 {% endblock %}
