@@ -16,6 +16,6 @@
   ],
   "dependencies": {
     "bootstrap": "^3.3.7",
-    "symfony-collection" : "2.0.5"
+    "symfony-collection" : "*"
   }
 }
