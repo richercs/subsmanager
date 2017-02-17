@@ -93,11 +93,11 @@ class UserAccountController extends Controller
         /** @var UserAccountRepository $userAccountRepository */
         $userAccountRepository = $em->getRepository('AppBundle\Entity\UserAccount');
 
-        if ($id > -1) {
-            // Editing user account
-            /** @var UserAccount $useraccount */
-            $useraccount = $userAccountRepository->find($id);
-        } else {
+        // Editing user account
+        /** @var UserAccount $useraccount */
+        $useraccount = $userAccountRepository->find($id);
+
+        if (!$useraccount) {
             $this->addFlash(
                 'error',
                 'No user found with id: ' . $id . '!'

@@ -97,11 +97,11 @@ class ScheduleItemController extends Controller
         /** @var ScheduleItemRepository $scheduleRepository */
         $scheduleItemRepository = $em->getRepository('AppBundle\Entity\ScheduleItem');
 
-        if ($id > -1) {
-            // Editing schedule item
-            /** @var ScheduleItem $schedule_item */
-            $schedule_item = $scheduleItemRepository->find($id);
-        } else {
+        // Editing schedule item
+        /** @var ScheduleItem $schedule_item */
+        $schedule_item = $scheduleItemRepository->find($id);
+
+        if (!$schedule_item) {
             $this->addFlash(
                 'error',
                 'No schedule item found with id: ' . $id . '!'

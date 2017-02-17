@@ -114,11 +114,11 @@ class SessionEventController extends Controller
         /** @var SessionEventRepository $sessionEventRepository */
         $sessionEventRepository = $em->getRepository('AppBundle\Entity\SessionEvent');
 
-        if ($id > -1) {
-            // Editing session event
-            /** @var SessionEvent $sessionevent */
-            $sessionevent = $sessionEventRepository->find($id);
-        } else {
+        // Editing session event
+        /** @var SessionEvent $sessionevent */
+        $sessionevent = $sessionEventRepository->find($id);
+
+        if (!$sessionevent) {
             $this->addFlash(
                 'error',
                 'No session event found with id: ' . $id . '!'

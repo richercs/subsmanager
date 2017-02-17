@@ -97,11 +97,11 @@ class SubscriptionController extends Controller
         /** @var SubscriptionRepository $subscriptionRepository */
         $subscriptionRepository = $em->getRepository('AppBundle\Entity\Subscription');
 
-        if ($id > -1) {
-            // Editing subscription
-            /** @var Subscription $subscription */
-            $subscription = $subscriptionRepository->find($id);
-        } else {
+        // Editing subscription
+        /** @var Subscription $subscription */
+        $subscription = $subscriptionRepository->find($id);
+
+        if (!$subscription) {
             $this->addFlash(
                 'error',
                 'No subscription found with id: ' . $id . '!'
