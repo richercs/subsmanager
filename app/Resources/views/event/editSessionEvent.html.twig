@@ -1,7 +1,12 @@
 {% extends 'event/layout.html.twig' %}
 
 {#{% form_theme form _self %}#}
-{% form_theme form '@ninsuo/jquery.collection.html.twig' %}
+{% form_theme form with
+    [
+        '@ninsuo/jquery.collection.html.twig',
+        '/event/recordsFormTheme.html.twig'
+    ]
+%}
 
 {#{% block integer_widget %}#}
     {#<div class="integer_widget">#}
@@ -31,6 +36,11 @@
 
 {% block body_end_javascripts %}
     <script type="text/javascript">
-        $('.my-selector').collection();
+        $('.attendance-record').collection({
+            add: '<a href="#" class="btn btn-success">Add Record</a>',
+            allow_up: false,
+            allow_down: false,
+            add_at_the_end: true
+        });
     </script>
 {% endblock %}

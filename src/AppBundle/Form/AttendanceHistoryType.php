@@ -35,7 +35,7 @@ class AttendanceHistoryType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'appbundle_attendancehistory';
+        return 'AttendanceHistoryType';
     }
 
 

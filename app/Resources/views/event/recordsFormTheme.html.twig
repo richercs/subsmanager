@@ -1,0 +1,19 @@
+{% block AttendanceHistoryType_label %}{% endblock %}
+{% block AttendanceHistoryType_errors %}{% endblock %}
+
+{% block AttendanceHistoryType_widget %}
+    <div class="row">
+        <div class="col-md-9">
+            {{ form_widget(form.session_event) }}
+            {{ form_widget(form.attendee) }}
+            {{ form_widget(form.subscription) }}
+        </div>
+        <div class="col-md-2">
+            <a href="#" class="collection-remove btn btn-default">Remove</a>
+            <a href="#" class="collection-add btn btn-default">Add</a>
+        </div>
+        <div class="col-md-1">
+            <a href="#" class="collection-duplicate btn btn-default">Duplicate</a>
+        </div>
+    </div>
+{% endblock %}

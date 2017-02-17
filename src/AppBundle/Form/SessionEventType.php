@@ -28,8 +28,9 @@ class SessionEventType extends AbstractType
                     'allow_add' => true,
                     'allow_delete' => true,
                     'prototype' => true,
+                    'required'     => false,
                     'attr' => array(
-                        'class' => 'my-selector',
+                        'class' => 'attendance-record',
                     ),
                     'by_reference' => false,
                 )
