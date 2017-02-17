@@ -70,13 +70,23 @@ class SessionEventController extends Controller
 
         if ($form->isValid())
         {
+//            // TODO: Figure this out!! IT doesn't work like this because $new_event->getId() is null.
+//            $originalAttendees = new ArrayCollection();
+//            // Create an ArrayCollection of the current Attendance objects in the database
+//            foreach ($new_event->getAttendees() as $attendee) {
+//                $originalAttendees->add($attendee);
+//            }
+//            // Set the session event id for each attendee to the new id
+//            foreach ($originalAttendees as $attendee) {
+//                $attendee->setSessionEvent($new_event->getId());
+//            }
             $em->persist($new_event);
             $em->flush();
             $this->addFlash(
                 'notice',
                 'Your changes were saved!'
             );
-            return $this->redirectToRoute('session_add_event');
+            return $this->redirectToRoute('session_event_list_all');
         }
 
         return $this->render('event/addSessionEvent.html.twig',
