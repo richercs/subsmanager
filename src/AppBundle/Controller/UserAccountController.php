@@ -109,7 +109,7 @@ class UserAccountController extends Controller
         $form->handleRequest($request);
 
         if ($form->isValid()) {
-            // DELETE subscription
+            // DELETE user account
             if ($form->get('delete')->isClicked()) {
                 $em->remove($useraccount);
                 $em->flush();
