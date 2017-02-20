@@ -41,7 +41,13 @@ class UserAccountType extends AbstractType
             ->add('first_name', 'text')
             ->add('last_name', 'text')
             ->add('email', 'text')
-            ->add('save', 'submit', array('label' => 'Save User Account'));
+            ->add('save', 'submit', array(
+                'label' => 'Save User Account'
+            ))
+            ->add('delete','submit', array(
+                'attr'      => array('class' => 'button-link delete'),
+                'label'     => 'Delete'
+            ));
         ;
     }
     

@@ -113,6 +113,21 @@ class ScheduleItemController extends Controller
         $form->handleRequest($request);
 
         if ($form->isValid()) {
+            // DELETE Schedule item
+            if ($form->get('delete')->isClicked()) {
+                $em->remove($schedule_item);
+                $em->flush();
+
+                // message
+                $this->addFlash(
+                    'notice',
+                    'Schedule Item with id: ' . $id . ' has been deleted successfully!'
+                );
+
+                // show list
+                return $this->redirectToRoute('schedule_list_all');
+            }
+
             $em->persist($schedule_item);
             $em->flush();
             $this->addFlash(

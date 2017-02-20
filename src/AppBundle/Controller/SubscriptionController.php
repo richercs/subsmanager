@@ -113,6 +113,20 @@ class SubscriptionController extends Controller
         $form->handleRequest($request);
 
         if ($form->isValid()) {
+            // DELETE subscription
+            if ($form->get('delete')->isClicked()) {
+                $em->remove($subscription);
+                $em->flush();
+
+                // message
+                $this->addFlash(
+                    'notice',
+                    'Subscription with id: ' . $id . ' has been deleted successfully!'
+                );
+
+                // show list
+                return $this->redirectToRoute('subscription_list_all');
+            }
             $em->persist($subscription);
             $em->flush();
             $this->addFlash(

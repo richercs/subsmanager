@@ -4,7 +4,15 @@
     {{ parent() }}
     <h3>Add Schedule Item</h3>
     <div id="yellow-wrapper">
-        {{ form(form) }}
+        {{ form_start(form) }}
+        {{ form_errors(form) }}
+        {{ form_row(form._token) }}
+        {{ form_row(form.scheduledItemName) }}
+        {{ form_row(form.scheduledDate) }}
+        {{ form_row(form.location) }}
+        {{ form_row(form.session_name) }}
+        {{ form_row(form.save) }}
+        {{ form_end(form, {'render_rest': false}) }}
     </div>
 {% endblock %}
 

@@ -37,7 +37,13 @@ class SessionEventType extends AbstractType
             )
             ->add('sessionFeeNumbersSold')
             ->add('sessionFeeRevenueSold')
-            ->add('save', 'submit', array('label' => 'Save Session Event'));
+            ->add('save', 'submit', array(
+                'label' => 'Save Session Event'
+            ))
+            ->add('delete','submit', array(
+                'attr'      => array('class' => 'button-link delete'),
+                'label'     => 'Delete'
+            ));
         ;
     }
     

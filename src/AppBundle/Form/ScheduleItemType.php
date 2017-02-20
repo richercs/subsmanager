@@ -21,7 +21,13 @@ class ScheduleItemType extends AbstractType
             ->add('session_name', 'text', array(
                 'required' => false
             ))
-            ->add('save', 'submit', array('label' => 'Save Item'));
+            ->add('save', 'submit', array(
+                'label' => 'Save Item'
+            ))
+            ->add('delete','submit', array(
+                'attr'      => array('class' => 'button-link delete'),
+                'label'     => 'Delete'
+            ));
         ;
     }
     

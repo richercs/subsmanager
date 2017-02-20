@@ -4,7 +4,17 @@
     {{ parent() }}
     <h3>Add Subscription</h3>
     <div id="yellow-wrapper">
-        {{ form(form) }}
+        {{ form_start(form) }}
+        {{ form_errors(form) }}
+        {{ form_row(form._token) }}
+        {{ form_row(form.owner) }}
+        {{ form_row(form.buyer) }}
+        {{ form_row(form.isMonthlyTicket) }}
+        {{ form_row(form.start_date) }}
+        {{ form_row(form.price) }}
+        {{ form_row(form.status) }}
+        {{ form_row(form.save) }}
+        {{ form_end(form, {'render_rest': false}) }}
     </div>
 {% endblock %}
 

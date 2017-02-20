@@ -148,6 +148,20 @@ class SessionEventController extends Controller
                     $em->remove($attendee);
                 }
             }
+            // DELETE Session event
+            if ($form->get('delete')->isClicked()) {
+                $em->remove($sessionevent);
+                $em->flush();
+
+                // message
+                $this->addFlash(
+                    'notice',
+                    'Session Event with id: ' . $id . ' has been deleted successfully!'
+                );
+
+                // show list
+                return $this->redirectToRoute('session_event_list_all');
+            }
             $em->persist($sessionevent);
             $em->flush();
             $this->addFlash(

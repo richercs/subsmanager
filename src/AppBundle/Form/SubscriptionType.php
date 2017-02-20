@@ -36,7 +36,13 @@ class SubscriptionType extends AbstractType
                     'expired' => 'Expired'
                 ),
             ))
-            ->add('save', 'submit', array('label' => 'Save Subscription'));
+            ->add('save', 'submit', array(
+                'label' => 'Save Subscription'
+            ))
+            ->add('delete','submit', array(
+                'attr'      => array('class' => 'button-link delete'),
+                'label'     => 'Delete'
+            ));
         ;
     }
     

@@ -109,6 +109,20 @@ class UserAccountController extends Controller
         $form->handleRequest($request);
 
         if ($form->isValid()) {
+            // DELETE subscription
+            if ($form->get('delete')->isClicked()) {
+                $em->remove($useraccount);
+                $em->flush();
+
+                // message
+                $this->addFlash(
+                    'notice',
+                    'User account with id: ' . $id . ' has been deleted successfully!'
+                );
+
+                // show list
+                return $this->redirectToRoute('useraccount_list_all');
+            }
             $em->persist($useraccount);
             $em->flush();
             $this->addFlash(
