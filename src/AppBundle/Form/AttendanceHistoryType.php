@@ -14,7 +14,6 @@ class AttendanceHistoryType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('session_event')
             ->add('attendee')
             ->add('subscription')
         ;
