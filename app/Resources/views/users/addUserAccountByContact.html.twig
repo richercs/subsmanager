@@ -1,0 +1,27 @@
+{% extends 'users/layout.html.twig' %}
+
+{% block body %}
+    {{ parent() }}
+    <h3>Add User By Contact</h3>
+    <div id="white-wrapper">
+        <b>Contact First Name:</b> {{ user_contact.contactfirstname }}<br>
+        <b>Contact Last Name:</b> {{ user_contact.contactlastname }}<br>
+        <b>Contact Email Address:</b> {{ user_contact.contactemail }}<br>
+    </div>
+    <div id="yellow-wrapper">
+        {{ form_start(form) }}
+        {{ form_errors(form) }}
+        {{ form_row(form._token) }}
+        {{ form_row(form.first_name) }}
+        {{ form_row(form.last_name) }}
+        {{ form_row(form.email) }}
+        {{ form_row(form.username) }}
+        {{ form_row(form.password) }}
+        {{ form_row(form.save) }}
+        {{ form_end(form, {'render_rest': false}) }}
+    </div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}

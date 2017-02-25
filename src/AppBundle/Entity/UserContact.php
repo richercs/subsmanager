@@ -101,7 +101,7 @@ class UserContact
      */
     public function setContactFirstName($contact_first_name)
     {
-        $this->first_name = $contact_first_name;
+        $this->contact_first_name = $contact_first_name;
     }
 
     /**
@@ -115,9 +115,9 @@ class UserContact
     /**
      * @param string $contact_last_name
      */
-    public function setLastName($contact_last_name)
+    public function setContactLastName($contact_last_name)
     {
-        $this->last_name = $contact_last_name;
+        $this->contact_last_name = $contact_last_name;
     }
 
     /**

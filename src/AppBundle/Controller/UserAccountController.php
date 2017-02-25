@@ -75,6 +75,46 @@ class UserAccountController extends Controller
             ));
     }
 
+    /**
+     * @Route("useraccount/add_useraccount_by_contact/{id}", name="useraccount_add_by_contact", defaults={"id" = -1})
+     *
+     * @param Request request
+     * @return array
+     */
+    public function addUserAccountByContactAction($id, Request $request)
+    {
+        /** @var EntityManager $em */
+        $em = $this->get('doctrine.orm.default_entity_manager');
+
+        /** @var UserAccountRepository $userAccountRepository */
+        $userContactRepository = $em->getRepository('AppBundle\Entity\UserContact');
+
+        $user_contact =$userContactRepository->find($id);
+
+        $new_user = new UserAccount();
+
+        $form = $this->createForm(new UserAccountType(), $new_user);
+        $form->handleRequest($request);
+
+        if ($form->isValid())
+        {
+            $em->persist($new_user);
+            $em->flush();
+            $this->addFlash(
+                'notice',
+                'Your changes were saved!'
+            );
+            return $this->redirectToRoute('useraccount_add_by_contact', array('id' => $id));
+        }
+
+        return $this->render('users/addUserAccountByContact.html.twig',
+            array(
+                'new_user' => $new_user,
+                'form' => $form->createView(),
+                'user_contact' => $user_contact
+            ));
+    }
+
 
     /**
      * Opens edit page for user account with passed $id.

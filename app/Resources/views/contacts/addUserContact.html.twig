@@ -1,0 +1,14 @@
+{% extends 'contacts/layout.html.twig' %}
+
+{% block body %}
+    {{ parent() }}
+    <h3>Add Contact</h3>
+    <div id="yellow-wrapper">
+        {{ form(form) }}
+        <a href="{{ path('homepage') }}" class="btn btn-primary">Back</a>
+    </div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}

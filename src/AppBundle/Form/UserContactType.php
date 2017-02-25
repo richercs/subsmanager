@@ -6,7 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class UserAccountType extends AbstractType
+class UserContactType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -14,17 +14,11 @@ class UserAccountType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('first_name')
-            ->add('last_name')
-            ->add('email')
-            ->add('username')
-            ->add('password')
+            ->add('contact_first_name')
+            ->add('contact_last_name')
+            ->add('contact_email')
             ->add('save', 'submit', array(
-                'label' => 'Save User Account'
-            ))
-            ->add('delete','submit', array(
-                'attr'      => array('class' => 'button-link delete'),
-                'label'     => 'Delete'
+                'label' => 'Save User Contact'
             ))
         ;
     }
@@ -35,7 +29,7 @@ class UserAccountType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'AppBundle\Entity\UserAccount'
+            'data_class' => 'AppBundle\Entity\UserContact'
         ));
     }
 
@@ -44,7 +38,7 @@ class UserAccountType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'appbundle_useraccount';
+        return 'appbundle_usercontact';
     }
 
 
