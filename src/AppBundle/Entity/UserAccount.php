@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use FOS\UserBundle\Model\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -12,7 +13,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="AppBundle\Repository\UserAccountRepository")
  * @ORM\HasLifecycleCallbacks
  */
-class UserAccount
+class UserAccount extends BaseUser
 {
     /**
      * @var int
@@ -22,6 +23,12 @@ class UserAccount
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
+
+    public function __construct()
+    {
+        parent::__construct();
+        // your own logic
+    }
 
     /**
      * @var string
@@ -38,15 +45,6 @@ class UserAccount
      * @Assert\NotBlank()
      */
     protected $last_name;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="email", type="string", length=140)
-     * @Assert\NotBlank()
-     * @Assert\Email()
-     */
-    protected $email;
 
     /**
      * @ORM\Column(name="date_updated", type="datetime", nullable = true)
@@ -112,22 +110,6 @@ class UserAccount
     public function setLastName($last_name)
     {
         $this->last_name = $last_name;
-    }
-
-    /**
-     * @return string
-     */
-    public function getEmail()
-    {
-        return $this->email;
-    }
-
-    /**
-     * @param string $email
-     */
-    public function setEmail($email)
-    {
-        $this->email = $email;
     }
 
     /**

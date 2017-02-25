@@ -8,39 +8,17 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class UserAccountType extends AbstractType
 {
-//    /**
-//     * @var UserAccount
-//     */
-//    protected $loggedInUser;
-//
-//    /**
-//     * Constructor
-//     *
-//     * @param UserAccount $loggedInUser
-//     */
-//    public function __construct(UserAccount $loggedInUser)
-//    {
-//        $this->loggedInUser = $loggedInUser;
-//    }
-
     /**
-     * @return string
-     */
-    public function getName()
-    {
-        return 'app_user_account';
-    }
-
-    /**
-     * @param FormBuilderInterface $builder
-     * @param array $options
+     * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('first_name', 'text')
-            ->add('last_name', 'text')
-            ->add('email', 'text')
+            ->add('first_name')
+            ->add('last_name')
+            ->add('email')
+            ->add('username')
+            ->add('password')
             ->add('save', 'submit', array(
                 'label' => 'Save User Account'
             ))
@@ -48,11 +26,10 @@ class UserAccountType extends AbstractType
                 'attr'      => array('class' => 'button-link delete'),
                 'label'     => 'Delete'
             ));
-        ;
     }
     
     /**
-     * @param OptionsResolver $resolver
+     * {@inheritdoc}
      */
     public function configureOptions(OptionsResolver $resolver)
     {
@@ -60,4 +37,14 @@ class UserAccountType extends AbstractType
             'data_class' => 'AppBundle\Entity\UserAccount'
         ));
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getBlockPrefix()
+    {
+        return 'appbundle_useraccount';
+    }
+
+
 }
