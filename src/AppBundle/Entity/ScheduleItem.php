@@ -34,7 +34,7 @@ class ScheduleItem
     /**
      * @ORM\Column(name="scheduled_date", type="datetime", nullable = false)
      */
-    protected $scheduledDate;
+    protected $scheduledDate;   //TODO: 3 felé szedni mert ez nem date, hanem három adat (melyik nap, mikor, meddig)
 
     /**
      * @var string

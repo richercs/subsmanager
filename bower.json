@@ -16,6 +16,7 @@
   ],
   "dependencies": {
     "bootstrap": "^3.3.7",
-    "symfony-collection" : "*"
+    "symfony-collection": "*",
+    "eonasdan-bootstrap-datetimepicker": "^4.17.45"
   }
 }

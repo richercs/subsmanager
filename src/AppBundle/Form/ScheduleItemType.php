@@ -2,9 +2,11 @@
 
 namespace AppBundle\Form;
 
+
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 
 class ScheduleItemType extends AbstractType
 {
@@ -16,7 +18,12 @@ class ScheduleItemType extends AbstractType
     {
         $builder
             ->add('scheduledItemName')
-            ->add('scheduledDate')
+            ->add('scheduledDate', DateType::class, array(
+                'widget' => 'single_text',
+                'attr' => array( 'class' => 'datetimepicker'),
+                'format' => 'yyyy-MM-dd HH:mm',
+                'html5' => false,
+            ))
             ->add('location', 'text')
             ->add('session_name', 'text', array(
                 'required' => false

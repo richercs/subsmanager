@@ -3,9 +3,9 @@
 namespace AppBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 
 class SessionEventType extends AbstractType
 {
@@ -16,11 +16,13 @@ class SessionEventType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('sessionEventDate')
+            ->add('sessionEventDate', DateType::class, array(
+                'widget' => 'single_text',
+                'attr' => array( 'class' => 'datetimepicker'),
+                'format' => 'yyyy-MM-dd HH:mm',
+                'html5' => false,
+            ))
             ->add('scheduleItem')
-            // TODO: This needs to be a list of users mapped to the subscription they use to attend.
-            // TODO: Both the user needs to be selected, then the subscription or session fee option.
-                // TODO: Pending solution is complete.
             ->add(
                 'attendees', 'collection', array(
                     'entry_type' => AttendanceHistoryType::class,

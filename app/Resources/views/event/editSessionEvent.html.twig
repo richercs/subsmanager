@@ -26,11 +26,14 @@
 
 {% block stylesheets %}
     {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('assets/vendor/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css') }}" />
 {% endblock %}
 
 
 {% block javascript %}
     <script src="{{ asset('assets/vendor/symfony-collection/jquery.collection.js') }}"></script>
+    <script src="{{ asset('assets/vendor/moment/min/moment.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js') }}"></script>
 {% endblock %}
 
 
@@ -41,6 +44,14 @@
             allow_up: false,
             allow_down: false,
             add_at_the_end: true
+        });
+    </script>
+
+    <script>
+        $(function () {
+            $('.datetimepicker').datetimepicker({
+                format: 'YYYY-MM-DD HH:mm'
+            });
         });
     </script>
 {% endblock %}
