@@ -12,7 +12,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 class HomePageController extends Controller
 {
     /**
-     * @Route("/homepage", name="homepage")
+     * @Route("/", name="homepage")
      *
      * @param Request request
      * @return array

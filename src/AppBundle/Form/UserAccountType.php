@@ -18,7 +18,6 @@ class UserAccountType extends AbstractType
             ->add('last_name')
             ->add('email')
             ->add('username')
-            ->add('password')
             ->add('save', 'submit', array(
                 'label' => 'Save User Account'
             ))

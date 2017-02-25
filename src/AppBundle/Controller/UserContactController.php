@@ -3,6 +3,8 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\UserAccount;
+use FOS\UserBundle\Util\PasswordUpdater;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use AppBundle\Form\UserContactType;
 use AppBundle\Entity\UserContact;
@@ -50,6 +52,9 @@ class UserContactController extends Controller
         /** @var EntityManager $em */
         $em = $this->get('doctrine.orm.default_entity_manager');
 
+        /** @var PasswordUpdater $passwordHasher */
+        $passwordHasher = $this->get('fos_user.util.password_updater');
+
         /** @var UserContactRepository $userContactRepository */
         $userContactRepository = $em->getRepository('AppBundle\Entity\UserContact');
 
@@ -60,8 +65,18 @@ class UserContactController extends Controller
 
         if ($form->isValid())
         {
+
+            $dummyUser = new UserAccount();
+            $dummyUser->setPlainPassword($new_contact->getPassword());
+
+            $passwordHasher->hashPassword($dummyUser);
+
+            $new_contact->setPassword($dummyUser->getPassword());
+
             $em->persist($new_contact);
+
             $em->flush();
+
             $this->addFlash(
                 'notice',
                 'Your changes were saved!'

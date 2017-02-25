@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\UserContact;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use AppBundle\Entity\UserAccount;
 use AppBundle\Form\UserAccountType;
@@ -89,6 +90,7 @@ class UserAccountController extends Controller
         /** @var UserAccountRepository $userAccountRepository */
         $userContactRepository = $em->getRepository('AppBundle\Entity\UserContact');
 
+        /** @var UserContact $user_contact */
         $user_contact =$userContactRepository->find($id);
 
         $new_user = new UserAccount();
@@ -98,6 +100,9 @@ class UserAccountController extends Controller
 
         if ($form->isValid())
         {
+
+            $new_user->setPassword($user_contact->getPassword());
+
             $em->persist($new_user);
             $em->flush();
             $this->addFlash(
