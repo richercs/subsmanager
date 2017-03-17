@@ -11,7 +11,6 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('assets/vendor/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css') }}" />
 {% endblock %}
 
 
@@ -19,12 +18,15 @@
     {{ parent() }}
 
     <script src="{{ asset('assets/vendor/moment/min/moment.min.js') }}"></script>
-    <script src="{{ asset('assets/vendor/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/combodate/src/combodate.js') }}"></script>
 
     <script>
-        $(function () {
-            $('.datetimepicker').datetimepicker({
-                format: 'YYYY-MM-DD HH:mm'
+        $(function(){
+            $('#appbundle_scheduleitem_scheduledStartTime').combodate({
+                minuteStep: 15
+            });
+            $('#appbundle_scheduleitem_scheduledDueTime').combodate({
+                minuteStep: 15
             });
         });
     </script>

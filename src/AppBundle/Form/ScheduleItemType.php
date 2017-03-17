@@ -4,6 +4,7 @@ namespace AppBundle\Form;
 
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -18,11 +19,25 @@ class ScheduleItemType extends AbstractType
     {
         $builder
             ->add('scheduledItemName')
-            ->add('scheduledDate', DateType::class, array(
-                'widget' => 'single_text',
-                'attr' => array( 'class' => 'datetimepicker'),
-                'format' => 'yyyy-MM-dd HH:mm',
-                'html5' => false,
+            ->add('scheduledDay', ChoiceType::class, array(
+                'choices' => array(
+                    '1' => 'Monday',
+                    '2' => 'Tuesday',
+                    '3' => 'Wednesday',
+                    '4' => 'Thursday',
+                    '5' => 'Friday',
+                    '6' => 'Saturday',
+                    '7' => 'Sunday'
+                ),
+                'required' => true,
+            ))
+            ->add('scheduledStartTime', 'text', array( //id: appbundle_scheduleitem_scheduledStartTime
+                'attr' => array( 'data-format'=>'HH:mm', 'data-template'=>'HH : mm'),
+                'required' => true,
+            ))
+            ->add('scheduledDueTime', 'text', array(
+                'attr' => array( 'data-format'=>'HH:mm', 'data-template'=>'HH : mm'),
+                'required' => true,
             ))
             ->add('location', 'text')
             ->add('session_name', 'text', array(

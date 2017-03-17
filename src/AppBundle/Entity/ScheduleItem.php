@@ -29,12 +29,28 @@ class ScheduleItem
      *
      * @ORM\Column(name="item_name", nullable = false)
      */
-    protected $scheduledItemName; // TODO: Óratípus?
+    protected $scheduledItemName;
 
     /**
-     * @ORM\Column(name="scheduled_date", type="datetime", nullable = false)
+     * @var string
+     *
+     * @ORM\Column(name="scheduled_day", nullable = false)
      */
-    protected $scheduledDate;   //TODO: 3 felé szedni mert ez nem date, hanem három adat (melyik nap, mikor, meddig)
+    protected $scheduledDay;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="scheduled_start_time", nullable = false)
+     */
+    protected $scheduledStartTime;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="scheduled_due_time", nullable = false)
+     */
+    protected $scheduledDueTime;
 
     /**
      * @var string
@@ -66,7 +82,9 @@ class ScheduleItem
     public function __toString()
     {
         return $this->getScheduledItemName()
-        . ' (' . $this->getScheduledDate()->format('Y-m-d H:i') .')'
+        . ' {(' . $this->getScheduledDay() .')'
+        . ' (' . $this->getScheduledStartTime() .')'
+        . ' (' . $this->getScheduledDueTime() .')}'
         . ' ' . $this->getLocation()
         . ' [' . $this->getId() . ']';
     }
@@ -104,19 +122,51 @@ class ScheduleItem
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getScheduledDate()
+    public function getScheduledDay()
     {
-        return $this->scheduledDate;
+        return $this->scheduledDay;
     }
 
     /**
-     * @param mixed $scheduledDate
+     * @param string $scheduledDay
      */
-    public function setScheduledDate($scheduledDate)
+    public function setScheduledDay($scheduledDay)
     {
-        $this->scheduledDate = $scheduledDate;
+        $this->scheduledDay = $scheduledDay;
+    }
+
+    /**
+     * @return string
+     */
+    public function getScheduledStartTime()
+    {
+        return $this->scheduledStartTime;
+    }
+
+    /**
+     * @param string $scheduledStartTime
+     */
+    public function setScheduledStartTime($scheduledStartTime)
+    {
+        $this->scheduledStartTime = $scheduledStartTime;
+    }
+
+    /**
+     * @return string
+     */
+    public function getScheduledDueTime()
+    {
+        return $this->scheduledDueTime;
+    }
+
+    /**
+     * @param string $scheduledDueTime
+     */
+    public function setScheduledDueTime($scheduledDueTime)
+    {
+        $this->scheduledDueTime = $scheduledDueTime;
     }
 
     /**
