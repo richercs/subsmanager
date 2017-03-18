@@ -41,7 +41,7 @@ class HomePageController extends Controller
                 'base_dir' => realpath($this->container->getParameter('kernel.root_dir').'/..').DIRECTORY_SEPARATOR,
                 'count_users' => $count_users,
                 'count_subscriptions' => $count_subscriptions,
-                'count_scheduleItems' => $count_scheduleItems,
+                'count_scheduleItems' => $count_scheduleItems, // TODO: Átadok egy isAsmint amit előtte a userből kiolvasok.
                 'count_sessionEvents' => $count_sessionEvents
             ));
     }
