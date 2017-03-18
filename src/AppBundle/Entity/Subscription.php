@@ -66,12 +66,6 @@ class Subscription
     protected $price;
 
     /**
-     * @var string
-     * @ORM\Column(name="status", type="string")
-     */
-    protected $status;
-
-    /**
      * @ORM\Column(name="date_updated", type="datetime", nullable = true)
      */
     protected $updated;
@@ -91,7 +85,8 @@ class Subscription
         . ' Buyer: ' . $this->getBuyer() . ' '
         . $this->isIsMonthlyTicket() . ' '
         . ' (' . $this->getStartDate()->format('Y-m-d H:i') .')'
-        . ' [' . $this->getId() . ']';
+        . ' [' . $this->getId() . ']'
+        . ' {' . $this->getStatus() . '}';
     }
 
     /**
@@ -127,7 +122,7 @@ class Subscription
     }
 
     /**
-     * @return mixed
+     * @return \DateTime
      */
     public function getStartDate()
     {
@@ -191,19 +186,18 @@ class Subscription
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getStatus()
     {
-        return $this->status;
-    }
+        $expiresAt = $this->getStartDate()->add(new \DateInterval('P1M'));
+        $now = new \DateTime();
 
-    /**
-     * @param mixed $status
-     */
-    public function setStatus($status)
-    {
-        $this->status = $status;
+        if ($expiresAt < $now) {
+            return 'EXPIRED';
+        }
+
+        return 'ACTIVE';
     }
 
     /**

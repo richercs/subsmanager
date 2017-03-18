@@ -58,7 +58,10 @@ class AttendanceHistory
      */
     protected $created;
 
-    // TODO toString functions
+    public function __toString()
+    {
+        return (string) $this->getSessionEvent();
+    }
 
     /**
      * @return int

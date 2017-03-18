@@ -44,7 +44,7 @@ class SessionEvent
 
     /**
      * @var ArrayCollection
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\AttendanceHistory", mappedBy="session_event", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\AttendanceHistory", mappedBy="session_event", cascade={"remove"})
      */
     protected $attendees;
 

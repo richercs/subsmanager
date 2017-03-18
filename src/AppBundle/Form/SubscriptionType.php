@@ -35,13 +35,6 @@ class SubscriptionType extends AbstractType
                 'html5' => false,
             ))
             ->add('price')
-            ->add('status',ChoiceType::class, array(
-                'choices' => array(
-                    'active' => 'Active',
-                    'inactive' => 'Inactive',
-                    'expired' => 'Expired'
-                ),
-            ))
             ->add('save', 'submit', array(
                 'label' => 'Save Subscription'
             ))

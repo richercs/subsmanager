@@ -4,6 +4,7 @@
 namespace AppBundle\Controller;
 
 
+use AppBundle\Entity\AttendanceHistory;
 use AppBundle\Entity\Subscription;
 use AppBundle\Entity\UserAccount;
 use AppBundle\Form\SubscriptionType;
@@ -115,6 +116,19 @@ class SubscriptionController extends Controller
         if ($form->isValid()) {
             // DELETE subscription
             if ($form->get('delete')->isClicked()) {
+                // if
+                $relatedAH = $em->getRepository(AttendanceHistory::class)->findBy(array('subscription' => $subscription->getId()));
+
+                if (!empty($relatedAH)) {
+                    // message
+                    $this->addFlash(
+                        'error',
+                        'Subscription already used at : ' . PHP_EOL . implode(', ', $relatedAH)
+                    );
+
+                    return $this->redirectToRoute('subscription_list_all');
+                }
+
                 $em->remove($subscription);
                 $em->flush();
 

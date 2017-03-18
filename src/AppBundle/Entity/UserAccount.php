@@ -4,6 +4,7 @@ namespace AppBundle\Entity;
 
 use FOS\UserBundle\Model\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
+use Knp\DoctrineBehaviors\Model as ORMBehaviors;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -15,6 +16,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class UserAccount extends BaseUser
 {
+    use ORMBehaviors\SoftDeletable\SoftDeletable;
     /**
      * @var int
      *

@@ -67,6 +67,13 @@ class ScheduleItem
     protected $session_name;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_active", nullable=false)
+     */
+    protected $isActive;
+
+    /**
      * @ORM\Column(name="date_updated", type="datetime", nullable = true)
      */
     protected $updated;
@@ -199,6 +206,22 @@ class ScheduleItem
     public function setSessionName($session_name)
     {
         $this->session_name = $session_name;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIsActive()
+    {
+        return $this->isActive;
+    }
+
+    /**
+     * @param mixed $isActive
+     */
+    public function setIsActive($isActive)
+    {
+        $this->isActive = $isActive;
     }
 
     /**
