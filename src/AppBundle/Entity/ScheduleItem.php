@@ -71,7 +71,7 @@ class ScheduleItem
      *
      * @ORM\Column(name="is_active", nullable=false)
      */
-    protected $isActive;
+    protected $isActive = 0;
 
     /**
      * @ORM\Column(name="date_updated", type="datetime", nullable = true)
