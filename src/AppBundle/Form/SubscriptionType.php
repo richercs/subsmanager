@@ -34,7 +34,9 @@ class SubscriptionType extends AbstractType
                 'format' => 'yyyy-MM-dd HH:mm',
                 'html5' => false,
             ))
-            ->add('price')
+            ->add('price', 'money', array(
+                'currency' => 'HUF'
+            ))
             ->add('save', 'submit', array(
                 'label' => 'Save Subscription'
             ))

@@ -38,7 +38,9 @@ class SessionEventType extends AbstractType
                 )
             )
             ->add('sessionFeeNumbersSold')
-            ->add('sessionFeeRevenueSold')
+            ->add('sessionFeeRevenueSold', 'money', array(
+                'currency' => 'HUF'
+            ))
             ->add('save', 'submit', array(
                 'label' => 'Save Session Event'
             ))
