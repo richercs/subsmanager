@@ -13,6 +13,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="user_account")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\UserAccountRepository")
  * @ORM\HasLifecycleCallbacks
+ * @ORM\AttributeOverrides({
+ *    @ORM\AttributeOverride(name="email", column=@ORM\Column(type="string", name="email", length=255, unique=false, nullable=true)),
+ *    @ORM\AttributeOverride(name="emailCanonical", column=@ORM\Column(type="string", name="email_canonical", length=255, unique=false, nullable=true))
+ * })
  */
 class UserAccount extends BaseUser
 {
@@ -29,6 +33,7 @@ class UserAccount extends BaseUser
     public function __construct()
     {
         parent::__construct();
+        $this->password = 'not_set';
         // your own logic
     }
 
@@ -47,6 +52,14 @@ class UserAccount extends BaseUser
      * @Assert\NotBlank()
      */
     protected $last_name;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_admin", type="boolean")
+     *
+     */
+    protected $isAdmin = 0;
 
     /**
      * @ORM\Column(name="date_updated", type="datetime", nullable = true)
@@ -112,6 +125,22 @@ class UserAccount extends BaseUser
     public function setLastName($last_name)
     {
         $this->last_name = $last_name;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getIsAdmin()
+    {
+        return $this->isAdmin;
+    }
+
+    /**
+     * @param boolean $isAdmin
+     */
+    public function setIsAdmin($isAdmin)
+    {
+        $this->isAdmin = $isAdmin;
     }
 
     /**

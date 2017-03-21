@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\UserContact;
+use FOS\UserBundle\Util\PasswordUpdater;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use AppBundle\Entity\UserAccount;
 use AppBundle\Form\UserAccountType;
@@ -44,8 +45,8 @@ class UserAccountController extends Controller
      */
     public function addUserAccountAction(Request $request)
     {
-//        /** @var UserAccount $loggedInUser */
-//        $loggedInUser = $this->getUser();
+        /** @var UserAccount $loggedInUser */
+        $loggedInUser = $this->getUser();
 
         /** @var EntityManager $em */
         $em = $this->get('doctrine.orm.default_entity_manager');
@@ -55,7 +56,7 @@ class UserAccountController extends Controller
 
         $new_user = new UserAccount();
 
-        $form = $this->createForm(new UserAccountType(), $new_user);
+        $form = $this->createForm(new UserAccountType($loggedInUser), $new_user);
         $form->handleRequest($request);
 
         if ($form->isValid())
@@ -84,6 +85,8 @@ class UserAccountController extends Controller
      */
     public function addUserAccountByContactAction($id, Request $request)
     {
+        /** @var UserAccount $loggedInUser */
+        $loggedInUser = $this->getUser();
         /** @var EntityManager $em */
         $em = $this->get('doctrine.orm.default_entity_manager');
 
@@ -95,7 +98,7 @@ class UserAccountController extends Controller
 
         $new_user = new UserAccount();
 
-        $form = $this->createForm(new UserAccountType(), $new_user);
+        $form = $this->createForm(new UserAccountType($loggedInUser), $new_user);
         $form->handleRequest($request);
 
         if ($form->isValid())
@@ -138,6 +141,9 @@ class UserAccountController extends Controller
         /** @var UserAccountRepository $userAccountRepository */
         $userAccountRepository = $em->getRepository('AppBundle\Entity\UserAccount');
 
+        /** @var PasswordUpdater $passwordHasher */
+        $passwordHasher = $this->get('fos_user.util.password_updater');
+
         // Editing user account
         /** @var UserAccount $useraccount */
         $useraccount = $userAccountRepository->find($id);
@@ -150,12 +156,12 @@ class UserAccountController extends Controller
             return $this->redirectToRoute('useraccount_list_all');
         }
 
-        $form = $this->createForm(new UserAccountType(), $useraccount);
+        $form = $this->createForm(new UserAccountType($loggedInUser), $useraccount);
         $form->handleRequest($request);
 
         if ($form->isValid()) {
             // DELETE user account
-            if ($form->get('delete')->isClicked()) {
+            if ($form->has('delete') && $form->get('delete')->isClicked()) {
                 $em->remove($useraccount);
                 $em->flush();
 
@@ -167,6 +173,10 @@ class UserAccountController extends Controller
 
                 // show list
                 return $this->redirectToRoute('useraccount_list_all');
+            }
+            // CHANGE password
+            if($form->has('change_password') && $form->get('change_password')->isClicked()) {
+                return $this->redirectToRoute('fos_user_change_password');
             }
             $em->persist($useraccount);
             $em->flush();
