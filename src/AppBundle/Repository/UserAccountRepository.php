@@ -20,4 +20,15 @@ class UserAccountRepository extends EntityRepository
 
         return $result;
     }
+
+    public function findLikeUserName($term) {
+
+        $results = $this->createQueryBuilder('c')
+            ->where('c.username LIKE :name')
+            ->setParameter('name', '%'.$term.'%')
+            ->getQuery()
+            ->getResult();
+
+        return $results;
+    }
 }

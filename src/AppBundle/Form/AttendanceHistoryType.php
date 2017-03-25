@@ -2,6 +2,7 @@
 
 namespace AppBundle\Form;
 
+use PUGX\AutocompleterBundle\Form\Type\AutocompleteType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -14,8 +15,12 @@ class AttendanceHistoryType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('attendee')
-            ->add('subscription')
+            ->add('attendee', AutocompleteType::class, array(
+                'class' => 'AppBundle:UserAccount'
+            ))
+            ->add('subscription', AutocompleteType::class, array(
+                'class' => 'AppBundle:Subscription'
+            ))
         ;
     }
     
