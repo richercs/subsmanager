@@ -18,9 +18,7 @@ class AttendanceHistoryType extends AbstractType
             ->add('attendee', AutocompleteType::class, array(
                 'class' => 'AppBundle:UserAccount'
             ))
-            ->add('subscription', AutocompleteType::class, array(
-                'class' => 'AppBundle:Subscription'
-            ))
+            ->add('subscription')
         ;
     }
     
