@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\UserContact;
+use AppBundle\Repository\UserContactRepository;
 use FOS\UserBundle\Util\PasswordUpdater;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use AppBundle\Entity\UserAccount;
@@ -22,6 +23,9 @@ class UserAccountController extends Controller
      */
     public function listAllUserAccountsAction(Request $request)
     {
+        /** @var UserAccount $loggedInUser */
+        $loggedInUser = $this->getUser();
+
         /** @var EntityManager $em */
         $em = $this->get('doctrine.orm.default_entity_manager');
 
@@ -33,7 +37,8 @@ class UserAccountController extends Controller
         return $this->render('users/listAllUserAccounts.html.twig',
             array(
                 'base_dir' => realpath($this->container->getParameter('kernel.root_dir').'/..').DIRECTORY_SEPARATOR,
-                'users' => $users
+                'users' => $users,
+                'logged_in_user' =>$loggedInUser
             ));
     }
 
@@ -73,7 +78,8 @@ class UserAccountController extends Controller
         return $this->render('users/addUserAccount.html.twig',
             array(
                 'new_user' => $new_user,
-                'form' => $form->createView()
+                'form' => $form->createView(),
+                'logged_in_user' => $loggedInUser
             ));
     }
 
@@ -90,7 +96,7 @@ class UserAccountController extends Controller
         /** @var EntityManager $em */
         $em = $this->get('doctrine.orm.default_entity_manager');
 
-        /** @var UserAccountRepository $userAccountRepository */
+        /** @var UserContactRepository $userContactRepository */
         $userContactRepository = $em->getRepository('AppBundle\Entity\UserContact');
 
         /** @var UserContact $user_contact */
@@ -190,7 +196,34 @@ class UserAccountController extends Controller
         return $this->render('users/editUserAccount.html.twig',
             array(
                 'useraccount' => $useraccount,
-                'form' => $form->createView()
+                'form' => $form->createView(),
+                'logged_in_user' => $loggedInUser
+            ));
+    }
+
+    /**
+     * @Route("useraccount/useraccount_view/{id}", name="useraccount_view", defaults={"id" = -1})
+     *
+     * @param Request request
+     * @return array
+     */
+    public function viewUserAccountAction($id, Request $request)
+    {
+        /** @var UserAccount $loggedInUser */
+        $loggedInUser = $this->getUser();
+        /** @var EntityManager $em */
+        $em = $this->get('doctrine.orm.default_entity_manager');
+
+        /** @var UserAccountRepository $userAccountRepository */
+        $userAccountRepository = $em->getRepository('AppBundle\Entity\UserAccount');
+
+        $userAccount =$userAccountRepository->find($id);
+
+
+        return $this->render('users/viewUserAccount.html.twig',
+            array(
+                'user_account' => $userAccount,
+                'logged_in_user' => $loggedInUser
             ));
     }
 }

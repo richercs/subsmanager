@@ -23,6 +23,9 @@ class UserContactController extends Controller
      */
     public function listAllUserContactsAction(Request $request)
     {
+        /** @var UserAccount $loggedInUser */
+        $loggedInUser = $this->getUser();
+
         /** @var EntityManager $em */
         $em = $this->get('doctrine.orm.default_entity_manager');
 
@@ -34,7 +37,8 @@ class UserContactController extends Controller
         return $this->render('contacts/listAllUserContacts.html.twig',
             array(
                 'base_dir' => realpath($this->container->getParameter('kernel.root_dir').'/..').DIRECTORY_SEPARATOR,
-                'contacts' => $contacts
+                'contacts' => $contacts,
+                'logged_in_user' => $loggedInUser
             ));
     }
 
@@ -46,8 +50,8 @@ class UserContactController extends Controller
      */
     public function addUserContactAction(Request $request)
     {
-//        /** @var UserAccount $loggedInUser */
-//        $loggedInUser = $this->getUser();
+        /** @var UserAccount $loggedInUser */
+        $loggedInUser = $this->getUser();
 
         /** @var EntityManager $em */
         $em = $this->get('doctrine.orm.default_entity_manager');
@@ -87,7 +91,8 @@ class UserContactController extends Controller
         return $this->render('contacts/addUserContact.html.twig',
             array(
                 'new_contact' => $new_contact,
-                'form' => $form->createView()
+                'form' => $form->createView(),
+                'logged_in_user' => $loggedInUser
             ));
     }
 }

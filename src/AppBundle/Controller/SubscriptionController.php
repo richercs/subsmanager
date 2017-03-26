@@ -25,6 +25,9 @@ class SubscriptionController extends Controller
      */
     public function listAllSubscriptionsAction(Request $request)
     {
+        /** @var UserAccount $loggedInUser */
+        $loggedInUser = $this->getUser();
+
         /** @var EntityManager $em */
         $em = $this->get('doctrine.orm.default_entity_manager');
 
@@ -36,7 +39,8 @@ class SubscriptionController extends Controller
         return $this->render('subscription/listAllSubscriptions.html.twig',
             array(
                 'base_dir' => realpath($this->container->getParameter('kernel.root_dir').'/..').DIRECTORY_SEPARATOR,
-                'subscriptions' => $subscriptions
+                'subscriptions' => $subscriptions,
+                'logged_in_user' => $loggedInUser
             ));
     }
 
@@ -48,8 +52,8 @@ class SubscriptionController extends Controller
      */
     public function addSubscriptionAction(Request $request)
     {
-//        /** @var UserAccount $loggedInUser */
-//        $loggedInUser = $this->getUser();
+        /** @var UserAccount $loggedInUser */
+        $loggedInUser = $this->getUser();
 
         /** @var EntityManager $em */
         $em = $this->get('doctrine.orm.default_entity_manager');
@@ -76,7 +80,8 @@ class SubscriptionController extends Controller
         return $this->render('subscription/addSubscription.html.twig',
             array(
                 'new_subscription' => $new_subscription,
-                'form' => $form->createView()
+                'form' => $form->createView(),
+                'logged_in_user' => $loggedInUser
             ));
 
     }
@@ -153,7 +158,8 @@ class SubscriptionController extends Controller
         return $this->render('subscription/editSubscription.html.twig',
             array(
                 'subscription' => $subscription,
-                'form' => $form->createView()
+                'form' => $form->createView(),
+                'logged_in_user' => $loggedInUser
             ));
     }
 }

@@ -31,6 +31,9 @@ class SessionEventController extends Controller
      */
     public function listAllSessionEventsAction(Request $request)
     {
+        /** @var UserAccount $loggedInUser */
+        $loggedInUser = $this->getUser();
+
         /** @var EntityManager $em */
         $em = $this->get('doctrine.orm.default_entity_manager');
 
@@ -42,7 +45,8 @@ class SessionEventController extends Controller
         return $this->render('event/listAllSessionEvents.html.twig',
             array(
                 'base_dir' => realpath($this->container->getParameter('kernel.root_dir').'/..').DIRECTORY_SEPARATOR,
-                'events' => $events
+                'events' => $events,
+                'logged_in_user' => $loggedInUser
             ));
     }
 
@@ -54,8 +58,8 @@ class SessionEventController extends Controller
      */
     public function addSessionEventAction(Request $request)
     {
-//        /** @var UserAccount $loggedInUser */
-//        $loggedInUser = $this->getUser();
+        /** @var UserAccount $loggedInUser */
+        $loggedInUser = $this->getUser();
 
         /** @var EntityManager $em */
         $em = $this->get('doctrine.orm.default_entity_manager');
@@ -92,7 +96,8 @@ class SessionEventController extends Controller
         return $this->render('event/addSessionEvent.html.twig',
             array(
                 'new_event' => $new_event,
-                'form' => $form->createView()
+                'form' => $form->createView(),
+                'logged_in_user' => $loggedInUser
             ));
 
     }
@@ -107,10 +112,13 @@ class SessionEventController extends Controller
      * @return array
      */
     public function editSessionEventAction($id, Request $request) {
+
         /** @var UserAccount $loggedInUser */
         $loggedInUser = $this->getUser();
+
         /** @var EntityManager $em */
         $em = $this->get('doctrine.orm.default_entity_manager');
+
         /** @var SessionEventRepository $sessionEventRepository */
         $sessionEventRepository = $em->getRepository('AppBundle\Entity\SessionEvent');
 
@@ -174,7 +182,8 @@ class SessionEventController extends Controller
         return $this->render('event/editSessionEvent.html.twig',
             array(
                 'sessionevent' => $sessionevent,
-                'form' => $form->createView()
+                'form' => $form->createView(),
+                'logged_in_user' => $loggedInUser
             ));
     }
 

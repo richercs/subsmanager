@@ -24,6 +24,9 @@ class ScheduleItemController extends Controller
      */
     public function listAllScheduleItemsAction(Request $request)
     {
+        /** @var UserAccount $loggedInUser */
+        $loggedInUser = $this->getUser();
+
         /** @var EntityManager $em */
         $em = $this->get('doctrine.orm.default_entity_manager');
 
@@ -35,7 +38,8 @@ class ScheduleItemController extends Controller
         return $this->render('schedule/listAllItems.html.twig',
             array(
                 'base_dir' => realpath($this->container->getParameter('kernel.root_dir').'/..').DIRECTORY_SEPARATOR,
-                'items' => $items
+                'items' => $items,
+                'logged_in_user' => $loggedInUser
             ));
     }
 
@@ -47,8 +51,8 @@ class ScheduleItemController extends Controller
      */
     public function addScheduleItemAction(Request $request)
     {
-//        /** @var UserAccount $loggedInUser */
-//        $loggedInUser = $this->getUser();
+        /** @var UserAccount $loggedInUser */
+        $loggedInUser = $this->getUser();
 
         /** @var EntityManager $em */
         $em = $this->get('doctrine.orm.default_entity_manager');
@@ -75,7 +79,8 @@ class ScheduleItemController extends Controller
         return $this->render('schedule/addItem.html.twig',
             array(
                 'new_item' => $new_item,
-                'form' => $form->createView()
+                'form' => $form->createView(),
+                'logged_in_user' => $loggedInUser
             ));
 
     }
@@ -90,10 +95,13 @@ class ScheduleItemController extends Controller
      * @return array
      */
     public function editScheduleItemAction($id, Request $request) {
+
         /** @var UserAccount $loggedInUser */
         $loggedInUser = $this->getUser();
+
         /** @var EntityManager $em */
         $em = $this->get('doctrine.orm.default_entity_manager');
+
         /** @var ScheduleItemRepository $scheduleRepository */
         $scheduleItemRepository = $em->getRepository('AppBundle\Entity\ScheduleItem');
 
@@ -140,7 +148,8 @@ class ScheduleItemController extends Controller
         return $this->render('schedule/editItem.html.twig',
             array(
                 'schedule_item' => $schedule_item,
-                'form' => $form->createView()
+                'form' => $form->createView(),
+                'logged_in_user' => $loggedInUser
             ));
     }
 

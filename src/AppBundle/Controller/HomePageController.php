@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 
+use AppBundle\Entity\UserAccount;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use AppBundle\Repository\UserAccountRepository;
 use Doctrine\ORM\EntityManager;
@@ -19,8 +20,8 @@ class HomePageController extends Controller
      */
     public function showAction(Request $request)
     {
-
-        $this->getUser();
+        /** @var UserAccount $loggedInUser */
+        $loggedInUser = $this->getUser();
 
         /** @var EntityManager $em */
         $em = $this->get('doctrine.orm.default_entity_manager');
@@ -42,7 +43,8 @@ class HomePageController extends Controller
                 'count_users' => $count_users,
                 'count_subscriptions' => $count_subscriptions,
                 'count_scheduleItems' => $count_scheduleItems, // TODO: Átadok egy isAsmint amit előtte a userből kiolvasok.
-                'count_sessionEvents' => $count_sessionEvents
+                'count_sessionEvents' => $count_sessionEvents,
+                'logged_in_user' => $loggedInUser
             ));
     }
 
