@@ -19,6 +19,18 @@ code { background: #F5F5F5; max-width: 100px; padding: 2px 6px; word-wrap: break
 
 .flash-notice {}
 
+#logged-in-board-p {
+    line-height: 20px;
+    position: relative;
+    display: block;
+    padding: 10px 15px;
+    background-color: #5bc0de;
+    color: black;
+}
+#logged-in-board-span {
+    float: none !important;
+}
+
 .menubar-btn {
     text-align: left !important;
 }
