@@ -143,6 +143,12 @@ class UserAccountController extends Controller
     public function editUserAccountAction($id, Request $request) {
         /** @var UserAccount $loggedInUser */
         $loggedInUser = $this->getUser();
+        if ($loggedInUser->getId() != $id && !$loggedInUser->getIsAdmin())
+        {
+            return $this->redirectToRoute('useraccount_edit_user', array(
+                'id' => $loggedInUser->getId()
+            ));
+        }
         /** @var EntityManager $em */
         $em = $this->get('doctrine.orm.default_entity_manager');
         /** @var UserAccountRepository $userAccountRepository */
@@ -212,6 +218,12 @@ class UserAccountController extends Controller
     {
         /** @var UserAccount $loggedInUser */
         $loggedInUser = $this->getUser();
+        if ($loggedInUser->getId() != $id && !$loggedInUser->getIsAdmin())
+        {
+            return $this->redirectToRoute('useraccount_view', array(
+                'id' => $loggedInUser->getId()
+            ));
+        }
         /** @var EntityManager $em */
         $em = $this->get('doctrine.orm.default_entity_manager');
 
@@ -219,7 +231,6 @@ class UserAccountController extends Controller
         $userAccountRepository = $em->getRepository('AppBundle\Entity\UserAccount');
 
         $userAccount =$userAccountRepository->find($id);
-
 
         return $this->render('users/viewUserAccount.html.twig',
             array(
