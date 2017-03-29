@@ -31,6 +31,11 @@ code { background: #F5F5F5; max-width: 100px; padding: 2px 6px; word-wrap: break
     float: none !important;
 }
 
+#login_checkbox {
+    margin-left: 2em;
+    margin-bottom: 2em;
+}
+
 .menubar-btn {
     text-align: left !important;
 }

@@ -83,7 +83,7 @@
                                             <li><a href="{{ path('useraccount_view',{'id': logged_in_user.id}) }}" class="btn btn-primary menubar-btn" style="color: black;"><span style="font-size:16px; padding-left: 8px;" class="pull-right showopacity glyphicon glyphicon-user"></span>View Account</a></li>
                                             <li><a href="{{ path('useraccount_edit_user',{'id': logged_in_user.id}) }}" class="btn btn-info menubar-btn" style="color: black;"><span style="font-size:16px; padding-left: 8px;" class="pull-right showopacity glyphicon glyphicon-pencil"></span>Edit Account Info</a></li>
                                         {% else %}
-                                            <li><a href="{{ path('fos_user_security_login') }}" class="btn btn-link menubar-btn"><span style="font-size:16px; padding-left: 8px;" class="pull-right showopacity glyphicon glyphicon-log-in"></span>Login</a></li>
+                                            <li><a href="{{ path('fos_user_security_login') }}" class="btn btn-link menubar-btn"><span style="font-size:16px; padding-left: 8px;" class="pull-right showopacity glyphicon glyphicon-log-in"></span>Log in</a></li>
                                         {% endif %}
                                     {% endblock %}
                                     <li><a href="{{ path('usercontact_add_contact') }}" class="btn btn-success menubar-btn" style="color: black;"><span style="font-size:16px; padding-left: 8px;" class="pull-right showopacity glyphicon glyphicon-envelope"></span>Add Contact</a></li>
