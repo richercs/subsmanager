@@ -2,6 +2,7 @@
 
 namespace AppBundle\Form;
 
+use PUGX\AutocompleterBundle\Form\Type\AutocompleteType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -25,8 +26,12 @@ class SubscriptionType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('owner') // TODO: How to not show a default value? / This should be a text field where you start typing and it filters the possible names
-            ->add('buyer')
+            ->add('owner', AutocompleteType::class, array(
+                'class' => 'AppBundle:UserAccount'
+            ))
+            ->add('buyer',  AutocompleteType::class, array(
+                'class' => 'AppBundle:UserAccount'
+            ))
             ->add('isMonthlyTicket')
             ->add('start_date', DateType::class, array(
                 'widget' => 'single_text',

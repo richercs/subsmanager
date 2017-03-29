@@ -71,12 +71,12 @@ class AutoCompleteController extends Controller
         $em = $this->get('doctrine.orm.default_entity_manager');
 
         /** @var Subscription $s */
-        $s = $em->getRepository(Subscription::class)->findOneBy(array('owner' => $ownerId));
+        $subscription = $em->getRepository(Subscription::class)->findOneBy(array('owner' => $ownerId));
 
         $response = new JsonResponse();
         return $response->setData(array(
             'id' => 123,
-            'label' => (string) $s,
+            'label' => (string) $subscription,
             'owner' => $ownerId
         ));
     }

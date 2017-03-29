@@ -30,7 +30,7 @@ class UserAccountType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $bAdmin = !$this->loggedInUser->getIsAdmin();
-        if($bAdmin) { // TODO: EZ MENNYIRE HACK?
+        if($bAdmin) {
             $builder
                 ->add('first_name')
                 ->add('last_name')

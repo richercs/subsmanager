@@ -4,7 +4,16 @@
     {{ parent() }}
     <h3>Edit Subscription</h3>
     <div id="yellow-wrapper">
-        {{ form(form) }}
+        {{ form_start(form) }}
+        {{ form_errors(form) }}
+        {{ form_row(form._token) }}
+        <div class="attendee-input-wrap">
+            {{ form_row(form.owner) }}
+        </div>
+        <div class="attendee-input-wrap">
+            {{ form_row(form.buyer) }}
+        </div>
+        {{ form_end(form, {'render_rest': true}) }}
         <a href="{{ path('subscription_list_all') }}" class="btn btn-primary">Back</a>
     </div>
 {% endblock %}
@@ -20,6 +29,9 @@
 
     <script src="{{ asset('assets/vendor/moment/min/moment.min.js') }}"></script>
     <script src="{{ asset('assets/vendor/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/jquery-ui/jquery-ui.min.js') }}"></script>
+    <script src="{{ asset('bundles/pugxautocompleter/js/autocompleter-jqueryui.js') }}"></script>
+    <script src="{{ asset('js/main.js') }}"></script>
 
     <script>
         $(function () {

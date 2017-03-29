@@ -1,22 +1,26 @@
 // autocomplete search
 $(document).ready(function () {
-    $('.attendees-input-wrap input').autocompleter({
+    $('.attendee-input-wrap input').autocompleter({
         url_list: '/useraccount_search',
         url_get: '/useraccount_get/',
         on_select_callback: function (item) {
             var recordNumber = parseInt(item.attr('id').replace(/[^0-9\.]/g, ''), 10);
-            loadSubscriptionRecord(item.val(),recordNumber)
+            if(!isNaN(recordNumber)) {  // Don't run the function if this is not on the session event page.
+                loadSubscriptionRecord(item.val(),recordNumber)
+            }
         }
     });
 
     $('.collection-rescue-add').click(function () {
             setTimeout(function () {
-                $('.attendees-input-wrap input').last().autocompleter({
+                $('.attendee-input-wrap input').last().autocompleter({
                     url_list: '/useraccount_search',
                     url_get: '/useraccount_get/',
                     on_select_callback: function (item) {
                         var recordNumber = parseInt(item.attr('id').replace(/[^0-9\.]/g, ''), 10);
-                        loadSubscriptionRecord(item.val(),recordNumber)
+                        if(!isNaN(recordNumber)) {
+                            loadSubscriptionRecord(item.val(), recordNumber)
+                        }
                     }
                 });
                 console.log("assigned");

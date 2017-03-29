@@ -125,7 +125,8 @@ class UserAccountController extends Controller
             array(
                 'new_user' => $new_user,
                 'form' => $form->createView(),
-                'user_contact' => $user_contact
+                'user_contact' => $user_contact,
+                'logged_in_user' => $loggedInUser
             ));
     }
 
