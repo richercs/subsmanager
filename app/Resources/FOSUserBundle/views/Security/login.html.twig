@@ -3,3 +3,9 @@
 {% block fos_user_content %}
     {{ include('@FOSUser/Security/login_content.html.twig') }}
 {% endblock fos_user_content %}
+
+{% block loggedInBoard %}{% endblock %}
+
+{% block loggedInMenu %}
+    <li><a href="{{ path('fos_user_security_login') }}" class="btn btn-link menubar-btn"><span style="font-size:16px; padding-left: 8px;" class="pull-right showopacity glyphicon glyphicon-log-in"></span>Log in</a></li>
+{% endblock %}

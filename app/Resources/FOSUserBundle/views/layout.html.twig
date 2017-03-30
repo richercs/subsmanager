@@ -1,14 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h3>Log in</h3>
     <div id="yellow-wrapper">
         {% block fos_user_content %}{% endblock %}
     </div>
-{% endblock %}
-
-{% block loggedInBoard %}{% endblock %}
-
-{% block loggedInMenu %}
-    <li><a href="{{ path('fos_user_security_login') }}" class="btn btn-link menubar-btn"><span style="font-size:16px; padding-left: 8px;" class="pull-right showopacity glyphicon glyphicon-log-in"></span>Log in</a></li>
 {% endblock %}

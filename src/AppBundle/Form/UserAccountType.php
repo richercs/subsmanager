@@ -52,6 +52,9 @@ class UserAccountType extends AbstractType
                     'required' => false
                 ))
                 ->add('username')
+                ->add('change_password', 'submit', array(
+                    'label' => 'Change password'
+                ))
                 ->add('save', 'submit', array(
                     'label' => 'Save User Account'
                 ))

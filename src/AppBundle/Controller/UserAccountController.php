@@ -196,7 +196,18 @@ class UserAccountController extends Controller
             }
             // CHANGE password
             if($form->has('change_password') && $form->get('change_password')->isClicked()) {
-                return $this->redirectToRoute('fos_user_change_password');
+                // check if the user id is the same as the id in the request
+                if($loggedInUser->getId() == $id) {
+                    return $this->redirectToRoute('fos_user_change_password');
+                } else {
+                    $this->addFlash(
+                        'error',
+                        'Can\'t change password of user: ' . $id . '!'
+                    );
+                    return $this->redirectToRoute('useraccount_edit_user', array(
+                        'id' => $loggedInUser->getId()
+                    ));
+                }
             }
             $em->persist($useraccount);
             $em->flush();
