@@ -98,6 +98,7 @@ class UserAccountController extends Controller
      */
     public function addUserAccountByContactAction($id, Request $request)
     {
+        // TODO: Ability to edit existing user account with newly required email address. Password copied as before.
         /** @var UserAccount $loggedInUser */
         $loggedInUser = $this->getUser();
         /** @var EntityManager $em */
