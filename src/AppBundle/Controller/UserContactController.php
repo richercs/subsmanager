@@ -12,11 +12,14 @@ use AppBundle\Repository\UserContactRepository;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class UserContactController extends Controller
 {
     /**
      * @Route("/usercontact/list_all", name="usercontact_list_all")
+     *
+     * @Security("has_role('ROLE_ADMIN')")
      *
      * @param Request request
      * @return array

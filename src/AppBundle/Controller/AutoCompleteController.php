@@ -12,11 +12,14 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class AutoCompleteController extends Controller
 {
     /**
      * @Route("/useraccount_search", name="useraccount_search")
+     *
+     * @Security("has_role('ROLE_ADMIN')")
      *
      * @param Request request
      * @return array
@@ -41,6 +44,8 @@ class AutoCompleteController extends Controller
     /**
      * @Route("/useraccount_get/{id}", name="useraccount_get")
      *
+     * @Security("has_role('ROLE_ADMIN')")
+     *
      * @param Request request
      * @return Response
      */
@@ -61,6 +66,8 @@ class AutoCompleteController extends Controller
 
     /**
      * @Route("/load_subscription_record", name="load_subscription_record")
+     *
+     * @Security("has_role('ROLE_ADMIN')")
      *
      * @param Request request
      * @return Response

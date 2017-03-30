@@ -20,11 +20,14 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class SessionEventController extends Controller
 {
     /**
      * @Route("/sessionevent/list_all", name="session_event_list_all")
+     *
+     * @Security("has_role('ROLE_ADMIN')")
      *
      * @param Request request
      * @return array
@@ -52,6 +55,8 @@ class SessionEventController extends Controller
 
     /**
      * @Route("/sessionevent/add_session_event", name="session_add_session_event")
+     *
+     * @Security("has_role('ROLE_ADMIN')")
      *
      * @param Request request
      * @return array
@@ -106,6 +111,8 @@ class SessionEventController extends Controller
      * Opens edit page for session events with passed $id.
      *
      * @Route("/sessionevent/{id}", name="session_edit_session_event", defaults={"id" = -1})
+     *
+     * @Security("has_role('ROLE_ADMIN')")
      *
      * @param $id
      * @param Request $request

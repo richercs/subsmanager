@@ -13,11 +13,14 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class ScheduleItemController extends Controller
 {
     /**
      * @Route("/schedule/list_all", name="schedule_list_all")
+     *
+     * @Security("has_role('ROLE_ADMIN')")
      *
      * @param Request request
      * @return array
@@ -45,6 +48,8 @@ class ScheduleItemController extends Controller
 
     /**
      * @Route("/schedule/add_item", name="schedule_add_item")
+     *
+     * @Security("has_role('ROLE_ADMIN')")
      *
      * @param Request request
      * @return array
@@ -89,6 +94,8 @@ class ScheduleItemController extends Controller
      * Opens edit page for schedule items with passed $id.
      *
      * @Route("/schedule/{id}", name="schedule_edit_item", defaults={"id" = -1})
+     *
+     * @Security("has_role('ROLE_ADMIN')")
      *
      * @param $id
      * @param Request $request

@@ -14,11 +14,14 @@ use AppBundle\Repository\UserAccountRepository;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class SubscriptionController extends Controller
 {
     /**
      * @Route("/subscription/list_all", name="subscription_list_all")
+     *
+     * @Security("has_role('ROLE_ADMIN')")
      *
      * @param Request request
      * @return array
@@ -46,6 +49,8 @@ class SubscriptionController extends Controller
 
     /**
      * @Route("/subscription/add_subscription", name="subscription_add_subscription")
+     *
+     * @Security("has_role('ROLE_ADMIN')")
      *
      * @param Request request
      * @return array
@@ -90,6 +95,8 @@ class SubscriptionController extends Controller
      * Opens edit page for subscriptions with passed $id.
      *
      * @Route("/subscription/{id}", name="subscription_edit_subscription", defaults={"id" = -1})
+     *
+     * @Security("has_role('ROLE_ADMIN')")
      *
      * @param $id
      * @param Request $request

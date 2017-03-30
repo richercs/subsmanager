@@ -12,11 +12,14 @@ use AppBundle\Repository\UserAccountRepository;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class UserAccountController extends Controller
 {
     /**
      * @Route("/useraccount/list_all", name="useraccount_list_all")
+     *
+     * @Security("has_role('ROLE_ADMIN')")
      *
      * @param Request request
      * @return array
@@ -44,6 +47,8 @@ class UserAccountController extends Controller
 
     /**
      * @Route("useraccount/add_useraccount", name="useraccount_add_user")
+     *
+     * @Security("has_role('ROLE_ADMIN')")
      *
      * @param Request request
      * @return array
@@ -85,6 +90,8 @@ class UserAccountController extends Controller
 
     /**
      * @Route("useraccount/add_useraccount_by_contact/{id}", name="useraccount_add_by_contact", defaults={"id" = -1})
+     *
+     * @Security("has_role('ROLE_ADMIN')")
      *
      * @param Request request
      * @return array
