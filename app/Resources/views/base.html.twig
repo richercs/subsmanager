@@ -79,6 +79,7 @@
                                                         <li><a href="{{path('session_event_list_all')}}">List all events</a></li>
                                                     </ul>
                                                 </li>
+                                                <li><a href="{{ path('usercontact_list_all') }}" class="btn btn-warning menubar-btn" style="color: black;"><span style="font-size:16px; padding-left: 8px;" class="pull-right showopacity glyphicon glyphicon-flag"></span>View Contacts</a></li>
                                             {% endif %}
                                             <li><a href="{{ path('useraccount_view',{'id': logged_in_user.id}) }}" class="btn btn-primary menubar-btn" style="color: black;"><span style="font-size:16px; padding-left: 8px;" class="pull-right showopacity glyphicon glyphicon-user"></span>View Account</a></li>
                                             <li><a href="{{ path('useraccount_edit_user',{'id': logged_in_user.id}) }}" class="btn btn-info menubar-btn" style="color: black;"><span style="font-size:16px; padding-left: 8px;" class="pull-right showopacity glyphicon glyphicon-pencil"></span>Edit Account Info</a></li>
