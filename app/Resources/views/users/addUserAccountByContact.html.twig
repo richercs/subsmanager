@@ -12,6 +12,7 @@
         {{ form_start(form) }}
         {{ form_errors(form) }}
         {{ form_row(form._token) }}
+        {{ form_row(form.source_user_account_id) }}
         {{ form_row(form.first_name) }}
         {{ form_row(form.last_name) }}
         {{ form_row(form.email) }}
@@ -19,6 +20,10 @@
         {{ form_row(form.save) }}
         {{ form_end(form, {'render_rest': false}) }}
     </div>
+{% endblock %}
+
+{% block javascript %}
+    <script src="{{ asset('js/fill-out-selected-user.js') }}"></script>
 {% endblock %}
 
 {% block stylesheets %}

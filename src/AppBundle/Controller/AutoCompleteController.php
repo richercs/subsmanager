@@ -82,9 +82,43 @@ class AutoCompleteController extends Controller
 
         $response = new JsonResponse();
         return $response->setData(array(
-            'id' => 123,
             'label' => (string) $subscription,
             'owner' => $ownerId
+        ));
+    }
+
+
+    /**
+     * @Route("/fill_out_selected_user", name="fill_out_selected_user")
+     *
+     * @Security("has_role('ROLE_ADMIN')")
+     *
+     * @param Request request
+     * @return Response
+     */
+    public function fillOutSelectedUser(Request $request) {
+        $selectedUserId = $request->get('selectFieldValue');
+
+        /** @var EntityManager $em */
+        $em = $this->get('doctrine.orm.default_entity_manager');
+
+        /** @var UserAccountRepository $userAccountRepository */
+        $userAccountRepository = $em->getRepository('AppBundle\Entity\UserAccount');
+
+        /** @var UserAccount $selectedUserAccount */
+        $selectedUserAccount = $userAccountRepository->find($selectedUserId);
+
+        $response = new JsonResponse();
+
+        if (is_null($selectedUserAccount)) {
+            return $response;
+        }
+
+        return $response->setData(array(
+            'firstname' => (string) $selectedUserAccount->getFirstName(),
+            'lastname' => (string) $selectedUserAccount->getLastName(),
+            'email' => (string) $selectedUserAccount->getEmail(),
+            'username' => (string) $selectedUserAccount->getUsername(),
         ));
     }
 }

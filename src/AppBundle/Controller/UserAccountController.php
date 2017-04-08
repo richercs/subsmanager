@@ -39,9 +39,9 @@ class UserAccountController extends Controller
 
         return $this->render('users/listAllUserAccounts.html.twig',
             array(
-                'base_dir' => realpath($this->container->getParameter('kernel.root_dir').'/..').DIRECTORY_SEPARATOR,
+                'base_dir' => realpath($this->container->getParameter('kernel.root_dir') . '/..') . DIRECTORY_SEPARATOR,
                 'users' => $users,
-                'logged_in_user' =>$loggedInUser
+                'logged_in_user' => $loggedInUser
             ));
     }
 
@@ -64,14 +64,13 @@ class UserAccountController extends Controller
         /** @var UserAccountRepository $userAccountRepository */
         $userAccountRepository = $em->getRepository('AppBundle\Entity\UserAccount');
 
-        $new_user = new UserAccount();
+        $newUserAccount = new UserAccount();
 
-        $form = $this->createForm(new UserAccountType($loggedInUser), $new_user);
+        $form = $this->createForm(new UserAccountType($loggedInUser), $newUserAccount);
         $form->handleRequest($request);
 
-        if ($form->isValid())
-        {
-            $em->persist($new_user);
+        if ($form->isValid()) {
+            $em->persist($newUserAccount);
             $em->flush();
             $this->addFlash(
                 'notice',
@@ -82,7 +81,7 @@ class UserAccountController extends Controller
 
         return $this->render('users/addUserAccount.html.twig',
             array(
-                'new_user' => $new_user,
+                'new_user' => $newUserAccount,
                 'form' => $form->createView(),
                 'logged_in_user' => $loggedInUser
             ));
@@ -98,7 +97,6 @@ class UserAccountController extends Controller
      */
     public function addUserAccountByContactAction($id, Request $request)
     {
-        // TODO: Ability to edit existing user account with newly required email address. Password copied as before.
         /** @var UserAccount $loggedInUser */
         $loggedInUser = $this->getUser();
         /** @var EntityManager $em */
@@ -108,32 +106,63 @@ class UserAccountController extends Controller
         $userContactRepository = $em->getRepository('AppBundle\Entity\UserContact');
 
         /** @var UserContact $user_contact */
-        $user_contact =$userContactRepository->find($id);
+        $userContact = $userContactRepository->find($id);
 
-        $new_user = new UserAccount();
+        /** @var UserAccountRepository $userAccountRepository */
+        $userAccountRepository = $em->getRepository('AppBundle\Entity\UserAccount');
 
-        $form = $this->createForm(new UserAccountType($loggedInUser), $new_user);
+        $userCollection = $userAccountRepository->getAllWithNullEmail();
+
+        $newUserAccount = new UserAccount();
+
+        $form = $this->createForm(new UserAccountType($loggedInUser, $userCollection, true), $newUserAccount);
         $form->handleRequest($request);
 
-        if ($form->isValid())
-        {
+        $sourceUserId = $request->get('appbundle_useraccount')['source_user_account_id'];
 
-            $new_user->setPassword($user_contact->getPassword());
+        if ($form->isValid()) {
 
-            $em->persist($new_user);
-            $em->flush();
-            $this->addFlash(
-                'notice',
-                'Your changes were saved!'
-            );
+            if (empty($sourceUserId)) {
+                $newUserAccount->setPassword($userContact->getPassword());
+                $newUserAccount->setEnabled(true);
+                $em->persist($newUserAccount);
+                $em->flush();
+                $this->addFlash(
+                    'notice',
+                    'Your changes were saved!'
+                );
+
+            } else {
+                /** @var UserAccount $disabledUser */
+                $disabledUser = $userAccountRepository->find($sourceUserId);
+                if ($disabledUser->getPassword() == "not_set") {
+                    $disabledUser->setPassword($userContact->getPassword());
+                    $disabledUser->setEnabled(true);
+                }
+
+                $disabledUser->setFirstName($newUserAccount->getFirstName());
+
+                $disabledUser->setLastName($newUserAccount->getLastName());
+
+                $disabledUser->setEmail($newUserAccount->getEmail());
+
+                $disabledUser->setUsername($newUserAccount->getUsername());
+
+                $em->persist($disabledUser);
+                $em->flush();
+                $this->addFlash(
+                    'notice',
+                    'Your changes were saved!'
+                );
+            }
             return $this->redirectToRoute('useraccount_add_by_contact', array('id' => $id));
         }
 
         return $this->render('users/addUserAccountByContact.html.twig',
             array(
-                'new_user' => $new_user,
+                'new_user' => $newUserAccount,
                 'form' => $form->createView(),
-                'user_contact' => $user_contact,
+                'user_contact' => $userContact,
                 'logged_in_user' => $loggedInUser
             ));
     }
@@ -148,11 +177,11 @@ class UserAccountController extends Controller
      * @param Request $request
      * @return array
      */
-    public function editUserAccountAction($id, Request $request) {
+    public function editUserAccountAction($id, Request $request)
+    {
         /** @var UserAccount $loggedInUser */
         $loggedInUser = $this->getUser();
-        if ($loggedInUser->getId() != $id && !$loggedInUser->getIsAdmin())
-        {
+        if ($loggedInUser->getId() != $id && !$loggedInUser->getIsAdmin()) {
             return $this->redirectToRoute('useraccount_edit_user', array(
                 'id' => $loggedInUser->getId()
             ));
@@ -196,9 +225,9 @@ class UserAccountController extends Controller
                 return $this->redirectToRoute('useraccount_list_all');
             }
             // CHANGE password
-            if($form->has('change_password') && $form->get('change_password')->isClicked()) {
+            if ($form->has('change_password') && $form->get('change_password')->isClicked()) {
                 // check if the user id is the same as the id in the request
-                if($loggedInUser->getId() == $id) {
+                if ($loggedInUser->getId() == $id) {
                     return $this->redirectToRoute('fos_user_change_password');
                 } else {
                     $this->addFlash(
@@ -237,8 +266,7 @@ class UserAccountController extends Controller
     {
         /** @var UserAccount $loggedInUser */
         $loggedInUser = $this->getUser();
-        if ($loggedInUser->getId() != $id && !$loggedInUser->getIsAdmin())
-        {
+        if ($loggedInUser->getId() != $id && !$loggedInUser->getIsAdmin()) {
             return $this->redirectToRoute('useraccount_view', array(
                 'id' => $loggedInUser->getId()
             ));
@@ -249,7 +277,7 @@ class UserAccountController extends Controller
         /** @var UserAccountRepository $userAccountRepository */
         $userAccountRepository = $em->getRepository('AppBundle\Entity\UserAccount');
 
-        $userAccount =$userAccountRepository->find($id);
+        $userAccount = $userAccountRepository->find($id);
 
         return $this->render('users/viewUserAccount.html.twig',
             array(

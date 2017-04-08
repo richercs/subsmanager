@@ -2,6 +2,7 @@
 
 namespace AppBundle\Repository;
 
+use AppBundle\Entity\UserAccount;
 use Doctrine\ORM\EntityRepository;
 
 class UserAccountRepository extends EntityRepository
@@ -31,4 +32,21 @@ class UserAccountRepository extends EntityRepository
 
         return $results;
     }
+
+    public function getAllWithNullEmail()
+    {
+        $result = $this->findBy(['email' => null]);
+        $indexedResult = [];
+        if (empty($result)) {
+            return [];
+        } else {
+            /** @var UserAccount $userAccount */
+            foreach ($result as $userAccount) {
+                $indexedResult[$userAccount->getId()] = $userAccount;
+            }
+        }
+
+        return $indexedResult;
+    }
+
 }

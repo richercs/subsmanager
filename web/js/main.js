@@ -1,11 +1,13 @@
-// autocomplete search
+
 $(document).ready(function () {
+
+    // autocomplete search
     $('.attendee-input-wrap input').autocompleter({
         url_list: '/useraccount_search',
         url_get: '/useraccount_get/',
         on_select_callback: function (item) {
             var recordNumber = parseInt(item.attr('id').replace(/[^0-9\.]/g, ''), 10);
-            if(!isNaN(recordNumber)) {  // Don't run the function if this is not on the session event page.
+            if(!isNaN(recordNumber)) {  // Only load subscriptions on session event handling
                 loadSubscriptionRecord(item.val(),recordNumber)
             }
         }
@@ -18,7 +20,7 @@ $(document).ready(function () {
                     url_get: '/useraccount_get/',
                     on_select_callback: function (item) {
                         var recordNumber = parseInt(item.attr('id').replace(/[^0-9\.]/g, ''), 10);
-                        if(!isNaN(recordNumber)) {
+                        if(!isNaN(recordNumber)) { // Only load subscriptions on session event handling
                             loadSubscriptionRecord(item.val(), recordNumber)
                         }
                     }
@@ -49,7 +51,6 @@ $(document).ready(function () {
             }
         });
     }
-
 });
 
 
