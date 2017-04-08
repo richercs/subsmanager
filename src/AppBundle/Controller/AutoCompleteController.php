@@ -6,6 +6,7 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Subscription;
 use AppBundle\Entity\UserAccount;
 use AppBundle\Repository\UserAccountRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -34,7 +35,18 @@ class AutoCompleteController extends Controller
 
         $term = $request->query->get('term'); // use "term" instead of "q" for jquery-ui
 
+        /** @var array $results */
         $results = $userAccountRepository->findLikeUserName($term);
+
+        // Do not suggest deleted user accounts
+        for( $i= 0 ; $i <= count($results) ; $i++ )
+        {
+            /** @var UserAccount $result */
+            $result = $results[$i];
+            if(!is_null($result->getDeletedAt())) {
+                unset($results[$i]);
+            }
+        }
 
         return $this->render('event/attendeeSearch.twig', array(
             'results' => $results
