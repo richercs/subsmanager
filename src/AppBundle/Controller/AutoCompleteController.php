@@ -39,7 +39,7 @@ class AutoCompleteController extends Controller
         $results = $userAccountRepository->findLikeUserName($term);
 
         // Do not suggest deleted user accounts
-        for( $i= 0 ; $i <= count($results) ; $i++ )
+        for( $i= 0 ; $i < count($results) ; $i++ )
         {
             /** @var UserAccount $result */
             $result = $results[$i];
