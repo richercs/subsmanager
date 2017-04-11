@@ -212,7 +212,9 @@ class UserAccountController extends Controller
         if ($form->isValid()) {
             // DELETE user account
             if ($form->has('delete') && $form->get('delete')->isClicked()) {
-                $useraccount->setEnabled(false);
+                $useraccount->setEnabled(false); // TODO: Is the two flushes ok?
+                $em->persist($useraccount);
+                $em->flush();
                 $em->remove($useraccount);
                 $em->flush();
 
