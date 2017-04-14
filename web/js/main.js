@@ -40,8 +40,9 @@ $(document).ready(function () {
             success: function (data) {
                 var subscriptionFiledId ="appbundle_sessionevent_attendees_".concat(recordNumber,'_subscription');
                 if(data['label']) {
-                    console.log("ok label " + recordNumber);
-                    $(subscriptionFiledId).val(data['label']);
+                    console.log("ok label " + subscriptionFiledId);
+                    console.log("ok label " + data['id']);
+                    $('#' + subscriptionFiledId).val(parseInt(data['id']));
                     document.getElementById(subscriptionFiledId).style.backgroundColor = "lightblue";
                 } else {
                     console.log(recordNumber);
