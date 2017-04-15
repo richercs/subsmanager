@@ -25,6 +25,15 @@ class BreakEvent
 
     // TODO: define break event as time period when monthly tickets are not chargeable. They get postponed to the end date of break.
 
+    /**
+     * @ORM\Column(name="break_event_start_date", type="datetime", nullable = false)
+     */
+    protected $startDate;
+
+    /**
+     * @ORM\Column(name="break_event_due_date", type="datetime", nullable = false)
+     */
+    protected $dueDate;
 
     /**
      * @ORM\Column(name="date_updated", type="datetime", nullable = true)
@@ -36,7 +45,53 @@ class BreakEvent
      */
     protected $created;
 
-    // TODO toString functions
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStartDate()
+    {
+        return $this->startDate;
+    }
+
+    /**
+     * @param mixed $startDate
+     */
+    public function setStartDate($startDate)
+    {
+        $this->startDate = $startDate;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDueDate()
+    {
+        return $this->dueDate;
+    }
+
+    /**
+     * @param mixed $dueDate
+     */
+    public function setDueDate($dueDate)
+    {
+        $this->dueDate = $dueDate;
+    }
 
     /**
      * @return mixed

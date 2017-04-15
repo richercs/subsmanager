@@ -41,7 +41,12 @@ class Subscription
     /**
      * @ORM\Column(name="date_start_date", type="datetime", nullable = false)
      */
-    protected $start_date;
+    protected $startDate;
+
+    /**
+     * @ORM\Column(name="attendance_count", type="integer", nullable = true)
+     */
+    protected $attendanceCount;
 
     /**
      * @var UserAccount
@@ -126,15 +131,31 @@ class Subscription
      */
     public function getStartDate()
     {
-        return $this->start_date;
+        return $this->startDate;
     }
 
     /**
-     * @param mixed $start_date
+     * @param mixed $startDate
      */
-    public function setStartDate($start_date)
+    public function setStartDate($startDate)
     {
-        $this->start_date = $start_date;
+        $this->startDate = $startDate;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAttendanceCount()
+    {
+        return $this->attendanceCount;
+    }
+
+    /**
+     * @param mixed $attendanceCount
+     */
+    public function setAttendanceCount($attendanceCount)
+    {
+        $this->attendanceCount = $attendanceCount;
     }
 
     /**
