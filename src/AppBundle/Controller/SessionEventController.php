@@ -79,21 +79,12 @@ class SessionEventController extends Controller
 
         if ($form->isValid())
         {
-//            // TODO: Figure this out!! IT doesn't work like this because $new_event->getId() is null.
-//            $originalAttendees = new ArrayCollection();
-//            // Create an ArrayCollection of the current Attendance objects in the database
-//            foreach ($new_event->getAttendees() as $attendee) {
-//                $originalAttendees->add($attendee);
-//            }
-//            // Set the session event id for each attendee to the new id
-//            foreach ($originalAttendees as $attendee) {
-//                $attendee->setSessionEvent($new_event->getId());
-//            }
+            // The OneToMany association and the symfony-collection bundle manages the attendees ArrayCollection
             $em->persist($new_event);
             $em->flush();
             $this->addFlash(
                 'notice',
-                'Your changes were saved!'
+                'Változtatások Elmentve!'
             );
             return $this->redirectToRoute('session_event_list_all');
         }
@@ -136,7 +127,7 @@ class SessionEventController extends Controller
         if (!$sessionevent) {
             $this->addFlash(
                 'error',
-                'No session event found with id: ' . $id . '!'
+                'Nincs ilyen azonosítójú óra esemény: ' . $id . '!'
             );
             return $this->redirectToRoute('session_event_list_all');
         }
@@ -171,7 +162,7 @@ class SessionEventController extends Controller
                 // message
                 $this->addFlash(
                     'notice',
-                    'Session Event with id: ' . $id . ' has been deleted successfully!'
+                    $id . ' azonosítójú óra esemény sikeresen törölve!'
                 );
 
                 // show list
@@ -181,7 +172,7 @@ class SessionEventController extends Controller
             $em->flush();
             $this->addFlash(
                 'notice',
-                'Your changes were saved!'
+                'Változtatások Elmentve!'
             );
             return $this->redirectToRoute('session_event_list_all');
         }

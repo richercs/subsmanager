@@ -2,15 +2,15 @@
 
 {% block body %}
     {{ parent() }}
-    <h3>Add User</h3>
+    <h3>Új Felhasználó</h3>
     <div id="yellow-wrapper">
         {{ form_start(form) }}
         {{ form_errors(form) }}
         {{ form_row(form._token) }}
-        {{ form_row(form.first_name) }}
-        {{ form_row(form.last_name) }}
-        {{ form_row(form.email) }}
-        {{ form_row(form.username) }}
+        {{ form_row(form.first_name, {'label': 'Keresztnév'}) }}
+        {{ form_row(form.last_name, {'label': 'Vezetéknév'}) }}
+        {{ form_row(form.email, {'label': 'Email'}) }}
+        {{ form_row(form.username, {'label': 'Felhasználónév'}) }}
         {{ form_row(form.save) }}
         {{ form_end(form, {'render_rest': false}) }}
     </div>

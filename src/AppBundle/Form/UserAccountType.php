@@ -52,10 +52,10 @@ class UserAccountType extends AbstractType
                     'required' => false
                 ))
                 ->add('change_password', 'submit', array(
-                    'label' => 'Change password'
+                    'label' => 'Jelszó Változtatás'
                 ))
                 ->add('save', 'submit', array(
-                    'label' => 'Save User Account'
+                    'label' => 'Mentés'
                 ))
             ;
         } else {
@@ -69,14 +69,14 @@ class UserAccountType extends AbstractType
                     ))
                     ->add('username')
                     ->add('change_password', 'submit', array(
-                        'label' => 'Change password'
+                        'label' => 'Jelszó Változtatás'
                     ))
                     ->add('save', 'submit', array(
-                        'label' => 'Save User Account'
+                        'label' => 'Mentés'
                     ))
                     ->add('delete','submit', array(
                         'attr'      => array('class' => 'button-link delete'),
-                        'label'     => 'Delete'
+                        'label'     => 'Törlés'
                     ))
                 ;
             } else {
@@ -97,14 +97,14 @@ class UserAccountType extends AbstractType
                     ))
                     ->add('username')
                     ->add('change_password', 'submit', array(
-                        'label' => 'Change password'
+                        'label' => 'Jelszó Változtatás'
                     ))
                     ->add('save', 'submit', array(
-                        'label' => 'Save User Account'
+                        'label' => 'Mentés'
                     ))
                     ->add('delete','submit', array(
                         'attr'      => array('class' => 'button-link delete'),
-                        'label'     => 'Delete'
+                        'label'     => 'Törlés'
                     ))
                 ;
             }

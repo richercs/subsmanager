@@ -77,7 +77,7 @@ class SubscriptionController extends Controller
             $em->flush();
             $this->addFlash(
                 'notice',
-                'Your changes were saved!'
+                'Változtatások Elmentve!'
             );
             return $this->redirectToRoute('subscription_add_subscription');
         }
@@ -117,7 +117,7 @@ class SubscriptionController extends Controller
         if (!$subscription) {
             $this->addFlash(
                 'error',
-                'No subscription found with id: ' . $id . '!'
+                'Nincs ilyen azonosítójú bérlet: ' . $id . '!'
             );
             return $this->redirectToRoute('subscription_list_all');
         }
@@ -135,7 +135,7 @@ class SubscriptionController extends Controller
                     // message
                     $this->addFlash(
                         'error',
-                        'Subscription already used at : ' . PHP_EOL . implode(', ', $relatedAH)
+                        'A bérlet használatban van a következő űrlapokon: ' . PHP_EOL . implode(', ', $relatedAH)
                     );
 
                     return $this->redirectToRoute('subscription_list_all');
@@ -147,7 +147,7 @@ class SubscriptionController extends Controller
                 // message
                 $this->addFlash(
                     'notice',
-                    'Subscription with id: ' . $id . ' has been deleted successfully!'
+                    $id . ' azonosítójú bérlet sikeresen törölve!'
                 );
 
                 // show list
@@ -157,7 +157,7 @@ class SubscriptionController extends Controller
             $em->flush();
             $this->addFlash(
                 'notice',
-                'Your changes were saved!'
+                'Változtatások Elmentve!'
             );
             return $this->redirectToRoute('subscription_list_all');
         }

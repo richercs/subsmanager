@@ -2,13 +2,19 @@
 
 {% block body %}
     {{ parent() }}
-    <h3>Edit User</h3>
+    <h3>Felhasználó Adatainak Szerkesztése</h3>
     <div id="yellow-wrapper">
-        {{ form(form) }}
+        {{ form_start(form) }}
+        {{ form_errors(form) }}
+        {{ form_row(form._token) }}
+        {{ form_row(form.first_name, {'label': 'Keresztnév'}) }}
+        {{ form_row(form.last_name, {'label': 'Vezetéknév'}) }}
+        {{ form_row(form.email, {'label': 'Email'}) }}
+        {{ form_end(form, {'render_rest': true}) }}
         {%  if logged_in_user.getIsAdmin %}
-            <a href="{{ path('useraccount_list_all') }}" class="btn btn-primary">Back</a>
+            <a href="{{ path('useraccount_list_all') }}" class="btn btn-primary">Vissza</a>
         {% else %}
-            <a href="{{ path('homepage') }}" class="btn btn-primary">Back</a>
+            <a href="{{ path('homepage') }}" class="btn btn-primary">Vissza</a>
         {% endif %}
     </div>
 {% endblock %}

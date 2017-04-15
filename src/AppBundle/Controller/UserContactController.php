@@ -86,7 +86,7 @@ class UserContactController extends Controller
 
             $this->addFlash(
                 'notice',
-                'Your changes were saved!'
+                'Változtatások Elmentve!'
             );
             return $this->redirectToRoute('usercontact_add_contact');
         }

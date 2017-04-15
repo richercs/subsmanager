@@ -2,10 +2,19 @@
 
 {% block body %}
     {{ parent() }}
-    <h3>Edit Schedule Item</h3>
+    <h3>Órarendi Elem Szerkesztése</h3>
     <div id="yellow-wrapper">
-        {{ form(form) }}
-        <a href="{{ path('schedule_list_all') }}" class="btn btn-primary">Back</a>
+        {{ form_start(form) }}
+        {{ form_errors(form) }}
+        {{ form_row(form._token) }}
+        {{ form_row(form.scheduledItemName, { 'label': 'Órarendi Elem Neve' }) }}
+        {{ form_row(form.scheduledDay, {'label': 'Nap'}) }}
+        {{ form_row(form.scheduledStartTime, {'label': 'Kezdés Időpontja'}) }}
+        {{ form_row(form.scheduledDueTime, {'label': 'Befejezés Időpontja'}) }}
+        {{ form_row(form.location, {'label': 'Hely'}) }}
+        {{ form_row(form.session_name, {'label': 'Óra Neve'}) }}
+        {{ form_end(form, {'render_rest': true}) }}
+        <a href="{{ path('schedule_list_all') }}" class="btn btn-primary">Vissza</a>
     </div>
 {% endblock %}
 

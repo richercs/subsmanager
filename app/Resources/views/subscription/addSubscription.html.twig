@@ -2,20 +2,20 @@
 
 {% block body %}
     {{ parent() }}
-    <h3>Add Subscription</h3>
+    <h3>Új Bérlet</h3>
     <div id="yellow-wrapper">
         {{ form_start(form) }}
         {{ form_errors(form) }}
         {{ form_row(form._token) }}
         <div class="attendee-input-wrap">
-            {{ form_row(form.owner) }}
+            {{ form_row(form.owner, {'label': 'Tulajdonos'}) }}
         </div>
         <div class="attendee-input-wrap">
-            {{ form_row(form.buyer) }}
+            {{ form_row(form.buyer, {'label': 'Vásárló'}) }}
         </div>
-        {{ form_row(form.isMonthlyTicket) }}
-        {{ form_row(form.start_date) }}
-        {{ form_row(form.price) }}
+        {{ form_row(form.isMonthlyTicket, {'label': 'Havi Bérlet'}) }}
+        {{ form_row(form.start_date, {'label': 'Kezdeti Időpont'}) }}
+        {{ form_row(form.price, {'label': 'Ár'}) }}
         {{ form_row(form.save) }}
         {{ form_end(form, {'render_rest': false}) }}
     </div>

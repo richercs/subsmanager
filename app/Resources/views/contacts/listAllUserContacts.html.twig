@@ -2,13 +2,13 @@
 
 {% block body %}
     {{ parent() }}
-    <h3>List All User Contacts</h3>
+    <h3>Kapcsolat Felvételi Űrlapok</h3>
     <div id="yellow-wrapper">
         <div class="list-group">
             {% for contact in contacts %}
                 <a href="{{ path('useraccount_add_by_contact',{'id': contact.id}) }}" class="list-group-item">
                     {{ contact }}
-                    <b>Created At: <b>{{ contact.created|date('Y-m-d H:i:s') }}</b></b>
+                    <b>Létrehozva: <b>{{ contact.created|date('Y-m-d H:i:s') }}</b></b>
                 </a>
             {% endfor %}
         </div>

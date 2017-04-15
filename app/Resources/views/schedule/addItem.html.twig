@@ -2,17 +2,17 @@
 
 {% block body %}
     {{ parent() }}
-    <h3>Add Schedule Item</h3>
+    <h3>Új Órarendi Elem</h3>
     <div id="yellow-wrapper">
         {{ form_start(form) }}
         {{ form_errors(form) }}
         {{ form_row(form._token) }}
-        {{ form_row(form.scheduledItemName) }}
-        {{ form_row(form.scheduledDay) }}
-        {{ form_row(form.scheduledStartTime) }}
-        {{ form_row(form.scheduledDueTime) }}
-        {{ form_row(form.location) }}
-        {{ form_row(form.session_name) }}
+        {{ form_row(form.scheduledItemName, { 'label': 'Órarendi Elem Neve' }) }}
+        {{ form_row(form.scheduledDay, {'label': 'Nap'}) }}
+        {{ form_row(form.scheduledStartTime, {'label': 'Kezdés Időpontja'}) }}
+        {{ form_row(form.scheduledDueTime, {'label': 'Befejezés Időpontja'}) }}
+        {{ form_row(form.location, {'label': 'Hely'}) }}
+        {{ form_row(form.session_name, {'label': 'Óra Neve'}) }}
         {{ form_row(form.save) }}
         {{ form_end(form, {'render_rest': false}) }}
     </div>

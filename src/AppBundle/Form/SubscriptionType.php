@@ -43,11 +43,11 @@ class SubscriptionType extends AbstractType
                 'currency' => 'HUF'
             ))
             ->add('save', 'submit', array(
-                'label' => 'Save Subscription'
+                'label' => 'Mentés'
             ))
             ->add('delete','submit', array(
                 'attr'      => array('class' => 'button-link delete'),
-                'label'     => 'Delete'
+                'label'     => 'Törlés'
             ));
         ;
     }

@@ -26,7 +26,7 @@ class SessionEventType extends AbstractType
             ->add(
                 'attendees', 'collection', array(
                     'entry_type' => AttendanceHistoryType::class,
-                    'label' => 'Attendees',
+                    'label' => 'Bérletek',
                     'allow_add' => true,
                     'allow_delete' => true,
                     'prototype' => true,
@@ -42,11 +42,11 @@ class SessionEventType extends AbstractType
                 'currency' => 'HUF'
             ))
             ->add('save', 'submit', array(
-                'label' => 'Save Session Event'
+                'label' => 'Mentés'
             ))
             ->add('delete','submit', array(
                 'attr'      => array('class' => 'button-link delete'),
-                'label'     => 'Delete'
+                'label'     => 'Törlés'
             ));
         ;
     }

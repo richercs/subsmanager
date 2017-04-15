@@ -20,7 +20,7 @@ class UserContactType extends AbstractType
             ->add('contact_email')
             ->add('password', PasswordType::class)
             ->add('save', 'submit', array(
-                'label' => 'Save User Contact'
+                'label' => 'Küldés'
             ))
         ;
     }

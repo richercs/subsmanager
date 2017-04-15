@@ -17,10 +17,18 @@
 
 {% block body %}
     {{ parent() }}
-    <h3>Edit Session Event</h3>
+    <h3>Óra Esemény Szerkesztése</h3>
     <div id="yellow-wrapper">
-        {{ form(form) }}
-        <a href="{{ path('session_event_list_all') }}" class="btn btn-primary">Back</a>
+        {{ form_start(form) }}
+        {{ form_errors(form) }}
+        {{ form_row(form._token) }}
+        {{ form_row(form.sessionEventDate, {'label': 'Időpont'}) }}
+        {{ form_row(form.scheduleItem, {'label': 'Órarendi Elem'}) }}
+        {{ form_row(form.attendees, {'label': 'Bérletesek'}) }}
+        {{ form_row(form.sessionFeeNumbersSold, {'label': 'Eladott Napidíjak'}) }}
+        {{ form_row(form.sessionFeeRevenueSold, {'label': 'Napidíj Bevétel'}) }}
+        {{ form_end(form, {'render_rest': true}) }}
+        <a href="{{ path('session_event_list_all') }}" class="btn btn-primary">Vissza</a>
     </div>
 {% endblock %}
 
@@ -43,7 +51,7 @@
 {% block body_end_javascripts %}
     <script type="text/javascript">
         $('.attendance-record').collection({
-            add: '<a href="#" class="btn btn-success">Add Record</a>',
+            add: '<a href="#" class="btn btn-success">Új Résztvevő</a>',
             allow_up: false,
             allow_down: false,
             add_at_the_end: true

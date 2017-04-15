@@ -21,13 +21,13 @@ class ScheduleItemType extends AbstractType
             ->add('scheduledItemName')
             ->add('scheduledDay', ChoiceType::class, array(
                 'choices' => array(
-                    '1' => 'Monday',
-                    '2' => 'Tuesday',
-                    '3' => 'Wednesday',
-                    '4' => 'Thursday',
-                    '5' => 'Friday',
-                    '6' => 'Saturday',
-                    '7' => 'Sunday'
+                    '1' => 'Hétfő',
+                    '2' => 'Kedd',
+                    '3' => 'Szerda',
+                    '4' => 'Csütörtök',
+                    '5' => 'Péntek',
+                    '6' => 'Szombat',
+                    '7' => 'Vasárnap'
                 ),
                 'required' => true,
             ))
@@ -44,11 +44,11 @@ class ScheduleItemType extends AbstractType
                 'required' => false
             ))
             ->add('save', 'submit', array(
-                'label' => 'Save Item'
+                'label' => 'Mentés'
             ))
             ->add('delete','submit', array(
                 'attr'      => array('class' => 'button-link delete'),
-                'label'     => 'Delete'
+                'label'     => 'Törlés'
             ));
         ;
     }

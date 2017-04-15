@@ -2,21 +2,21 @@
 
 {% block body %}
     {{ parent() }}
-    <h3>Add User By Contact</h3>
+    <h3>Kapcsolat Felvételi Űrlap feldolgozása</h3>
     <div id="white-wrapper">
-        <b>Contact First Name:</b> {{ user_contact.contactfirstname }}<br>
-        <b>Contact Last Name:</b> {{ user_contact.contactlastname }}<br>
-        <b>Contact Email Address:</b> {{ user_contact.contactemail }}<br>
+        <b>Kapcsolat Keresztnév:</b> {{ user_contact.contactfirstname }}<br>
+        <b>Kapcsolat Vezetéknév:</b> {{ user_contact.contactlastname }}<br>
+        <b>Kapcsolat Email Cím:</b> {{ user_contact.contactemail }}<br>
     </div>
     <div id="yellow-wrapper">
         {{ form_start(form) }}
         {{ form_errors(form) }}
         {{ form_row(form._token) }}
-        {{ form_row(form.source_user_account_id) }}
-        {{ form_row(form.first_name) }}
-        {{ form_row(form.last_name) }}
-        {{ form_row(form.email) }}
-        {{ form_row(form.username) }}
+        {{ form_row(form.source_user_account_id, {'label': 'Felhasználók'}) }}
+        {{ form_row(form.first_name, {'label': 'Keresztnév'}) }}
+        {{ form_row(form.last_name, {'label': 'Vezetéknév'}) }}
+        {{ form_row(form.email, {'label': 'Email'}) }}
+        {{ form_row(form.username, {'label': 'Felhasználónév'}) }}
         {{ form_row(form.save) }}
         {{ form_end(form, {'render_rest': false}) }}
     </div>

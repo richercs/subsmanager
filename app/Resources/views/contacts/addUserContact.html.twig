@@ -2,10 +2,18 @@
 
 {% block body %}
     {{ parent() }}
-    <h3>Add Contact</h3>
+    <h3>Új Kapcsolat Felvételi Űrlap</h3>
     <div id="yellow-wrapper">
-        {{ form(form) }}
-        <a href="{{ path('homepage') }}" class="btn btn-primary">Back</a>
+        {{ form_start(form) }}
+        {{ form_errors(form) }}
+        {{ form_row(form._token) }}
+        {{ form_row(form.contact_first_name, {'label': 'Keresztnév'}) }}
+        {{ form_row(form.contact_last_name, {'label': 'Vezetéknév'}) }}
+        {{ form_row(form.contact_email, {'label': 'Email'}) }}
+        {{ form_row(form.password, {'label': 'Jelszó'}) }}
+        {{ form_row(form.save) }}
+        {{ form_end(form, {'render_rest': true}) }}
+        <a href="{{ path('homepage') }}" class="btn btn-primary">Vissza</a>
     </div>
 {% endblock %}
 

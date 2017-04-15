@@ -74,7 +74,7 @@ class UserAccountController extends Controller
             $em->flush();
             $this->addFlash(
                 'notice',
-                'Your changes were saved!'
+                'Változtatások Elmentve!'
             );
             return $this->redirectToRoute('useraccount_add_user');
         }
@@ -129,7 +129,7 @@ class UserAccountController extends Controller
                 $em->flush();
                 $this->addFlash(
                     'notice',
-                    'Your changes were saved!'
+                    'Változtatások Elmentve!'
                 );
 
             } else {
@@ -152,7 +152,7 @@ class UserAccountController extends Controller
                 $em->flush();
                 $this->addFlash(
                     'notice',
-                    'Your changes were saved!'
+                    'Változtatások Elmentve!'
                 );
             }
             return $this->redirectToRoute('useraccount_add_by_contact', array('id' => $id));
@@ -201,7 +201,7 @@ class UserAccountController extends Controller
         if (!$useraccount) {
             $this->addFlash(
                 'error',
-                'No user found with id: ' . $id . '!'
+                'Nincs ilyen azonosítójú felhasználó: ' . $id . '!'
             );
             return $this->redirectToRoute('useraccount_list_all');
         }
@@ -221,7 +221,7 @@ class UserAccountController extends Controller
                 // message
                 $this->addFlash(
                     'notice',
-                    'User account with id: ' . $id . ' has been deleted successfully!'
+                    $id . ' azonosítójú felhasználó sikeresen törölve!'
                 );
 
                 // show list
@@ -235,7 +235,7 @@ class UserAccountController extends Controller
                 } else {
                     $this->addFlash(
                         'error',
-                        'Can\'t change password of user: ' . $id . '!'
+                        'A felhasználó jelszava nem változtatható meg, azonosító: ' . $id . '!'
                     );
                     return $this->redirectToRoute('useraccount_edit_user', array(
                         'id' => $loggedInUser->getId()
@@ -246,7 +246,7 @@ class UserAccountController extends Controller
             $em->flush();
             $this->addFlash(
                 'notice',
-                'Your changes were saved!'
+                'Változtatások Elmentve!'
             );
             return $this->redirectToRoute('useraccount_list_all');
         }

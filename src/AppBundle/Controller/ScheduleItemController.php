@@ -76,7 +76,7 @@ class ScheduleItemController extends Controller
             $em->flush();
             $this->addFlash(
                 'notice',
-                'Your changes were saved!'
+                'Változtatások Elmentve!'
             );
             return $this->redirectToRoute('schedule_add_item');
         }
@@ -119,7 +119,7 @@ class ScheduleItemController extends Controller
         if (!$schedule_item) {
             $this->addFlash(
                 'error',
-                'No schedule item found with id: ' . $id . '!'
+                'Nincs ilyen azonosítójú órarendi elem: ' . $id . '!'
             );
             return $this->redirectToRoute('schedule_list_all');
         }
@@ -136,7 +136,7 @@ class ScheduleItemController extends Controller
                 // message
                 $this->addFlash(
                     'notice',
-                    'Schedule Item with id: ' . $id . ' has been deleted successfully!'
+                    $id . ' azonosítójú órarendi elem sikeresen törölve!'
                 );
 
                 // show list
@@ -147,7 +147,7 @@ class ScheduleItemController extends Controller
             $em->flush();
             $this->addFlash(
                 'notice',
-                'Your changes were saved!'
+                'Változtatások Elmentve!'
             );
             return $this->redirectToRoute('schedule_list_all');
         }

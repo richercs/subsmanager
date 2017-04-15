@@ -2,12 +2,12 @@
 
 {% block body %}
     {{ parent() }}
-    <h3>View User Account</h3>
+    <h3>Felhasználó Adatainak Megtekintése</h3>
     <div id="yellow-wrapper">
         <div id="view-user-account-wrapper">
-            <b>First name: </b>{{ user_account.getFirstName }}<br/>
-            <b>Last name: </b>{{ user_account.getLastName }}<br/>
-            <b>Email Address: </b>{{ user_account.getEmail }}<br/>
+            <b>Keresztnév: </b>{{ user_account.getFirstName }}<br/>
+            <b>Vezetéknév: </b>{{ user_account.getLastName }}<br/>
+            <b>Email Cím: </b>{{ user_account.getEmail }}<br/>
             // TODO: Show all subscriptions
         </div>
     </div>

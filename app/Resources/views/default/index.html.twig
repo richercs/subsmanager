@@ -1,15 +1,15 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Home Page under development</h1>
+    <h1>Kezdő oldal fejlesztés alatt..</h1>
     <div id="yellow-wrapper">
         <p><b>Yellow wrapper</b></p>
-        <p>We currently have:</p>
-        <p>{{ count_users }} users</p>
-        <p>{{ count_subscriptions }} subscriptions</p>
-        <p>{{ count_scheduleItems }} items in the schedule</p>
-        <p>and {{ count_sessionEvents }} events registered.</p>
-        <a href="{{ path('usercontact_list_all') }}" class="btn btn-primary">View Contacts</a>
+        <p>Jelenleg a rendszerben szerepel:</p>
+        <p>{{ count_users }} felhasználó</p>
+        <p>{{ count_subscriptions }} bérlet</p>
+        <p>{{ count_scheduleItems }} órarendi elem</p>
+        <p>és {{ count_sessionEvents }} óra esemény elmentve.</p>
+        <a href="{{ path('usercontact_list_all') }}" class="btn btn-primary">Kapcsolat Felvételi Űrlapok</a>
     </div>
 {% endblock %}
 

@@ -2,13 +2,13 @@
 
 {% block body %}
     {{ parent() }}
-    <h3>List All User Accounts</h3>
+    <h3>Felhasználók</h3>
     <div id="yellow-wrapper">
         <div class="list-group">
             {% for user in users %}
                 <a href="{{ path('useraccount_edit_user',{'id': user.id}) }}" class="list-group-item">
                     {{ user }}
-                    <b>Created At: <b>{{ user.created|date('Y-m-d H:i:s') }}</b></b>
+                    <b>Létrehozva: <b>{{ user.created|date('Y-m-d H:i:s') }}</b></b>
                 </a>
             {% endfor %}
         </div>

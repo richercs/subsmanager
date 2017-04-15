@@ -2,13 +2,13 @@
 
 {% block body %}
     {{ parent() }}
-    <h3>List All Session Events</h3>
+    <h3>Óra Események</h3>
     <div id="yellow-wrapper">
         <div class="list-group">
             {% for event in events %}
                 <a href="{{ path('session_edit_session_event', {'id': event.id}) }}" class="list-group-item">
                     {{ event }}<br/>
-                    <b>Created At: <b>{{ event.created|date('Y-m-d H:i:s') }}</b></b>
+                    <b>Létrehozva: <b>{{ event.created|date('Y-m-d H:i:s') }}</b></b>
                 </a>
             {% endfor %}
         </div>

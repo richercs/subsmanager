@@ -80,9 +80,9 @@ class Subscription
      */
     public function __toString()
     {
-        return 'Owner name: ' . $this->getOwner()
-        . ' Owner email: ' . $this->getOwner()->getEmail()
-        . ' Buyer: ' . $this->getBuyer() . ' '
+        return 'Tulajdonos: ' . $this->getOwner()
+        . ' Tulajdonos Email: ' . $this->getOwner()->getEmail()
+        . ' Vásárló: ' . $this->getBuyer() . ' '
         . $this->isIsMonthlyTicket() . ' '
         . ' (' . $this->getStartDate()->format('Y-m-d H:i') .')'
         . ' [' . $this->getId() . ']'
@@ -194,10 +194,10 @@ class Subscription
         $now = new \DateTime();
 
         if ($expiresAt < $now) {
-            return 'EXPIRED';
+            return 'LEJÁRT';
         }
 
-        return 'ACTIVE';
+        return 'AKTÍV';
     }
 
     /**
