@@ -190,14 +190,18 @@ class Subscription
      */
     public function getStatus()
     {
-        $expiresAt = $this->getStartDate()->add(new \DateInterval('P1M'));
-        $now = new \DateTime();
+        if ($this->isIsMonthlyTicket()) {
+            $expiresAt = $this->getStartDate()->add(new \DateInterval('P1M'));
+            $now = new \DateTime();
 
-        if ($expiresAt < $now) {
-            return 'LEJÁRT';
+            if ($expiresAt < $now) {
+                return 'LEJÁRT';
+            }
+
+            return 'AKTÍV';
+        } else {
+
         }
-
-        return 'AKTÍV';
     }
 
     /**

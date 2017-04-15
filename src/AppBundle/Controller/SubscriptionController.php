@@ -128,11 +128,12 @@ class SubscriptionController extends Controller
         if ($form->isValid()) {
             // DELETE subscription
             if ($form->get('delete')->isClicked()) {
-                // if
+
                 $relatedAH = $em->getRepository(AttendanceHistory::class)->findBy(array('subscription' => $subscription->getId()));
 
                 if (!empty($relatedAH)) {
                     // message
+                    // TODO: The message should provide a link to the session events edit page.
                     $this->addFlash(
                         'error',
                         'A bérlet használatban van a következő űrlapokon: ' . PHP_EOL . implode(', ', $relatedAH)
