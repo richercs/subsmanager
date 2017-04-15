@@ -13,11 +13,11 @@
             </div>
             <div class="collapse navbar-collapse" id="bs-sidebar-navbar-collapse-1">
                 <ul class="nav navbar-nav">
-                    <li class="active"><a href="{{ path('homepage') }}">Home<span style="font-size:16px; padding-left: 8px;" class="pull-right showopacity glyphicon glyphicon-home"></span></a></li>
+                    <li class="active"><a href="{{ path('homepage') }}">Fő oldal<span style="font-size:16px; padding-left: 8px;" class="pull-right showopacity glyphicon glyphicon-home"></span></a></li>
                     {% block loggedInMenu %}
-                            <li><a href="{{ path('fos_user_security_login') }}" class="btn btn-link menubar-btn"><span style="font-size:16px; padding-left: 8px;" class="pull-right showopacity glyphicon glyphicon-log-in"></span>Log in</a></li>
+                            <li><a href="{{ path('fos_user_security_login') }}" class="btn btn-link menubar-btn"><span style="font-size:16px; padding-left: 8px;" class="pull-right showopacity glyphicon glyphicon-log-in"></span>Belépés</a></li>
                     {% endblock %}
-                    <li><a href="{{ path('usercontact_add_contact') }}" class="btn btn-success menubar-btn" style="color: black;"><span style="font-size:16px; padding-left: 8px;" class="pull-right showopacity glyphicon glyphicon-envelope"></span>Add Contact</a></li>
+                    <li><a href="{{ path('usercontact_add_contact') }}" class="btn btn-success menubar-btn" style="color: black;"><span style="font-size:16px; padding-left: 8px;" class="pull-right showopacity glyphicon glyphicon-envelope"></span>Kapcsolat Felvételi Űrlap</a></li>
                 </ul>
             </div>
         </div>
