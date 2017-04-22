@@ -46,6 +46,16 @@ class BreakEvent
     protected $created;
 
     /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->getStartDate()->format('Y-m-d H:i')
+        . ' - ' . $this->getDueDate()->format('Y-m-d H:i')
+        . ' [' . $this->getId() . ']';
+    }
+
+    /**
      * @return int
      */
     public function getId()

@@ -1,0 +1,20 @@
+{% extends 'break/layout.html.twig' %}
+
+{% block body %}
+    {{ parent() }}
+    <h3>Szünet Események Lista</h3>
+    <div id="yellow-wrapper">
+        <div class="list-group">
+            {% for break in breaks %}
+                <a href="{{ path('break_edit_break_event', {'id': break.id}) }}" class="list-group-item">
+                    {{ break }}
+                    <b>Létrehozva: <b>{{ break.created|date('Y-m-d H:i:s') }}</b></b>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}

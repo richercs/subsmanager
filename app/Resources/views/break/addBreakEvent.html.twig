@@ -1,0 +1,36 @@
+{% extends 'break/layout.html.twig' %}
+
+{% block body %}
+    {{ parent() }}
+    <h3>Új Szünet Esemény</h3>
+    <div id="yellow-wrapper">
+        {{ form_start(form) }}
+        {{ form_errors(form) }}
+        {{ form_row(form._token) }}
+        {{ form_row(form.startDate, {'label': 'Szünet Kezdete'}) }}
+        {{ form_row(form.dueDate, {'label': 'Szünet Vége'}) }}
+        {{ form_row(form.save) }}
+        {{ form_end(form, {'render_rest': false}) }}
+    </div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('assets/vendor/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css') }}" />
+{% endblock %}
+
+
+{% block javascript %}
+    {{ parent() }}
+
+    <script src="{{ asset('assets/vendor/moment/min/moment.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js') }}"></script>
+
+    <script>
+        $(function () {
+            $('.datetimepicker').datetimepicker({
+                format: 'YYYY-MM-DD HH:mm'
+            });
+        });
+    </script>
+{% endblock %}
