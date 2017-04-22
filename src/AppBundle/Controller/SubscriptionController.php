@@ -34,10 +34,10 @@ class SubscriptionController extends Controller
         /** @var EntityManager $em */
         $em = $this->get('doctrine.orm.default_entity_manager');
 
-        /** @var UserAccountRepository $user_repo */
-        $subscription_repo = $em->getRepository('AppBundle\Entity\Subscription');
+        /** @var SubscriptionRepository $subscriptionRepo */
+        $subscriptionRepo = $em->getRepository('AppBundle\Entity\Subscription');
 
-        $subscriptions = $subscription_repo->findAll();
+        $subscriptions = $subscriptionRepo->findAll();
 
         return $this->render('subscription/listAllSubscriptions.html.twig',
             array(
@@ -66,14 +66,14 @@ class SubscriptionController extends Controller
         /** @var UserAccountRepository $userAccountRepository */
         $userAccountRepository = $em->getRepository('AppBundle\Entity\UserAccount');
 
-        $new_subscription = new Subscription();
+        $newSubscription = new Subscription();
 
-        $form = $this->createForm(new SubscriptionType(), $new_subscription);
+        $form = $this->createForm(new SubscriptionType(), $newSubscription);
         $form->handleRequest($request);
 
         if ($form->isValid())
         {
-            $em->persist($new_subscription);
+            $em->persist($newSubscription);
             $em->flush();
             $this->addFlash(
                 'notice',
@@ -84,7 +84,7 @@ class SubscriptionController extends Controller
 
         return $this->render('subscription/addSubscription.html.twig',
             array(
-                'new_subscription' => $new_subscription,
+                'new_subscription' => $newSubscription,
                 'form' => $form->createView(),
                 'logged_in_user' => $loggedInUser
             ));

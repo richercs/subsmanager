@@ -40,10 +40,10 @@ class SessionEventController extends Controller
         /** @var EntityManager $em */
         $em = $this->get('doctrine.orm.default_entity_manager');
 
-        /** @var UserAccountRepository $user_repo */
-        $sessionEvent_repo = $em->getRepository('AppBundle\Entity\SessionEvent');
+        /** @var SessionEventRepository $sessionEventRepo */
+        $sessionEventRepo = $em->getRepository('AppBundle\Entity\SessionEvent');
 
-        $events = $sessionEvent_repo->findAll();
+        $events = $sessionEventRepo->findAll();
 
         return $this->render('event/listAllSessionEvents.html.twig',
             array(
@@ -72,15 +72,15 @@ class SessionEventController extends Controller
         /** @var UserAccountRepository $userAccountRepository */
         $userAccountRepository = $em->getRepository('AppBundle\Entity\UserAccount');
 
-        $new_event = new SessionEvent();
+        $newEvent = new SessionEvent();
 
-        $form = $this->createForm(new SessionEventType(), $new_event);
+        $form = $this->createForm(new SessionEventType(), $newEvent);
         $form->handleRequest($request);
 
         if ($form->isValid())
         {
             // The OneToMany association and the symfony-collection bundle manages the attendees ArrayCollection
-            $em->persist($new_event);
+            $em->persist($newEvent);
             $em->flush();
             $this->addFlash(
                 'notice',
@@ -91,7 +91,7 @@ class SessionEventController extends Controller
 
         return $this->render('event/addSessionEvent.html.twig',
             array(
-                'new_event' => $new_event,
+                'new_event' => $newEvent,
                 'form' => $form->createView(),
                 'logged_in_user' => $loggedInUser
             ));
@@ -121,10 +121,10 @@ class SessionEventController extends Controller
         $sessionEventRepository = $em->getRepository('AppBundle\Entity\SessionEvent');
 
         // Editing session event
-        /** @var SessionEvent $sessionevent */
-        $sessionevent = $sessionEventRepository->find($id);
+        /** @var SessionEvent $sessionEvent */
+        $sessionEvent = $sessionEventRepository->find($id);
 
-        if (!$sessionevent) {
+        if (!$sessionEvent) {
             $this->addFlash(
                 'error',
                 'Nincs ilyen azonosítójú óra esemény: ' . $id . '!'
@@ -135,17 +135,17 @@ class SessionEventController extends Controller
         $originalAttendees = new ArrayCollection();
 
         // Create an ArrayCollection of the current Attendance objects in the database
-        foreach ($sessionevent->getAttendees() as $attendee) {
+        foreach ($sessionEvent->getAttendees() as $attendee) {
             $originalAttendees->add($attendee);
         }
 
-        $form = $this->createForm(new SessionEventType(), $sessionevent);
+        $form = $this->createForm(new SessionEventType(), $sessionEvent);
         $form->handleRequest($request);
 
         if ($form->isValid()) {
             // remove the relationship between the attendee and the Session event
             foreach ($originalAttendees as $attendee) {
-                if (false === $sessionevent->getAttendees()->contains($attendee)) {
+                if (false === $sessionEvent->getAttendees()->contains($attendee)) {
                     // remove the Session event from the Attendee
                     // $attendee->setSessionEvent(null);
                     // $em->persist($attendee);
@@ -156,7 +156,7 @@ class SessionEventController extends Controller
             }
             // DELETE Session event
             if ($form->get('delete')->isClicked()) {
-                $em->remove($sessionevent);
+                $em->remove($sessionEvent);
                 $em->flush();
 
                 // message
@@ -168,7 +168,7 @@ class SessionEventController extends Controller
                 // show list
                 return $this->redirectToRoute('session_event_list_all');
             }
-            $em->persist($sessionevent);
+            $em->persist($sessionEvent);
             $em->flush();
             $this->addFlash(
                 'notice',
@@ -179,7 +179,7 @@ class SessionEventController extends Controller
 
         return $this->render('event/editSessionEvent.html.twig',
             array(
-                'sessionevent' => $sessionevent,
+                'sessionevent' => $sessionEvent,
                 'form' => $form->createView(),
                 'logged_in_user' => $loggedInUser
             ));

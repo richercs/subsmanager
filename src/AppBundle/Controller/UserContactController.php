@@ -32,10 +32,10 @@ class UserContactController extends Controller
         /** @var EntityManager $em */
         $em = $this->get('doctrine.orm.default_entity_manager');
 
-        /** @var UserContactRepository $userc_repo */
-        $userc_repo = $em->getRepository('AppBundle\Entity\UserContact');
+        /** @var UserContactRepository $userContactRepo */
+        $userContactRepo = $em->getRepository('AppBundle\Entity\UserContact');
 
-        $contacts = $userc_repo->findAll();
+        $contacts = $userContactRepo->findAll();
 
         // Do not show deleted user contacts
         for( $i= 0 ; $i < count($contacts) ; $i++ )
@@ -75,22 +75,22 @@ class UserContactController extends Controller
         /** @var UserContactRepository $userContactRepository */
         $userContactRepository = $em->getRepository('AppBundle\Entity\UserContact');
 
-        $new_contact = new UserContact();
+        $newContact = new UserContact();
 
-        $form = $this->createForm(new UserContactType(), $new_contact);
+        $form = $this->createForm(new UserContactType(), $newContact);
         $form->handleRequest($request);
 
         if ($form->isValid())
         {
 
             $dummyUser = new UserAccount();
-            $dummyUser->setPlainPassword($new_contact->getPassword());
+            $dummyUser->setPlainPassword($newContact->getPassword());
 
             $passwordHasher->hashPassword($dummyUser);
 
-            $new_contact->setPassword($dummyUser->getPassword());
+            $newContact->setPassword($dummyUser->getPassword());
 
-            $em->persist($new_contact);
+            $em->persist($newContact);
 
             $em->flush();
 
@@ -103,7 +103,7 @@ class UserContactController extends Controller
 
         return $this->render('contacts/addUserContact.html.twig',
             array(
-                'new_contact' => $new_contact,
+                'new_contact' => $newContact,
                 'form' => $form->createView(),
                 'logged_in_user' => $loggedInUser
             ));

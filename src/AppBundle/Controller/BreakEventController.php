@@ -66,14 +66,14 @@ class BreakEventController extends Controller
         /** @var UserAccountRepository $userAccountRepository */
         $userAccountRepository = $em->getRepository('AppBundle\Entity\UserAccount');
 
-        $new_break = new BreakEvent();
+        $newBreak = new BreakEvent();
 
-        $form = $this->createForm(new BreakEventType(), $new_break);
+        $form = $this->createForm(new BreakEventType(), $newBreak);
         $form->handleRequest($request);
 
         if ($form->isValid())
         {
-            $em->persist($new_break);
+            $em->persist($newBreak);
             $em->flush();
             $this->addFlash(
                 'notice',
@@ -84,7 +84,7 @@ class BreakEventController extends Controller
 
         return $this->render('break/addBreakEvent.html.twig',
             array(
-                'new_break' => $new_break,
+                'new_break' => $newBreak,
                 'form' => $form->createView(),
                 'logged_in_user' => $loggedInUser
             ));

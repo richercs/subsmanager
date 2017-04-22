@@ -33,10 +33,10 @@ class ScheduleItemController extends Controller
         /** @var EntityManager $em */
         $em = $this->get('doctrine.orm.default_entity_manager');
 
-        /** @var UserAccountRepository $user_repo */
-        $scheduleItem_repo = $em->getRepository('AppBundle\Entity\ScheduleItem');
+        /** @var ScheduleItemRepository $scheduleItemRepo */
+        $scheduleItemRepo = $em->getRepository('AppBundle\Entity\ScheduleItem');
 
-        $items = $scheduleItem_repo->findAll();
+        $items = $scheduleItemRepo->findAll();
 
         return $this->render('schedule/listAllItems.html.twig',
             array(
@@ -65,14 +65,14 @@ class ScheduleItemController extends Controller
         /** @var UserAccountRepository $userAccountRepository */
         $userAccountRepository = $em->getRepository('AppBundle\Entity\UserAccount');
 
-        $new_item = new ScheduleItem();
+        $newItem = new ScheduleItem();
 
-        $form = $this->createForm(new ScheduleItemType(), $new_item);
+        $form = $this->createForm(new ScheduleItemType(), $newItem);
         $form->handleRequest($request);
 
         if ($form->isValid())
         {
-            $em->persist($new_item);
+            $em->persist($newItem);
             $em->flush();
             $this->addFlash(
                 'notice',
@@ -83,7 +83,7 @@ class ScheduleItemController extends Controller
 
         return $this->render('schedule/addItem.html.twig',
             array(
-                'new_item' => $new_item,
+                'new_item' => $newItem,
                 'form' => $form->createView(),
                 'logged_in_user' => $loggedInUser
             ));
@@ -113,10 +113,10 @@ class ScheduleItemController extends Controller
         $scheduleItemRepository = $em->getRepository('AppBundle\Entity\ScheduleItem');
 
         // Editing schedule item
-        /** @var ScheduleItem $schedule_item */
-        $schedule_item = $scheduleItemRepository->find($id);
+        /** @var ScheduleItem $scheduleItem */
+        $scheduleItem = $scheduleItemRepository->find($id);
 
-        if (!$schedule_item) {
+        if (!$scheduleItem) {
             $this->addFlash(
                 'error',
                 'Nincs ilyen azonosítójú órarendi elem: ' . $id . '!'
@@ -124,13 +124,13 @@ class ScheduleItemController extends Controller
             return $this->redirectToRoute('schedule_list_all');
         }
 
-        $form = $this->createForm(new ScheduleItemType(), $schedule_item);
+        $form = $this->createForm(new ScheduleItemType(), $scheduleItem);
         $form->handleRequest($request);
 
         if ($form->isValid()) {
             // DELETE Schedule item
             if ($form->get('delete')->isClicked()) {
-                $em->remove($schedule_item);
+                $em->remove($scheduleItem);
                 $em->flush();
 
                 // message
@@ -143,7 +143,7 @@ class ScheduleItemController extends Controller
                 return $this->redirectToRoute('schedule_list_all');
             }
 
-            $em->persist($schedule_item);
+            $em->persist($scheduleItem);
             $em->flush();
             $this->addFlash(
                 'notice',
@@ -154,7 +154,7 @@ class ScheduleItemController extends Controller
 
         return $this->render('schedule/editItem.html.twig',
             array(
-                'schedule_item' => $schedule_item,
+                'schedule_item' => $scheduleItem,
                 'form' => $form->createView(),
                 'logged_in_user' => $loggedInUser
             ));

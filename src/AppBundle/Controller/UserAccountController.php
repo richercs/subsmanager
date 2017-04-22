@@ -32,10 +32,10 @@ class UserAccountController extends Controller
         /** @var EntityManager $em */
         $em = $this->get('doctrine.orm.default_entity_manager');
 
-        /** @var UserAccountRepository $user_repo */
-        $user_repo = $em->getRepository('AppBundle\Entity\UserAccount');
+        /** @var UserAccountRepository $userRepo */
+        $userRepo = $em->getRepository('AppBundle\Entity\UserAccount');
 
-        $users = $user_repo->findAll();
+        $users = $userRepo->findAll();
 
         return $this->render('users/listAllUserAccounts.html.twig',
             array(
@@ -195,10 +195,10 @@ class UserAccountController extends Controller
         $passwordHasher = $this->get('fos_user.util.password_updater');
 
         // Editing user account
-        /** @var UserAccount $useraccount */
-        $useraccount = $userAccountRepository->find($id);
+        /** @var UserAccount $userAccount */
+        $userAccount = $userAccountRepository->find($id);
 
-        if (!$useraccount) {
+        if (!$userAccount) {
             $this->addFlash(
                 'error',
                 'Nincs ilyen azonosítójú felhasználó: ' . $id . '!'
@@ -206,16 +206,16 @@ class UserAccountController extends Controller
             return $this->redirectToRoute('useraccount_list_all');
         }
 
-        $form = $this->createForm(new UserAccountType($loggedInUser), $useraccount);
+        $form = $this->createForm(new UserAccountType($loggedInUser), $userAccount);
         $form->handleRequest($request);
 
         if ($form->isValid()) {
             // DELETE user account
             if ($form->has('delete') && $form->get('delete')->isClicked()) {
-                $useraccount->setEnabled(false);
-                $em->persist($useraccount);
+                $userAccount->setEnabled(false);
+                $em->persist($userAccount);
                 $em->flush(); // with just the remove/flush the previous changes wouldn't be updated
-                $em->remove($useraccount);
+                $em->remove($userAccount);
                 $em->flush();
 
                 // message
@@ -242,7 +242,7 @@ class UserAccountController extends Controller
                     ));
                 }
             }
-            $em->persist($useraccount);
+            $em->persist($userAccount);
             $em->flush();
             $this->addFlash(
                 'notice',
@@ -253,7 +253,7 @@ class UserAccountController extends Controller
 
         return $this->render('users/editUserAccount.html.twig',
             array(
-                'useraccount' => $useraccount,
+                'useraccount' => $userAccount,
                 'form' => $form->createView(),
                 'logged_in_user' => $loggedInUser
             ));
