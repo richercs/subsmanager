@@ -15,7 +15,7 @@
         </div>
         {{ form_row(form.isMonthlyTicket, {'label': 'Havi Bérlet'}) }}
         {{ form_row(form.attendanceCount, {'label': 'Alkalmak Száma'}) }}
-        {{ form_row(form.start_date, {'label': 'Kezdeti Időpont'}) }}
+        {{ form_row(form.startDate, {'label': 'Kezdeti Időpont'}) }}
         {{ form_row(form.price, {'label': 'Ár'}) }}
         {{ form_end(form, {'render_rest': true}) }}
         <a href="{{ path('subscription_list_all') }}" class="btn btn-primary">Vissza</a>

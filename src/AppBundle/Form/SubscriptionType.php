@@ -34,7 +34,7 @@ class SubscriptionType extends AbstractType
             ))
             ->add('isMonthlyTicket')
             ->add('attendanceCount')
-            ->add('start_date', DateType::class, array(
+            ->add('startDate', DateType::class, array(
                 'widget' => 'single_text',
                 'attr' => array( 'class' => 'datetimepicker'),
                 'format' => 'yyyy-MM-dd HH:mm',
