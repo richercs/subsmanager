@@ -148,7 +148,7 @@ class SubscriptionController extends Controller
                 // message
                 $this->addFlash(
                     'notice',
-                    $id . ' azonosítójú bérlet sikeresen törölve!'
+                    '"' . $id . '" azonosítójú bérlet sikeresen törölve!'
                 );
 
                 // show list

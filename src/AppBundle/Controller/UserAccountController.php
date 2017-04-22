@@ -221,7 +221,7 @@ class UserAccountController extends Controller
                 // message
                 $this->addFlash(
                     'notice',
-                    $id . ' azonosítójú felhasználó sikeresen törölve!'
+                    '"' . $id . '" azonosítójú felhasználó sikeresen törölve!'
                 );
 
                 // show list

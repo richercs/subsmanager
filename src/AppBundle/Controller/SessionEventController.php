@@ -162,7 +162,7 @@ class SessionEventController extends Controller
                 // message
                 $this->addFlash(
                     'notice',
-                    $id . ' azonosítójú óra esemény sikeresen törölve!'
+                    '"'. $id . '" azonosítójú óra esemény sikeresen törölve!'
                 );
 
                 // show list

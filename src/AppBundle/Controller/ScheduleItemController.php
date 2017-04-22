@@ -136,7 +136,7 @@ class ScheduleItemController extends Controller
                 // message
                 $this->addFlash(
                     'notice',
-                    $id . ' azonosítójú órarendi elem sikeresen törölve!'
+                    '"' . $id . '" azonosítójú órarendi elem sikeresen törölve!'
                 );
 
                 // show list
