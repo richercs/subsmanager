@@ -7,6 +7,8 @@
         <b>Kapcsolat Keresztnév:</b> {{ user_contact.contactfirstname }}<br>
         <b>Kapcsolat Vezetéknév:</b> {{ user_contact.contactlastname }}<br>
         <b>Kapcsolat Email Cím:</b> {{ user_contact.contactemail }}<br>
+        <br>
+        <a href="{{ path('usercontact_delete_contact',{'id': user_contact.id}) }}" class="btn btn-danger">Űrlap Törlése</a>
     </div>
     <div id="yellow-wrapper">
         {{ form_start(form) }}
@@ -19,6 +21,7 @@
         {{ form_row(form.username, {'label': 'Felhasználónév'}) }}
         {{ form_row(form.save) }}
         {{ form_end(form, {'render_rest': false}) }}
+        <a href="{{ path('usercontact_list_all') }}" class="btn btn-primary">Vissza</a>
     </div>
 {% endblock %}
 

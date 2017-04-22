@@ -37,6 +37,16 @@ class UserContactController extends Controller
 
         $contacts = $userc_repo->findAll();
 
+        // Do not show deleted user contacts
+        for( $i= 0 ; $i < count($contacts) ; $i++ )
+        {
+            /** @var UserContact $result */
+            $result = $contacts[$i];
+            if(!is_null($result->getDeletedAt())) {
+                unset($contacts[$i]);
+            }
+        }
+
         return $this->render('contacts/listAllUserContacts.html.twig',
             array(
                 'base_dir' => realpath($this->container->getParameter('kernel.root_dir').'/..').DIRECTORY_SEPARATOR,
@@ -97,5 +107,38 @@ class UserContactController extends Controller
                 'form' => $form->createView(),
                 'logged_in_user' => $loggedInUser
             ));
+    }
+
+    /**
+     * @Route("usercontact/delete_usercontact/{id}", name="usercontact_delete_contact", defaults={"id" = -1})
+     *
+     * @Security("has_role('ROLE_ADMIN')")
+     *
+     * @param Request request
+     * @return array
+     */
+    public function deleteUserContactAction($id, Request $request) {
+
+        /** @var EntityManager $em */
+        $em = $this->get('doctrine.orm.default_entity_manager');
+
+        /** @var UserContactRepository $userContactRepository */
+        $userContactRepository = $em->getRepository('AppBundle\Entity\UserContact');
+
+        /** @var UserContact $user_contact */
+        $userContact = $userContactRepository->find($id);
+
+        // DELETE user contact
+        $em->remove($userContact);
+        $em->flush();
+
+        // message
+        $this->addFlash(
+            'notice',
+            '"' . $id . '" azonosítójú kapcsolat felvételi űrlap sikeresen törölve!'
+        );
+
+        // show list
+        return $this->redirectToRoute('usercontact_list_all');
     }
 }
