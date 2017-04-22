@@ -33,6 +33,7 @@ class SubscriptionType extends AbstractType
                 'class' => 'AppBundle:UserAccount'
             ))
             ->add('isMonthlyTicket')
+            ->add('attendanceCount')
             ->add('start_date', DateType::class, array(
                 'widget' => 'single_text',
                 'attr' => array( 'class' => 'datetimepicker'),
