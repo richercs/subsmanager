@@ -143,6 +143,13 @@ class Subscription
     }
 
     /**
+     * @return string
+     */
+    public function getStartDateString() {
+        return $this->getStartDate()->format('Y-m-d H:i');
+    }
+
+    /**
      * @return mixed
      */
     public function getAttendanceCount()

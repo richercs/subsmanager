@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\UserContact;
+use AppBundle\Repository\SubscriptionRepository;
 use AppBundle\Repository\UserContactRepository;
 use FOS\UserBundle\Util\PasswordUpdater;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -280,12 +281,19 @@ class UserAccountController extends Controller
         /** @var UserAccountRepository $userAccountRepository */
         $userAccountRepository = $em->getRepository('AppBundle\Entity\UserAccount');
 
+        /** @var UserAccount $userAccount */
         $userAccount = $userAccountRepository->find($id);
+
+        /** @var SubscriptionRepository $subscriptionRepository */
+        $subscriptionRepository = $em->getRepository('AppBundle\Entity\Subscription');
+
+        $subscriptions = $subscriptionRepository->findBy(array('owner' => $userAccount->getId()));
 
         return $this->render('users/viewUserAccount.html.twig',
             array(
                 'user_account' => $userAccount,
-                'logged_in_user' => $loggedInUser
+                'logged_in_user' => $loggedInUser,
+                'subscriptions' => $subscriptions
             ));
     }
 }

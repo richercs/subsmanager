@@ -7,8 +7,41 @@
         <div id="view-user-account-wrapper">
             <b>Keresztnév: </b>{{ user_account.getFirstName }}<br/>
             <b>Vezetéknév: </b>{{ user_account.getLastName }}<br/>
-            <b>Email Cím: </b>{{ user_account.getEmail }}<br/>
-            // TODO: Show all subscriptions
+            <b>Email: </b>{{ user_account.getEmail }}<br/>
+            <br>
+            <h4><b>Bérletek</b></h4>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Tulajdonos</th>
+                    <th>Email</th>
+                    <th>Alkalmak Száma</th>
+                    <th>Kezdeti Időpont</th>
+                    <th>Ár</th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% for subscription in subscriptions %}
+                        <tr>
+                            <td>
+                                {{ subscription.owner }}
+                            </td>
+                            <td>
+                                {{ subscription.owner.email }}
+                            </td>
+                            <td>
+                                {{ subscription.attendanceCount }}
+                            </td>
+                            <td>
+                                {{ subscription.getStartDateString }}
+                            </td>
+                            <td>
+                                {{ subscription.price }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 {% endblock %}
