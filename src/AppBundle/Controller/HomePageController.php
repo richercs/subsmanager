@@ -4,6 +4,8 @@ namespace AppBundle\Controller;
 
 
 use AppBundle\Entity\UserAccount;
+use AppBundle\Entity\UserContact;
+use AppBundle\Repository\UserContactRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use AppBundle\Repository\UserAccountRepository;
 use Doctrine\ORM\EntityManager;
@@ -26,6 +28,8 @@ class HomePageController extends Controller
         /** @var EntityManager $em */
         $em = $this->get('doctrine.orm.default_entity_manager');
 
+        $this->get('session')->set('pending_user_contact_count', $this->getPendigUserCount());
+
         /** @var UserAccountRepository $user_repo */
         $user_repo = $em->getRepository('AppBundle\Entity\UserAccount');
         $subscription_repo = $em->getRepository('AppBundle\Entity\Subscription');
@@ -46,6 +50,17 @@ class HomePageController extends Controller
                 'count_sessionEvents' => $count_sessionEvents,
                 'logged_in_user' => $loggedInUser
             ));
+    }
+
+    public function getPendigUserCount()
+    {
+        /** @var EntityManager $em */
+        $em = $this->get('doctrine.orm.default_entity_manager');
+
+        /** @var UserContactRepository $userContactRepository */
+        $userContactRepository = $em->getRepository(UserContact::class);
+
+        return $userContactRepository->getPendingCount();
     }
 
 }

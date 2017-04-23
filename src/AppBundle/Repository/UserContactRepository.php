@@ -22,4 +22,16 @@ class UserContactRepository extends EntityRepository
         return $result;
     }
 
+    public function getPendingCount()
+    {
+        return $this->_em->createQuery(
+            '
+                SELECT COUNT(u.id)
+                FROM AppBundle\Entity\UserContact u
+                WHERE u.deletedAt IS NULL
+            '
+        )->getArrayResult()[0][1];
+
+    }
+
 }

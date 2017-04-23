@@ -138,7 +138,7 @@ class UserContactController extends Controller
             '"' . $id . '" azonosítójú kapcsolat felvételi űrlap sikeresen törölve!'
         );
 
-        // show list
-        return $this->redirectToRoute('usercontact_list_all');
+        // show home
+        return $this->redirectToRoute('homepage');
     }
 }
