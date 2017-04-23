@@ -67,7 +67,9 @@ class UserAccountType extends AbstractType
                     ->add('email', 'email', array(
                         'required' => false
                     ))
-                    ->add('username')
+                    ->add('username','text', array(
+                        'label' => 'Felhasználónév'
+                    ))
                     ->add('change_password', 'submit', array(
                         'label' => 'Jelszó Változtatás'
                     ))

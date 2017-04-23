@@ -254,7 +254,17 @@ class UserAccountController extends Controller
                 'notice',
                 'Változtatások Elmentve!'
             );
-            return $this->redirectToRoute('useraccount_list_all');
+
+            if($loggedInUser->getIsAdmin()) {
+
+                return $this->redirectToRoute('useraccount_list_all');
+
+            } else {
+
+                return $this->redirectToRoute('useraccount_edit_user', array(
+                    'id' => $loggedInUser->getId()
+                ));
+            }
         }
 
         return $this->render('users/editUserAccount.html.twig',
