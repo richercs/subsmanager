@@ -19,6 +19,10 @@ code { background: #F5F5F5; max-width: 100px; padding: 2px 6px; word-wrap: break
 
 .flash-notice {}
 
+#contacts_count_badge {
+    float: right;
+}
+
 #logged-in-board-p {
     line-height: 20px;
     position: relative;
