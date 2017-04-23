@@ -90,6 +90,13 @@
                                         {% endif %}
                                     {% endblock %}
                                     <li><a href="{{ path('usercontact_add_contact') }}" class="btn btn-success menubar-btn" style="color: black;"><span style="font-size:16px; padding-left: 8px;" class="pull-right showopacity glyphicon glyphicon-envelope"></span>Kapcsolat Felvételi Űrlap</a></li>
+                                    {% block admin_stats %}
+                                        {% if logged_in_user is not null %}
+                                            {% if logged_in_user.getIsAdmin %}
+                                                <li><a href="{{ path('admin_stats') }}" class="btn btn-primary menubar-btn" style="color: black;"><span style="font-size:16px; padding-left: 8px;" class="pull-right showopacity glyphicon glyphicon-stats"></span>Statisztika</a></li>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endblock %}
                                 </ul>
                             </div>
                         </div>
