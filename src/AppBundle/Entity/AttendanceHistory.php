@@ -49,14 +49,6 @@ class AttendanceHistory
     protected $subscription;
 
     /**
-     * @var boolean
-     *
-     * @ORM\Column(name="double_session", type="boolean")
-     *
-     */
-    protected $doubleSessionAttendance;
-
-    /**
      * @ORM\Column(name="date_updated", type="datetime", nullable = true)
      */
     protected $updated;
@@ -134,23 +126,7 @@ class AttendanceHistory
     {
         $this->subscription = $subscription;
     }
-
-    /**
-     * @return mixed
-     */
-    public function getDoubleSessionAttendance()
-    {
-        return $this->doubleSessionAttendance;
-    }
-
-    /**
-     * @param mixed $doubleSessionAttendance
-     */
-    public function setDoubleSessionAttendance($doubleSessionAttendance)
-    {
-        $this->doubleSessionAttendance = $doubleSessionAttendance;
-    }
-
+    
     /**
      * @return mixed
      */
