@@ -182,6 +182,11 @@ class UserAccountController extends Controller
     {
         /** @var UserAccount $loggedInUser */
         $loggedInUser = $this->getUser();
+
+        if(is_null($loggedInUser)) {
+            return $this->redirectToRoute('fos_user_security_login');
+        }
+
         if ($loggedInUser->getId() != $id && !$loggedInUser->getIsAdmin()) {
             return $this->redirectToRoute('useraccount_edit_user', array(
                 'id' => $loggedInUser->getId()
@@ -270,6 +275,11 @@ class UserAccountController extends Controller
     {
         /** @var UserAccount $loggedInUser */
         $loggedInUser = $this->getUser();
+
+        if(is_null($loggedInUser)) {
+            return $this->redirectToRoute('fos_user_security_login');
+        }
+
         if ($loggedInUser->getId() != $id && !$loggedInUser->getIsAdmin()) {
             return $this->redirectToRoute('useraccount_view', array(
                 'id' => $loggedInUser->getId()
