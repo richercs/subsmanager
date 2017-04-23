@@ -126,7 +126,7 @@ class AttendanceHistory
     {
         $this->subscription = $subscription;
     }
-    
+
     /**
      * @return mixed
      */
