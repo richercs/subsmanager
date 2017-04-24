@@ -139,7 +139,9 @@ class SubscriptionController extends Controller
                         'A bérlet használatban van a következő űrlapokon: ' . PHP_EOL . implode(', ', $relatedAH)
                     );
 
-                    return $this->redirectToRoute('subscription_list_all');
+                    return $this->redirectToRoute('subscription_edit_subscription', array(
+                        'id' => $id
+                    ));
                 }
 
                 $em->remove($subscription);

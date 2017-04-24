@@ -168,6 +168,34 @@ class SessionEventController extends Controller
                 // show list
                 return $this->redirectToRoute('session_event_list_all');
             }
+            // Check attendee records for errors
+            // Rule #1 - Every attendance record is unique
+
+            // TODO: Implement Rule #1
+            // TODO: Is it possible to set it for form.row.error?
+
+            // Rule #2 - Monthly subscription can only be used by the owner
+
+            /** @var AttendanceHistory $attendee */
+            foreach ($sessionEvent->getAttendees() as $attendee) {
+                if ($attendee->getSubscription()->isIsMonthlyTicket() &&
+                    $attendee->getAttendee() != $attendee->getSubscription()->getOwner())
+                {
+                    $this->addFlash(
+                        'error',
+                        'Hibás résztvevő: Havi bérletet csak a tulajdonos használhat!'
+                    );
+                    return $this->redirectToRoute('session_edit_session_event', array(
+                        'id' => $id
+                    ));
+                }
+            }
+
+            // Rule #3 - Attendance count limit not reached by multiple usage
+
+            // TODO: Implement Rule #3
+
+
             $em->persist($sessionEvent);
             $em->flush();
             $this->addFlash(
