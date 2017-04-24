@@ -37,13 +37,10 @@ class UserContactController extends Controller
 
         $contacts = $userContactRepo->findAll();
 
-        // Do not show deleted user contacts
-        for( $i= 0 ; $i < count($contacts) ; $i++ )
-        {
-            /** @var UserContact $result */
-            $result = $contacts[$i];
-            if(!is_null($result->getDeletedAt())) {
-                unset($contacts[$i]);
+        /** @var UserContact $contact */
+        foreach ($contacts as $key => $contact) {
+            if($contact->isDeleted()) {
+                unset($contacts[$key]);
             }
         }
 
