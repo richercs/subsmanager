@@ -2,7 +2,9 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Repository\AttendanceHistoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -246,18 +248,34 @@ class Subscription
      */
     public function getStatus()
     {
-        if ($this->isIsMonthlyTicket()) {
-            $expiresAt = $this->getStartDate()->add(new \DateInterval('P1M'));
-            $now = new \DateTime();
+        $status = '';
 
-            if ($expiresAt < $now) {
-                return 'LEJÁRT';
-            }
+        $now = new \DateTime();
 
-            return 'AKTÍV';
-        } else {
-
+        if($this->getDueDate() <$now) {
+            $status = $status . 'LEJÁRT';
         }
+
+        if (!$this->isIsMonthlyTicket()) {
+
+//            /** @var EntityManager $em */
+//            $em = $this->get('doctrine.orm.default_entity_manager');
+//
+//            /** @var AttendanceHistoryRepository $attendanceHistoryRepository */
+//            $attendanceHistoryRepository = $em->getRepository('AppBundle\Entity\AttendanceHistory');
+//
+//            $usages = $attendanceHistoryRepository->findBy(array('subscription' => $this->getId()));
+//
+//            if ($usages >= $this->getAttendanceCount()) {
+//                $status = $status - ' 0 ALKALOM';
+//            }
+        }
+
+        if(empty($status)) {
+            $status = 'AKTÍV';
+        }
+
+        return $status;
     }
 
     /**
