@@ -1,0 +1,41 @@
+{% extends 'event/layout.html.twig' %}
+
+{% block body %}
+    {{ parent() }}
+    <h3>Óra Esemény Adatainak Megtekintése</h3>
+    <div id="yellow-wrapper">
+        <div id="view-session-event-wrapper">
+            <h4><b>Időpont: </b></h4>{{ sessionevent.getSessionEventDateString }}<br/>
+            <h4><b>Órarendi Elem: </b></h4>{{ sessionevent.getScheduleItem }}<br/>
+            <h4><b>Bérletesek: </b></h4>
+            <table class="table colored-table">
+                <thead>
+                <tr>
+                    <th>Résztvevő</th>
+                    <th>Bérlet</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for attendanceRecord in sessionevent.getAttendees %}
+                    <tr>
+                        <td>
+                            {{ attendanceRecord.getAttendee }}
+                        </td>
+                        <td>
+                            {{ attendanceRecord.getSubscription }}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table><br/>
+            <h4><b>Eladott Napidíjak: </b></h4>{{ sessionevent.getSessionFeeNumbersSold }}<br/>
+            <h4><b>Napidíj Bevétel: </b></h4>{{ sessionevent.getSessionFeeRevenueSold }} HUF<br/>
+            <h4><b>Teljes Bevétel: </b></h4>TODO<br/>
+        </div>
+
+    </div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}

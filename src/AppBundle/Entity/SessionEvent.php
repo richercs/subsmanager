@@ -139,6 +139,13 @@ class SessionEvent
     }
 
     /**
+     * @return string
+     */
+    public function getSessionEventDateString() {
+        return $this->getSessionEventDate()->format('Y.m.d. H:i');
+    }
+
+    /**
      * @return mixed
      */
     public function getAttendees()

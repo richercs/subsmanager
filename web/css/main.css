@@ -6,8 +6,8 @@ p { margin: 0 0 1em 0; }
 a { color: #0000F0; }
 a:hover { text-decoration: none; }
 code { background: #F5F5F5; max-width: 100px; padding: 2px 6px; word-wrap: break-word; }
-#yellow-wrapper { background: whitesmoke; padding: 2em; margin: 2em 2em; max-width: 800px; width: 80%; }
-#white-wrapper { background: whitesmoke; padding: 2em; margin: 2em 2em; max-width: 800px; width: 80%; }
+#yellow-wrapper { background: whitesmoke; padding: 2em; margin: 2em 2em; max-width: 800px; width: 90%; }
+#white-wrapper { background: whitesmoke; padding: 2em; margin: 2em 2em; max-width: 800px; width: 90%; }
 #welcome, #status { margin-bottom: 2em; }
 #welcome h1 span { display: block; font-size: 75%; }
 #icon-status, #icon-book { float: left; height: 64px; margin-right: 1em; margin-top: -4px; width: 64px; }
@@ -18,6 +18,10 @@ code { background: #F5F5F5; max-width: 100px; padding: 2px 6px; word-wrap: break
 .grid-content { background: #DEE3E5; min-height: 190em !important; color: #1B2024}
 
 .flash-notice {}
+
+.colored-table {
+    background-color: white;
+}
 
 #contacts_count_badge {
     float: right;

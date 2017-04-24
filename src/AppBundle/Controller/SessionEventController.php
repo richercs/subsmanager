@@ -213,4 +213,45 @@ class SessionEventController extends Controller
             ));
     }
 
+    /**
+     *
+     * @Route("/sessionevent/view_sessionevent/{id}", name="sessionevent_view", defaults={"id" = -1})
+     *
+     * @Security("has_role('ROLE_ADMIN')")
+     *
+     * @param $id
+     * @param Request $request
+     * @return array
+     */
+    public function viewSessionEvent($id, Request $request) {
+
+        /** @var UserAccount $loggedInUser */
+        $loggedInUser = $this->getUser();
+
+        /** @var EntityManager $em */
+        $em = $this->get('doctrine.orm.default_entity_manager');
+
+        /** @var SessionEventRepository $sessionEventRepo */
+        $sessionEventRepo = $em->getRepository('AppBundle\Entity\SessionEvent');
+
+        /** @var SessionEvent $sessionevent */
+        $sessionevent = $sessionEventRepo->find($id);
+
+        if (!$sessionevent) {
+            $this->addFlash(
+                'error',
+                'Nincs ilyen azonosítójú óra esemény: ' . $id . '!'
+            );
+            return $this->redirectToRoute('subscription_list_all');
+        }
+
+        return $this->render('event/viewSessionEvent.html.twig',
+            array(
+                'sessionevent' => $sessionevent,
+                'logged_in_user' => $loggedInUser
+            ));
+
+
+    }
+
 }

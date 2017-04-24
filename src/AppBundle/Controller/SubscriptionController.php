@@ -8,6 +8,7 @@ use AppBundle\Entity\AttendanceHistory;
 use AppBundle\Entity\Subscription;
 use AppBundle\Entity\UserAccount;
 use AppBundle\Form\SubscriptionType;
+use AppBundle\Repository\AttendanceHistoryRepository;
 use AppBundle\Repository\SubscriptionRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use AppBundle\Repository\UserAccountRepository;
@@ -171,5 +172,52 @@ class SubscriptionController extends Controller
                 'form' => $form->createView(),
                 'logged_in_user' => $loggedInUser
             ));
+    }
+
+    /**
+     *
+     * @Route("/subscription/view_attendances/{id}", name="subscription_view_attendances", defaults={"id" = -1})
+     *
+     *
+     * @param $id
+     * @param Request $request
+     * @return array
+     */
+    public function viewSubscriptionAttendances($id, Request $request) {
+
+        /** @var UserAccount $loggedInUser */
+        $loggedInUser = $this->getUser();
+
+        /** @var EntityManager $em */
+        $em = $this->get('doctrine.orm.default_entity_manager');
+
+        /** @var SubscriptionRepository $subscriptionRepo */
+        $subscriptionRepo = $em->getRepository('AppBundle\Entity\Subscription');
+
+        /** @var Subscription $subscription */
+        $subscription = $subscriptionRepo->find($id);
+
+        if (!$subscription) {
+            $this->addFlash(
+                'error',
+                'Nincs ilyen azonosítójú bérlet: ' . $id . '!'
+            );
+            return $this->redirectToRoute('subscription_list_all');
+        }
+
+        /** @var AttendanceHistoryRepository $attendanceHistoryRepo */
+        $attendanceHistoryRepo =$em->getRepository('AppBundle\Entity\AttendanceHistory');
+
+        $attendancRecords = $attendanceHistoryRepo->findBy(array('subscription' => $subscription->getId()));
+
+
+        return $this->render('subscription/viewSubscriptionAttendances.html.twig',
+            array(
+                'subscription' => $subscription,
+                'attendances' => $attendancRecords,
+                'logged_in_user' => $loggedInUser
+            ));
+
+
     }
 }

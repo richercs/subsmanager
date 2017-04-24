@@ -1,0 +1,60 @@
+{% extends 'subscription/layout.html.twig' %}
+
+{% block body %}
+    {{ parent() }}
+    <h3>Bérlet használat</h3>
+    <div id="yellow-wrapper">
+        <div id="view-subscription-attendances-wrapper">
+            <h4><b>Bérlet Adatok</b></h4>
+            <b>Tulajdonos: </b>{{ subscription.getOwner.getFirstName }} {{ subscription.getOwner.getLastName }}<br/>
+            <b>Vásárló: </b>{{ subscription.getBuyer.getFirstName }} {{ subscription.getBuyer.getLastName }}<br/>
+            <b>Alkalmak Száma: </b>{{ subscription.getAttendanceCount }}<br/>
+            <b>Kezdeti Időpont: </b>{{ subscription.getStartDateString }}<br/>
+            <b>Lejárati Időpont: </b>{{ subscription.getDueDateString }}<br/>
+            <b>Ár: </b>{{ subscription.getPrice }}<br/>
+            <br>
+            <h4><b>Látogattot Órák</b></h4>
+            <table class="table colored-table">
+                <thead>
+                <tr>
+                    <th>Óra Típus</th>
+                    <th>Időpont</th>
+                    {% block AdminLinkToFormHeader %}
+                        {% if logged_in_user is not null %}
+                            {% if logged_in_user.getIsAdmin %}
+                                <th>Űrlap</th>
+                            {% endif %}
+                        {% endif %}
+                    {%  endblock %}
+                </tr>
+                </thead>
+                <tbody>
+                {% for attendanceRecord in attendances %}
+                    <tr>
+                        <td>
+                            {{ attendanceRecord.getSessionEvent.scheduleItem.getSessionName }}
+                        </td>
+                        <td>
+                            {{ attendanceRecord.getSessionEvent.getSessionEventDateString }}
+                        </td>
+                        {% block AdminLinkToFormBody %}
+                            {% if logged_in_user is not null %}
+                                {% if logged_in_user.getIsAdmin %}
+                                    <td>
+                                        <a href="{{ path('sessionevent_view', {'id': attendanceRecord.getSessionEvent.getId}) }}" class="btn btn-link"><span style="font-size:16px; padding-left: 8px;" class="pull-right showopacity glyphicon glyphicon-list-alt"></span></a>
+                                    </td>
+                                {% endif %}
+                            {% endif %}
+                        {%  endblock %}
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <a href="{{ path('useraccount_view', {'id': logged_in_user.id}) }}" class="btn btn-primary">Vissza</a>
+        </div>
+    </div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
