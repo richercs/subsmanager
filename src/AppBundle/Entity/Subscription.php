@@ -44,6 +44,11 @@ class Subscription
     protected $startDate;
 
     /**
+     * @ORM\Column(name="date_due_date", type="datetime", nullable = false)
+     */
+    protected $dueDate;
+
+    /**
      * @ORM\Column(name="attendance_count", type="integer", nullable = true)
      */
     protected $attendanceCount;
@@ -147,6 +152,29 @@ class Subscription
      */
     public function getStartDateString() {
         return $this->getStartDate()->format('Y-m-d H:i');
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDueDate()
+    {
+        return $this->dueDate;
+    }
+
+    /**
+     * @param mixed $dueDate
+     */
+    public function setDueDate($dueDate)
+    {
+        $this->dueDate = $dueDate;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDueDateString() {
+        return $this->getDueDate()->format('Y-m-d H:i');
     }
 
     /**

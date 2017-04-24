@@ -40,6 +40,12 @@ class SubscriptionType extends AbstractType
                 'format' => 'yyyy-MM-dd HH:mm',
                 'html5' => false,
             ))
+            ->add('dueDate', DateType::class, array(
+                'widget' => 'single_text',
+                'attr' => array( 'class' => 'datetimepicker'),
+                'format' => 'yyyy-MM-dd HH:mm',
+                'html5' => false,
+            ))
             ->add('price', 'money', array(
                 'currency' => 'HUF'
             ))
