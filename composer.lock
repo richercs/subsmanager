@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "ed57b7e7efa028de9874cd9f43747c6b",
-    "content-hash": "9cdd42e37de46f203ffcfbac9f1fc197",
+    "hash": "94cfc658c43c207f204db9c2084f5084",
+    "content-hash": "46555795e6b19ca8f865c4321403f0e9",
     "packages": [
         {
             "name": "behat/transliterator",
@@ -2511,55 +2511,6 @@
                 "framework"
             ],
             "time": "2017-04-05 04:05:19"
-        },
-        {
-            "name": "symfonycontrib/confirm-bundle",
-            "version": "v1.2.0",
-            "target-dir": "SymfonyContrib/Bundle/ConfirmBundle",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/SymfonyContrib/ConfirmBundle.git",
-                "reference": "43296b9c7ad8bc9cb10512ba51b78887c7d13fdc"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/SymfonyContrib/ConfirmBundle/zipball/43296b9c7ad8bc9cb10512ba51b78887c7d13fdc",
-                "reference": "43296b9c7ad8bc9cb10512ba51b78887c7d13fdc",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.4",
-                "symfony/symfony": "~2.3"
-            },
-            "type": "symfony-bundle",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.0.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "SymfonyContrib\\Bundle\\ConfirmBundle\\": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Alan Doucette",
-                    "email": "dragonwize@gmail.com",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Symfony2 confirmation form bundle.",
-            "homepage": "http://symfonycontrib.com",
-            "keywords": [
-                "confirm",
-                "form"
-            ],
-            "time": "2014-02-25 22:18:03"
         },
         {
             "name": "twig/twig",
