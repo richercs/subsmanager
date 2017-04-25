@@ -25,6 +25,10 @@
         {{ form_row(form.dueDate, {'label': 'Lejárati Időpont'}) }}
         {{ form_row(form.price, {'label': 'Ár'}) }}
         {{ form_end(form, {'render_rest': true}) }}
+        <div class="checkbox">
+            <label><input type="checkbox" id="confirmDeleteCheckBox" value="">Biztosan Törli?</label>
+        </div>
+        <br>
         <a href="{{ path('subscription_list_all') }}" class="btn btn-primary">Vissza</a>
     </div>
 {% endblock %}
@@ -50,5 +54,31 @@
                 format: 'YYYY-MM-DD HH:mm'
             });
         });
+    </script>
+{% endblock %}
+
+{% block body_end_javascripts %}
+    <script type="text/javascript">
+
+        var confirmDeleteCheckbox = $('#confirmDeleteCheckBox');
+
+        if (confirmDeleteCheckbox.is(":checked")) {
+            // let it submit
+            $('#app_subscription_delete').attr("disabled", false);
+        } else {
+            // don't let it submit
+            $('#app_subscription_delete').attr("disabled", true);
+        }
+
+        confirmDeleteCheckbox.click( function () {
+            if ($('#confirmDeleteCheckBox').is(":checked")) {
+                // let it submit
+                $('#app_subscription_delete').attr("disabled", false);
+            } else {
+                // don't let it submit
+                $('#app_subscription_delete').attr("disabled", true);
+            }
+        });
+
     </script>
 {% endblock %}
