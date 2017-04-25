@@ -50,11 +50,19 @@
                 {% endfor %}
                 </tbody>
             </table>
-            <a href="{{ path('useraccount_view', {'id': logged_in_user.id}) }}" class="btn btn-primary">Vissza</a>
+            <a id="formBackButton" href="#" class="btn btn-primary">Vissza</a>
         </div>
     </div>
 {% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
+{% endblock %}
+
+{% block body_end_javascripts %}
+    <script type="text/javascript">
+        $('#formBackButton').click( function () {
+            window.history.back()
+        })
+    </script>
 {% endblock %}

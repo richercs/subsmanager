@@ -3,6 +3,12 @@
 {% block body %}
     {{ parent() }}
     <h3>Bérlet Szerkesztése</h3>
+    <div id="white-wrapper">
+        <h4>
+            <b>Bérlet használat </b>
+            <a href="{{ path('subscription_view_attendances', {'id': subscription.id}) }}" class="btn btn-primary"><span style="font-size:16px; padding-left: 8px;" class="pull-right showopacity glyphicon glyphicon-chevron-right"></span></a>
+        </h4>
+    </div>
     <div id="yellow-wrapper">
         {{ form_start(form) }}
         {{ form_errors(form) }}

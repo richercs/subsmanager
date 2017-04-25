@@ -95,8 +95,8 @@ class UserContact
     {
         return $this->getContactFirstName()
         . ' ' . $this->getContactLastName()
-        . ' ' . $this->getContactEmail()
-        . ' [' . $this->getId() . ']';
+        . ' (' . $this->getContactEmail()
+        . ') [' . $this->getId() . ']';
     }
 
     /**

@@ -92,13 +92,14 @@ class Subscription
      */
     public function __toString()
     {
-        return 'Tulajdonos: ' . $this->getOwner()
-        . ' Tulajdonos Email: ' . $this->getOwner()->getEmail()
-        . ' Vásárló: ' . $this->getBuyer() . ' '
-        . $this->isIsMonthlyTicket() . ' '
-        . ' (' . $this->getStartDate()->format('Y-m-d H:i') .')'
-        . ' [' . $this->getId() . ']'
-        . ' {' . $this->getStatus() . '}';
+        // TODO: Get rid of getStatus to short this string (it is used for select)
+
+        return $this->getOwner()->getUsername()
+        . ' {' . $this->getStatus() . '}'
+        . ' ' .  $this->getIsMonthlyTicketString() . ' '
+        . ' (' . $this->getStartDateString() .' -'
+        . ' ' . $this->getDueDateString()
+        . ' [' . $this->getId() . ']';
     }
 
     /**
@@ -131,6 +132,17 @@ class Subscription
     public function setIsMonthlyTicket($isMonthlyTicket)
     {
         $this->isMonthlyTicket = $isMonthlyTicket;
+    }
+
+    /**
+     * @return string
+     */
+    public function getIsMonthlyTicketString() {
+        if($this->isIsMonthlyTicket()) {
+            return 'Havi';
+        } else {
+            return 'Alkalmas';
+        }
     }
 
     /**

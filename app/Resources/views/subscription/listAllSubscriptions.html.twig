@@ -7,13 +7,7 @@
         <div class="list-group">
             {% for subscription in subscriptions %}
                 <a href="{{ path('subscription_edit_subscription', {'id': subscription.id}) }}" class="list-group-item">
-                    <b>Tulajdonos: {{ subscription.owner }}</b><br/>
-                    <b>Tulajdonos email: {{ subscription.owner.email }}</b><br/>
-                    Vásárló: {{ subscription.buyer }}<br/>
-                    Havi bérlet: <b>{% if subscription.ismonthlyticket == 0 %} No {% else %} Yes {% endif %}</b><br/>
-                    Ár: {{ subscription.price }}<br/>
-                    Státusz: {{ subscription.status }}<br/>
-                    (kezdeti dátum: <i>{{ subscription.startdate|date('Y-m-d H:i') }}</i>)
+                    {{ subscription }}
                     <p>Létrehozva: <b>{{ subscription.created|date('Y-m-d H:i:s') }}</b></p>
                 </a>
             {% endfor %}

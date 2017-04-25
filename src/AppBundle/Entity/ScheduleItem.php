@@ -89,10 +89,6 @@ class ScheduleItem
     public function __toString()
     {
         return $this->getScheduledItemName()
-        . ' {(' . $this->getScheduledDay() .')'
-        . ' (' . $this->getScheduledStartTime() .')'
-        . ' (' . $this->getScheduledDueTime() .')}'
-        . ' ' . $this->getLocation()
         . ' [' . $this->getId() . ']';
     }
 

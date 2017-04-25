@@ -54,6 +54,23 @@ class SessionEventController extends Controller
     }
 
     /**
+     * @Route("/sessionevent/list_select", name="session_event_list_select")
+     *
+     * @Security("has_role('ROLE_ADMIN')")
+     *
+     * @param Request request
+     * @return array
+     */
+    public function listSessionEventsAction($events, $loggedInUser, Request $request)
+    {
+        return $this->render('event/listAllSessionEvents.html.twig',
+            array(
+                'events' => $events,
+                'logged_in_user' => $loggedInUser
+            ));
+    }
+
+    /**
      * @Route("/sessionevent/add_session_event", name="session_add_session_event")
      *
      * @Security("has_role('ROLE_ADMIN')")
@@ -202,7 +219,9 @@ class SessionEventController extends Controller
                 'notice',
                 'Változtatások Elmentve!'
             );
-            return $this->redirectToRoute('session_event_list_all');
+            return $this->redirectToRoute('session_edit_session_event', array(
+                'id' => $id
+            ));
         }
 
         return $this->render('event/editSessionEvent.html.twig',

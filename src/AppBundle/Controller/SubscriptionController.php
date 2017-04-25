@@ -9,7 +9,9 @@ use AppBundle\Entity\Subscription;
 use AppBundle\Entity\UserAccount;
 use AppBundle\Form\SubscriptionType;
 use AppBundle\Repository\AttendanceHistoryRepository;
+use AppBundle\Repository\SessionEventRepository;
 use AppBundle\Repository\SubscriptionRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use AppBundle\Repository\UserAccountRepository;
 use Doctrine\ORM\EntityManager;
@@ -140,9 +142,23 @@ class SubscriptionController extends Controller
                         'A bérlet használatban van a következő űrlapokon: ' . PHP_EOL . implode(', ', $relatedAH)
                     );
 
-                    return $this->redirectToRoute('subscription_edit_subscription', array(
-                        'id' => $id
+                    /** @var SessionEventRepository $sessionEventRepo */
+                    $sessionEventRepo = $em->getRepository('AppBundle\Entity\SessionEvent');
+
+                    $relatedAHSessionEvents = new ArrayCollection();
+
+                    /** @var AttendanceHistory $record */
+                    foreach ($relatedAH as $record) {
+                        $relatedAHSessionEvents->add($record->getSessionEvent());
+                    }
+
+                    $sessionEventsToList = $subscriptionRepository->findBy(array('id' => $relatedAHSessionEvents));
+
+                    return $this->forward('AppBundle:SessionEvent:listSessionEvents', array(
+                        'events' => $relatedAHSessionEvents,
+                        'loggedInUser' => $loggedInUser
                     ));
+
                 }
 
                 $em->remove($subscription);
