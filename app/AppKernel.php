@@ -18,6 +18,7 @@ class AppKernel extends Kernel
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new Knp\DoctrineBehaviors\Bundle\DoctrineBehaviorsBundle(),
             new PUGX\AutocompleterBundle\PUGXAutocompleterBundle(),
+            new Gregwar\CaptchaBundle\GregwarCaptchaBundle(),
             new AppBundle\AppBundle(),
         );
 

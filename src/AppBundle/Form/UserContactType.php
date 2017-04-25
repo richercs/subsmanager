@@ -2,6 +2,7 @@
 
 namespace AppBundle\Form;
 
+use Gregwar\CaptchaBundle\Type\CaptchaType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -19,6 +20,7 @@ class UserContactType extends AbstractType
             ->add('contact_last_name')
             ->add('contact_email')
             ->add('password', PasswordType::class)
+            ->add('captcha', CaptchaType::class)
             ->add('save', 'submit', array(
                 'label' => 'Küldés'
             ))

@@ -81,3 +81,8 @@ fos_user:
             form:
                 type: AppBundle\Form\RegistrationType
 
+gregwar_captcha:
+    width: 200
+    height: 50
+    length: 6
+    invalid_message: 'Hibás kód'
