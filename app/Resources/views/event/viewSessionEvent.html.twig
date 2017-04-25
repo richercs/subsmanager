@@ -32,10 +32,19 @@
             <h4><b>Napidíj Bevétel: </b></h4>{{ sessionevent.getSessionFeeRevenueSold }} HUF<br/>
             <h4><b>Teljes Bevétel: </b></h4>TODO<br/>
         </div>
-
+        <br>
+        <a id="formBackButton" href="#" class="btn btn-primary">Vissza</a>
     </div>
 {% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
+{% endblock %}
+
+{% block body_end_javascripts %}
+    <script type="text/javascript">
+        $('#formBackButton').click( function () {
+            window.history.back()
+        })
+    </script>
 {% endblock %}
