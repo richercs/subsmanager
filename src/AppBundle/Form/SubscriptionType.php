@@ -47,7 +47,8 @@ class SubscriptionType extends AbstractType
                 'html5' => false,
             ))
             ->add('price', 'money', array(
-                'currency' => 'HUF'
+                'currency' => 'HUF',
+                'scale' => 0
             ))
             ->add('save', 'submit', array(
                 'label' => 'Mentés'

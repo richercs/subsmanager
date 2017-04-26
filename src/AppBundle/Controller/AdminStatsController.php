@@ -47,7 +47,15 @@ class AdminStatsController extends Controller
         /** @var SessionEventRepository $sessionEventRepository */
         $sessionEventRepository = $em->getRepository('AppBundle\Entity\SessionEvent');
 
-        $events = $sessionEventRepository->findAll();
+        $statsStartDate = $request->get('statsStart');
+
+        $statsDueDate = $request->get('statsDue');
+
+        if(is_null($statsStartDate) && is_null($statsDueDate) || $statsStartDate == "" && $statsDueDate == "") {
+            $events = $sessionEventRepository->getLastFiftySessions();
+        } else {
+            $events = $sessionEventRepository->getSessionsBetweenDates($statsStartDate, $statsDueDate);
+        }
 
         /** @var SessionEvent $event */
         foreach ($events as $event) {
@@ -57,9 +65,25 @@ class AdminStatsController extends Controller
             $event->setRevenue($revenue);
         }
 
+        $eventCount = count($events);
+
+        $totalRevenue = 0;
+
+        $totalAttendeeCount = 0;
+
+        /** @var SessionEvent $event */
+        foreach ($events as $event) {
+
+            $totalRevenue = $totalRevenue + $event->getRevenue();
+
+            $totalAttendeeCount = $totalAttendeeCount + $event->getAttendeeFullCount();
+        }
 
         return $this->render('stats/viewAdminStats.html.twig', array(
             'events' => $events,
+            'event_count' => $eventCount,
+            'total_revenue' => $totalRevenue,
+            'total_attendee_count' => $totalAttendeeCount,
             'logged_in_user' => $loggedInUser
         ));
     }

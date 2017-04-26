@@ -23,6 +23,16 @@ code { background: #F5F5F5; max-width: 100px; padding: 2px 6px; word-wrap: break
 
 .flash-notice {}
 
+.data-wrapper {
+    padding: 4px;
+    background-color: white;
+}
+
+#summary-wrapper {
+    background-color: white;
+    padding: 1em 1em 1em 1em;
+}
+
 .colored-table {
     background-color: white;
 }

@@ -39,7 +39,8 @@ class SessionEventType extends AbstractType
             )
             ->add('sessionFeeNumbersSold')
             ->add('sessionFeeRevenueSold', 'money', array(
-                'currency' => 'HUF'
+                'currency' => 'HUF',
+                'scale' => 0
             ))
             ->add('save', 'submit', array(
                 'label' => 'Mentés'
