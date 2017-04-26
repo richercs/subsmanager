@@ -96,6 +96,20 @@ class SessionEventController extends Controller
 
         if ($form->isValid())
         {
+            // save and continue button that redirects to the edit page
+            if($form->get('saveAndContinue')->isClicked()) {
+                // The OneToMany association and the symfony-collection bundle manages the attendees ArrayCollection
+                $em->persist($newEvent);
+                $em->flush();
+                $this->addFlash(
+                    'notice',
+                    'Változtatások Elmentve!'
+                );
+                return $this->redirectToRoute('session_edit_session_event', array(
+                    'id' => $newEvent->getId()
+                ));
+            }
+
             // The OneToMany association and the symfony-collection bundle manages the attendees ArrayCollection
             $em->persist($newEvent);
             $em->flush();

@@ -44,6 +44,10 @@ class SessionEventType extends AbstractType
             ->add('save', 'submit', array(
                 'label' => 'Mentés'
             ))
+            ->add('saveAndContinue', 'submit', array(
+                'label' => 'Mentés és Folytatás',
+                'attr' => array('class' => 'btn-success')
+            ))
             ->add('delete','submit', array(
                 'attr'      => array('class' => 'button-link delete'),
                 'label'     => 'Törlés'

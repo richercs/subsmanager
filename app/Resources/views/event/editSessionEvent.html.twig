@@ -27,7 +27,9 @@
         {{ form_row(form.attendees, {'label': 'Bérletesek'}) }}
         {{ form_row(form.sessionFeeNumbersSold, {'label': 'Eladott Napidíjak'}) }}
         {{ form_row(form.sessionFeeRevenueSold, {'label': 'Napidíj Bevétel'}) }}
-        {{ form_end(form, {'render_rest': true}) }}
+        {{ form_row(form.save) }}
+        {{ form_row(form.delete) }}
+        {{ form_end(form, {'render_rest': false}) }}
         <div class="checkbox">
             <label><input type="checkbox" id="confirmDeleteCheckBox" value="">Törlés engedélyezve</label>
         </div>
