@@ -2,10 +2,10 @@
 
 {% block body %}
     {{ parent() }}
-    <h3>Jelenléti Statisztikák</h3>
+    <h3>Bérlet Statisztikák</h3>
     <div id="white-wrapper">
         <h4><b>Időszak</b></h4>
-        <form action="{{ path('admin_stats') }}" method="get" class="form-inline">
+        <form action="{{ path('admin_stats_subscriptions') }}" method="get" class="form-inline">
             <div class="form-group">
                 <input name="statsStart" type="text" class="form-control datetimepicker" id="statsStartDate" placeholder="-tól">
             </div>
@@ -16,56 +16,56 @@
         </form>
 
         <br>
-        <a href="{{ path('admin_stats_subscriptions') }}" class="btn btn-primary">Bérlet Statisztikák</a>
+        <a href="{{ path('admin_stats') }}" class="btn btn-success">Jelenléti Statisztikák</a>
         <br>
 
         <br>
         <h4><b>Összesítés</b></h4>
         <div id="summary-wrapper">
-            <h5>Űrlapok Száma: <b>{{ event_count }}</b></h5>
+            <h5>Bérletek Száma: <b>{{ subscription_count }}</b></h5>
             <h5>Teljes Bevétel: <b>{{ total_revenue|number_format(0, '.', ' ')}} Ft</b></h5>
-            <h5>Teljes Létszám: <b>{{ total_attendee_count }}</b></h5>
+            <h5>Összes Felhasználás: <b>{{ total_usage_count }}</b></h5>
         </div>
     </div>
 
     <div id="stats-wrapper">
         <div id="view-user-account-wrapper">
-            <h4><b>Űrlapok</b></h4>
+            <h4><b>Bérletek</b></h4>
             <br>
             <table class="table colored-table">
                 <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Órarendi Elem</th>
-                    <th>Időpont</th>
-                    <th>Bevétel</th>
-                    <th>Létszám</th>
-                    <th>Űrlap</th>
+                    <th>Tulajdonos</th>
+                    <th>Indul</th>
+                    <th>Lejár</th>
+                    <th style="text-align: left">Óra / Ár</th>
+                    <th>Részletek</th>
                 </tr>
                 </thead>
                 <tbody>
-                {% for sessionevent in events %}
+                {% for subscription in subscriptions %}
                     <tr>
                         <td>
-                            {{ sessionevent.getId }}
+                            {{ subscription.getId }}
                         </td>
                         <td>
-                            {{ sessionevent.getScheduleItem }}
+                            {{ subscription.getOwner.getUserName }}
                         </td>
                         <td>
-                            {{ sessionevent.getSessionEventDateString }}
+                            {{ subscription.getStartDateString }}
                         </td>
                         <td>
-                            {{ sessionevent.getRevenue|number_format(0, '.', ' ') }} Ft
-                        </td>
-                        <td style="text-align: center">
-                            {{ sessionevent.getAttendeeFullCount }}
+                            {{ subscription.getDueDateString }}
                         </td>
                         <td>
-                            <a href="{{ path('sessionevent_view', {'id': sessionevent.getId}) }}" class="btn btn-link"><span style="font-size:16px; padding-left: 8px;" class="pull-right showopacity glyphicon glyphicon-list-alt"></span></a>
+                            {{ subscription.getUsages }} / {{ subscription.getPrice|number_format(0, '.', ' ') }} Ft
+                        </td>
+                        <td>
+                            <a href="{{ path('subscription_view_attendances', {'id': subscription.getId}) }}" class="btn btn-link"><span style="font-size:16px; padding-left: 8px;" class="pull-right showopacity glyphicon glyphicon-chevron-right"></span></a>
                         </td>
                     </tr>
-                    {% endfor %}
+                {% endfor %}
                 </tbody>
             </table>
         </div>

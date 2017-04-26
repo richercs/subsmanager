@@ -88,6 +88,11 @@ class Subscription
     protected $created;
 
     /**
+     * @var int
+     */
+    protected $usages;
+
+    /**
      * @return string
      */
     public function __toString()
@@ -254,6 +259,23 @@ class Subscription
     {
         $this->price = $price;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getUsages()
+    {
+        return $this->usages;
+    }
+
+    /**
+     * @param mixed $usages
+     */
+    public function setUsages($usages)
+    {
+        $this->usages = $usages;
+    }
+
 
     /**
      * @return string

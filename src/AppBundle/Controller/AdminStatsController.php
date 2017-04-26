@@ -16,6 +16,7 @@ use AppBundle\Entity\Subscription;
 use AppBundle\Entity\UserAccount;
 use AppBundle\Repository\AttendanceHistoryRepository;
 use AppBundle\Repository\SessionEventRepository;
+use AppBundle\Repository\SubscriptionRepository;
 use AppBundle\Repository\UserAccountRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
@@ -122,4 +123,62 @@ class AdminStatsController extends Controller
         return $resultRevenue;
     }
 
+    /**
+     * @Route("/admin_stats/subscription", name="admin_stats_subscriptions")
+     *
+     * @Security("has_role('ROLE_ADMIN')")
+     *
+     * @param Request request
+     * @return array
+     */
+    public function viewAdminStatsOnSubscriptionsAction(Request $request)
+    {
+        /** UserAccount $loggedInUser */
+        $loggedInUser = $this->getUser();
+
+        /** @var EntityManager $em */
+        $em = $this->get('doctrine.orm.default_entity_manager');
+
+        /** @var SubscriptionRepository $subscriptionRepo */
+        $subscriptionRepo = $em->getRepository('AppBundle\Entity\Subscription');
+
+        $statsStartDate = $request->get('statsStart');
+
+        $statsDueDate = $request->get('statsDue');
+
+        if(is_null($statsStartDate) && is_null($statsDueDate) || $statsStartDate == "" && $statsDueDate == "") {
+            $subscriptions = $subscriptionRepo->getLastFiftySubscriptions();
+        } else {
+            $subscriptions = $subscriptionRepo->getSubscriptionsBetweenDates($statsStartDate, $statsDueDate);
+        }
+
+        /** @var AttendanceHistoryRepository $attendanceHistoryRepo */
+        $attendanceHistoryRepo = $em->getRepository(AttendanceHistory::class);
+
+        $subscriptionsCount = count($subscriptions);
+
+        $totalRevenue = 0;
+
+        $totalUsageCount = 0;
+
+        /** @var Subscription $subscription */
+        foreach ($subscriptions as $subscription) {
+
+            $totalRevenue = $totalRevenue + $subscription->getPrice();
+
+            $usageCount = count($attendanceHistoryRepo->findBy(array('subscription' => $subscription)));
+
+            $subscription->setUsages($usageCount);
+
+            $totalUsageCount = $totalUsageCount + $usageCount;
+        }
+
+        return $this->render('stats/viewAdminStatsOnSubscriptions.html.twig', array(
+            'subscriptions' => $subscriptions,
+            'subscription_count' => $subscriptionsCount,
+            'total_revenue' => $totalRevenue,
+            'total_usage_count' => $totalUsageCount,
+            'logged_in_user' => $loggedInUser
+        ));
+    }
 }

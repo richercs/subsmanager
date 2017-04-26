@@ -36,4 +36,39 @@ class SubscriptionRepository extends EntityRepository
 
         return $result;
     }
+
+    public function getSubscriptionsBetweenDates($stats_start, $stats_due) {
+
+        $query = $this->_em->createQuery('
+                SELECT subscription
+                FROM AppBundle\Entity\Subscription subscription 
+                WHERE subscription.startDate >= :stats_start
+                AND subscription.startDate <= :stats_due
+           ');
+
+        $query->setParameters(array(
+            'stats_start' => $stats_start,
+            'stats_due' => $stats_due
+        ));
+
+        $result = $query->getResult();
+
+        return $result;
+    }
+
+    public function getLastFiftySubscriptions() {
+
+        $query = $this->_em->createQuery('
+                SELECT subscription
+                FROM AppBundle\Entity\Subscription subscription 
+                ORDER BY subscription.id DESC
+           ');
+
+        $query->setMaxResults(50);
+
+        $result = $query->getResult();
+
+        return $result;
+    }
+
 }
