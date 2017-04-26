@@ -4,14 +4,30 @@
     {{ parent() }}
     <h3>Óra Események</h3>
     <div id="yellow-wrapper">
+        {% if subscription_id is defined %}
+            <h4><b>Érintett Űrlapok</b></h4>
+            <br>
+        {% endif %}
         <div class="list-group">
             {% for event in events %}
-                <a href="{{ path('session_edit_session_event', {'id': event.id}) }}" class="list-group-item">
-                    {{ event }}<br/>
-                    <b>Létrehozva: <b>{{ event.created|date('Y-m-d H:i:s') }}</b></b>
-                </a>
+                {% if subscription_id is defined %}
+                    <a href="{{ path('session_edit_session_event', {'id': event.id, 'subscription_id': subscription_id}) }}" class="list-group-item">
+                        {{ event }}<br/>
+                        <b>Létrehozva: <b>{{ event.created|date('Y-m-d H:i:s') }}</b></b>
+                    </a>
+                {%  else %}
+                    <a href="{{ path('session_edit_session_event', {'id': event.id}) }}" class="list-group-item">
+                        {{ event }}<br/>
+                        <b>Létrehozva: <b>{{ event.created|date('Y-m-d H:i:s') }}</b></b>
+                    </a>
+                {% endif %}
             {% endfor %}
         </div>
+        {% if subscription_id is defined %}
+            <a href="{{ path('subscription_edit_subscription', {'id': subscription_id}) }}" class="btn btn-primary">Vissza</a>
+        {% else %}
+            <a href="{{ path('homepage') }}" class="btn btn-primary">Vissza</a>
+        {% endif %}
     </div>
 {% endblock %}
 

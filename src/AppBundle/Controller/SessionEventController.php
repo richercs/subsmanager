@@ -54,23 +54,6 @@ class SessionEventController extends Controller
     }
 
     /**
-     * @Route("/sessionevent/list_select", name="session_event_list_select")
-     *
-     * @Security("has_role('ROLE_ADMIN')")
-     *
-     * @param Request request
-     * @return array
-     */
-    public function listSessionEventsAction($events, $loggedInUser, Request $request)
-    {
-        return $this->render('event/listAllSessionEvents.html.twig',
-            array(
-                'events' => $events,
-                'logged_in_user' => $loggedInUser
-            ));
-    }
-
-    /**
      * @Route("/sessionevent/add_session_event", name="session_add_session_event")
      *
      * @Security("has_role('ROLE_ADMIN')")
@@ -137,10 +120,16 @@ class SessionEventController extends Controller
      * @Security("has_role('ROLE_ADMIN')")
      *
      * @param $id
+     * @param $subscriptionId
      * @param Request $request
      * @return array
      */
-    public function editSessionEventAction($id, Request $request) {
+    public function editSessionEventAction($id, $subscriptionId = null, Request $request) {
+
+        // This is for the back URL
+        if (!is_null($request->query->get('subscription_id'))) {
+            $subscriptionId = intval($request->query->get('subscription_id'));
+        }
 
         /** @var UserAccount $loggedInUser */
         $loggedInUser = $this->getUser();
@@ -233,15 +222,20 @@ class SessionEventController extends Controller
                 'notice',
                 'Változtatások Elmentve!'
             );
-            return $this->redirectToRoute('session_edit_session_event', array(
-                'id' => $id
-            ));
+            return $this->render('event/editSessionEvent.html.twig',
+                array(
+                    'sessionevent' => $sessionEvent,
+                    'form' => $form->createView(),
+                    'subscription_id' => $subscriptionId,
+                    'logged_in_user' => $loggedInUser
+                ));
         }
 
         return $this->render('event/editSessionEvent.html.twig',
             array(
                 'sessionevent' => $sessionEvent,
                 'form' => $form->createView(),
+                'subscription_id' => $subscriptionId,
                 'logged_in_user' => $loggedInUser
             ));
     }

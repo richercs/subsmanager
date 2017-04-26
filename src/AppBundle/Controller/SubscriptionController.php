@@ -108,6 +108,7 @@ class SubscriptionController extends Controller
      */
     public function editSubscriptionAction($id, $breakEventId = null, Request $request) {
 
+        // This is for the back URL
         if (!is_null($request->query->get('break_event_id'))) {
             $breakEventId = intval($request->query->get('break_event_id'));
         }
@@ -138,40 +139,9 @@ class SubscriptionController extends Controller
             // DELETE subscription
             if ($form->get('delete')->isClicked()) {
 
-                $relatedAttendances = $em->getRepository(AttendanceHistory::class)->findBy(array('subscription' => $subscription->getId()));
-
-                if (!empty($relatedAttendances)) {
-                    // message
-                    $this->addFlash(
-                        'error',
-                        'A bérlet használatban van a következő űrlapokon: ' . PHP_EOL . implode(', ', $relatedAttendances)
-                    );
-
-                    $relatedAHSessionEvents = new ArrayCollection();
-
-                    /** @var AttendanceHistory $record */
-                    foreach ($relatedAttendances as $record) {
-                        $relatedAHSessionEvents->add($record->getSessionEvent());
-                    }
-
-                    return $this->forward('AppBundle:SessionEvent:listSessionEvents', array(
-                        'events' => $relatedAHSessionEvents,
-                        'loggedInUser' => $loggedInUser
-                    ));
-
-                }
-
-                $em->remove($subscription);
-                $em->flush();
-
-                // message
-                $this->addFlash(
-                    'notice',
-                    '"' . $id . '" azonosítójú bérlet sikeresen törölve!'
-                );
-
-                // show list
-                return $this->redirectToRoute('subscription_list_all');
+                return $this->redirectToRoute('subscription_check_sessionsevents', array(
+                    'id' => $subscription->getId()
+                ));
             }
             $em->persist($subscription);
             $em->flush();
@@ -240,7 +210,76 @@ class SubscriptionController extends Controller
                 'attendances' => $attendancRecords,
                 'logged_in_user' => $loggedInUser
             ));
+    }
 
+    /**
+     * Check if the subscription is in any ssession events
+     *
+     * @Route("/subscription/check_sessions/{id}", name="subscription_check_sessionsevents", defaults={"id" = -1})
+     *
+     * @Security("has_role('ROLE_ADMIN')")
+     *
+     * @param $id
+     * @param Request $request
+     * @return array
+     */
+    public function checkSubscriptionInSessionEventsAction($id, Request $request) {
 
+        /** @var UserAccount $loggedInUser */
+        $loggedInUser = $this->getUser();
+
+        /** @var EntityManager $em */
+        $em = $this->get('doctrine.orm.default_entity_manager');
+
+        /** @var SubscriptionRepository $subscriptionRepo */
+        $subscriptionRepo = $em->getRepository('AppBundle\Entity\Subscription');
+
+        /** @var Subscription $subscription */
+        $subscription = $subscriptionRepo->find($id);
+
+        if (!$subscription) {
+            $this->addFlash(
+                'error',
+                'Nincs ilyen azonosítójú szünet esemény: ' . $id . '!'
+            );
+            return $this->redirectToRoute('subscription_list_all');
+        }
+
+        $relatedAttendanceRecords = $em->getRepository(AttendanceHistory::class)->findBy(array('subscription' => $id));
+
+        if (!empty($relatedAttendanceRecords)) {
+            // message
+            $this->addFlash(
+                'error',
+                'A bérlet használatban van a következő űrlapokon: ' . PHP_EOL . implode(', ', $relatedAttendanceRecords)
+            );
+
+            $relatedAHSessionEvents = new ArrayCollection();
+
+            /** @var AttendanceHistory $record */
+            foreach ($relatedAttendanceRecords as $record) {
+                $relatedAHSessionEvents->add($record->getSessionEvent());
+            }
+
+            return $this->render('event/listAllSessionEvents.html.twig', array(
+                'events' => $relatedAHSessionEvents,
+                'subscription_id' => $id,
+                'logged_in_user' => $loggedInUser
+            ));
+
+        }
+
+        // remove
+        $em->remove($subscription);
+        $em->flush();
+
+        // message
+        $this->addFlash(
+            'notice',
+            '"' . $id . '" azonosítójú bérlet sikeresen törölve!'
+        );
+
+        // show list
+        return $this->redirectToRoute('subscription_list_all');
     }
 }

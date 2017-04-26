@@ -33,7 +33,11 @@
         <div class="checkbox">
             <label><input type="checkbox" id="confirmDeleteCheckBox" value="">Törlés engedélyezve</label>
         </div>
-        <a href="{{ path('session_event_list_all') }}" class="btn btn-primary">Vissza</a>
+        {% if subscription_id is null %}
+            <a href="{{ path('session_event_list_all') }}" class="btn btn-primary">Vissza</a>
+        {% else %}
+            <a href="{{ path('subscription_check_sessionsevents', {'id': subscription_id}) }}" class="btn btn-primary">Vissza</a>
+        {% endif %}
     </div>
 {% endblock %}
 
