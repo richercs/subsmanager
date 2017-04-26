@@ -138,26 +138,21 @@ class SubscriptionController extends Controller
             // DELETE subscription
             if ($form->get('delete')->isClicked()) {
 
-                $relatedAH = $em->getRepository(AttendanceHistory::class)->findBy(array('subscription' => $subscription->getId()));
+                $relatedAttendances = $em->getRepository(AttendanceHistory::class)->findBy(array('subscription' => $subscription->getId()));
 
-                if (!empty($relatedAH)) {
+                if (!empty($relatedAttendances)) {
                     // message
                     $this->addFlash(
                         'error',
-                        'A bérlet használatban van a következő űrlapokon: ' . PHP_EOL . implode(', ', $relatedAH)
+                        'A bérlet használatban van a következő űrlapokon: ' . PHP_EOL . implode(', ', $relatedAttendances)
                     );
-
-                    /** @var SessionEventRepository $sessionEventRepo */
-                    $sessionEventRepo = $em->getRepository('AppBundle\Entity\SessionEvent');
 
                     $relatedAHSessionEvents = new ArrayCollection();
 
                     /** @var AttendanceHistory $record */
-                    foreach ($relatedAH as $record) {
+                    foreach ($relatedAttendances as $record) {
                         $relatedAHSessionEvents->add($record->getSessionEvent());
                     }
-
-                    $sessionEventsToList = $subscriptionRepository->findBy(array('id' => $relatedAHSessionEvents));
 
                     return $this->forward('AppBundle:SessionEvent:listSessionEvents', array(
                         'events' => $relatedAHSessionEvents,
