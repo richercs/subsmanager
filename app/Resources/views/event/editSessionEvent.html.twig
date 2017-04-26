@@ -28,6 +28,9 @@
         {{ form_row(form.sessionFeeNumbersSold, {'label': 'Eladott Napidíjak'}) }}
         {{ form_row(form.sessionFeeRevenueSold, {'label': 'Napidíj Bevétel'}) }}
         {{ form_end(form, {'render_rest': true}) }}
+        <div class="checkbox">
+            <label><input type="checkbox" id="confirmDeleteCheckBox" value="">Törlés engedélyezve</label>
+        </div>
         <a href="{{ path('session_event_list_all') }}" class="btn btn-primary">Vissza</a>
     </div>
 {% endblock %}
@@ -64,5 +67,28 @@
                 format: 'YYYY-MM-DD HH:mm'
             });
         });
+    </script>
+    <script type="text/javascript">
+
+        var confirmDeleteCheckbox = $('#confirmDeleteCheckBox');
+
+        if (confirmDeleteCheckbox.is(":checked")) {
+            // let it submit
+            $('#appbundle_sessionevent_delete').attr("disabled", false);
+        } else {
+            // don't let it submit
+            $('#appbundle_sessionevent_delete').attr("disabled", true);
+        }
+
+        confirmDeleteCheckbox.click( function () {
+            if ($('#confirmDeleteCheckBox').is(":checked")) {
+                // let it submit
+                $('#appbundle_sessionevent_delete').attr("disabled", false);
+            } else {
+                // don't let it submit
+                $('#appbundle_sessionevent_delete').attr("disabled", true);
+            }
+        });
+
     </script>
 {% endblock %}

@@ -11,6 +11,9 @@
         {{ form_row(form.last_name, {'label': 'Vezetéknév'}) }}
         {{ form_row(form.email, {'label': 'Email'}) }}
         {{ form_end(form, {'render_rest': true}) }}
+        <div class="checkbox">
+            <label><input type="checkbox" id="confirmDeleteCheckBox" value="">Törlés engedélyezve</label>
+        </div>
         {%  if logged_in_user.getIsAdmin %}
             <a href="{{ path('useraccount_list_all') }}" class="btn btn-primary">Vissza</a>
         {% else %}
@@ -21,4 +24,30 @@
 
 {% block stylesheets %}
     {{ parent() }}
+{% endblock %}
+
+{% block body_end_javascripts %}
+    <script type="text/javascript">
+
+        var confirmDeleteCheckbox = $('#confirmDeleteCheckBox');
+
+        if (confirmDeleteCheckbox.is(":checked")) {
+            // let it submit
+            $('#appbundle_useraccount_delete').attr("disabled", false);
+        } else {
+            // don't let it submit
+            $('#appbundle_useraccount_delete').attr("disabled", true);
+        }
+
+        confirmDeleteCheckbox.click( function () {
+            if ($('#confirmDeleteCheckBox').is(":checked")) {
+                // let it submit
+                $('#appbundle_useraccount_delete').attr("disabled", false);
+            } else {
+                // don't let it submit
+                $('#appbundle_useraccount_delete').attr("disabled", true);
+            }
+        });
+
+    </script>
 {% endblock %}

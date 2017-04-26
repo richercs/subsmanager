@@ -14,6 +14,9 @@
         {{ form_row(form.location, {'label': 'Hely'}) }}
         {{ form_row(form.session_name, {'label': 'Óra Neve'}) }}
         {{ form_end(form, {'render_rest': true}) }}
+        <div class="checkbox">
+            <label><input type="checkbox" id="confirmDeleteCheckBox" value="">Törlés engedélyezve</label>
+        </div>
         <a href="{{ path('schedule_list_all') }}" class="btn btn-primary">Vissza</a>
     </div>
 {% endblock %}
@@ -38,5 +41,31 @@
                 minuteStep: 15
             });
         });
+    </script>
+{% endblock %}
+
+{% block body_end_javascripts %}
+    <script type="text/javascript">
+
+        var confirmDeleteCheckbox = $('#confirmDeleteCheckBox');
+
+        if (confirmDeleteCheckbox.is(":checked")) {
+            // let it submit
+            $('#appbundle_scheduleitem_delete').attr("disabled", false);
+        } else {
+            // don't let it submit
+            $('#appbundle_scheduleitem_delete').attr("disabled", true);
+        }
+
+        confirmDeleteCheckbox.click( function () {
+            if ($('#confirmDeleteCheckBox').is(":checked")) {
+                // let it submit
+                $('#appbundle_scheduleitem_delete').attr("disabled", false);
+            } else {
+                // don't let it submit
+                $('#appbundle_scheduleitem_delete').attr("disabled", true);
+            }
+        });
+
     </script>
 {% endblock %}
