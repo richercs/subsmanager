@@ -142,7 +142,6 @@ class SubscriptionController extends Controller
 
                 if (!empty($relatedAH)) {
                     // message
-                    // TODO: The message should provide a link to the session events edit page.
                     $this->addFlash(
                         'error',
                         'A bérlet használatban van a következő űrlapokon: ' . PHP_EOL . implode(', ', $relatedAH)

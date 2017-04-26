@@ -23,8 +23,6 @@ class BreakEvent
      */
     protected $id;
 
-    // TODO: define break event as time period when monthly tickets are not chargeable. They get postponed to the end date of break.
-
     /**
      * @ORM\Column(name="break_event_start_date", type="datetime", nullable = false)
      */
