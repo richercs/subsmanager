@@ -102,10 +102,16 @@ class SubscriptionController extends Controller
      * @Security("has_role('ROLE_ADMIN')")
      *
      * @param $id
+     * @param $breakEventId
      * @param Request $request
      * @return array
      */
-    public function editSubscriptionAction($id, Request $request) {
+    public function editSubscriptionAction($id, $breakEventId = null, Request $request) {
+
+        if (!is_null($request->query->get('break_event_id'))) {
+            $breakEventId = intval($request->query->get('break_event_id'));
+        }
+
         /** @var UserAccount $loggedInUser */
         $loggedInUser = $this->getUser();
         /** @var EntityManager $em */
@@ -179,13 +185,20 @@ class SubscriptionController extends Controller
                 'notice',
                 'Változtatások Elmentve!'
             );
-            return $this->redirectToRoute('subscription_list_all');
+            return $this->render('subscription/editSubscription.html.twig',
+                array(
+                    'subscription' => $subscription,
+                    'form' => $form->createView(),
+                    'break_event_id' => $breakEventId,
+                    'logged_in_user' => $loggedInUser
+                ));
         }
 
         return $this->render('subscription/editSubscription.html.twig',
             array(
                 'subscription' => $subscription,
                 'form' => $form->createView(),
+                'break_event_id' => $breakEventId,
                 'logged_in_user' => $loggedInUser
             ));
     }

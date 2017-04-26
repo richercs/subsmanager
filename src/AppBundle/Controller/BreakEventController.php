@@ -9,6 +9,7 @@ use AppBundle\Entity\BreakEvent;
 use AppBundle\Entity\UserAccount;
 use AppBundle\Form\BreakEventType;
 use AppBundle\Repository\BreakEventRepository;
+use AppBundle\Repository\SubscriptionRepository;
 use AppBundle\Repository\UserAccountRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Doctrine\ORM\EntityManager;
@@ -79,7 +80,9 @@ class BreakEventController extends Controller
                 'notice',
                 'Változtatások Elmentve!'
             );
-            return $this->redirectToRoute('break_add_breakevent');
+            return $this->redirectToRoute('breakevent_check_subscriptions', array(
+                'id' => $newBreak->getId(),
+            ));
         }
 
         return $this->render('break/addBreakEvent.html.twig',
@@ -150,7 +153,9 @@ class BreakEventController extends Controller
                 'notice',
                 'Változtatások Elmentve!'
             );
-            return $this->redirectToRoute('break_event_list_all');
+            return $this->redirectToRoute('breakevent_check_subscriptions', array(
+                'id' => $breakEvent->getId(),
+            ));
         }
 
         return $this->render('break/editBreakEvent.html.twig',
@@ -161,5 +166,51 @@ class BreakEventController extends Controller
             ));
     }
 
+    /**
+     * Check if the break event with passed $id clashes with active period of any subscription.
+     *
+     * @Route("/breakevent/check_subs/{id}", name="breakevent_check_subscriptions", defaults={"id" = -1})
+     *
+     * @Security("has_role('ROLE_ADMIN')")
+     *
+     * @param $id
+     * @param Request $request
+     * @return array
+     */
+    public function checkSubscriptionAndBreakEventDatesAction($id, Request $request) {
 
+        /** @var UserAccount $loggedInUser */
+        $loggedInUser = $this->getUser();
+
+        /** @var EntityManager $em */
+        $em = $this->get('doctrine.orm.default_entity_manager');
+
+        /** @var BreakEventRepository $breakEventRepo */
+        $breakEventRepo = $em->getRepository('AppBundle\Entity\BreakEvent');
+
+        /** @var BreakEvent $breakEvent */
+        $breakEvent = $breakEventRepo->find($id);
+
+        if (!$breakEvent) {
+            $this->addFlash(
+                'error',
+                'Nincs ilyen azonosítójú szünet esemény: ' . $id . '!'
+            );
+            return $this->redirectToRoute('break_event_list_all');
+        }
+
+        /** @var SubscriptionRepository $subscriptionRepository */
+        $subscriptionRepository = $em->getRepository('AppBundle\Entity\Subscription');
+
+        $subscriptionWithClash = $subscriptionRepository->getClashingSubscriptions($breakEvent->getStartDate(), $breakEvent->getDueDate());
+
+        return $this->render('subscription/listAllSubscriptions.html.twig',
+            array(
+                'base_dir' => realpath($this->container->getParameter('kernel.root_dir').'/..').DIRECTORY_SEPARATOR,
+                'subscriptions' => $subscriptionWithClash,
+                'break_event_id' => $id,
+                'break_event' => $breakEvent,
+                'logged_in_user' => $loggedInUser
+            ));
+    }
 }

@@ -29,7 +29,11 @@
             <label><input type="checkbox" id="confirmDeleteCheckBox" value="">Biztosan Törli?</label>
         </div>
         <br>
-        <a href="{{ path('subscription_list_all') }}" class="btn btn-primary">Vissza</a>
+        {% if break_event_id is null %}
+            <a href="{{ path('subscription_list_all') }}" class="btn btn-primary">Vissza</a>
+        {% else %}
+            <a href="{{ path('breakevent_check_subscriptions', {'id': break_event_id}) }}" class="btn btn-primary">Vissza</a>
+        {% endif %}
     </div>
 {% endblock %}
 
