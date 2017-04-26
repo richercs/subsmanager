@@ -3,37 +3,47 @@
 {% block body %}
     {{ parent() }}
     <h3>Statisztikai Adatok Megtekintése</h3>
-    <div id="yellow-wrapper">
+    <div id="white-wrapper">
+        <b>FORM ami gettel</b>
+    </div>
+    <div id="stats-wrapper">
         <div id="view-user-account-wrapper">
-            <h4><b>TODO</b></h4>
-            <table class="table">
+            <h4><b>Keresési Eredmény</b></h4>
+            <br>
+            <table class="table colored-table">
                 <thead>
                 <tr>
-                    <th>Tulajdonos</th>
-                    <th>Email</th>
-                    <th>Alkalmak Száma</th>
-                    <th>Kezdeti Időpont</th>
-                    <th>Ár</th>
+                    <th>ID</th>
+                    <th>Órarendi Elem</th>
+                    <th>Időpont</th>
+                    <th>Bevétel</th>
+                    <th>Létszám</th>
+                    <th>Űrlap</th>
                 </tr>
                 </thead>
                 <tbody>
+                {% for sessionevent in events %}
                     <tr>
                         <td>
-                            TODO
+                            {{ sessionevent.getId }}
                         </td>
                         <td>
-                            TODO
+                            {{ sessionevent.getScheduleItem }}
                         </td>
                         <td>
-                            TODO
+                            {{ sessionevent.getSessionEventDateString }}
                         </td>
                         <td>
-                            TODO
+                            {{ sessionevent.getRevenue }} Ft
+                        </td>
+                        <td style="text-align: center">
+                            {{ sessionevent.getAttendeeFullCount }}
                         </td>
                         <td>
-                            TODO
+                            <a href="{{ path('sessionevent_view', {'id': sessionevent.getId}) }}" class="btn btn-link"><span style="font-size:16px; padding-left: 8px;" class="pull-right showopacity glyphicon glyphicon-list-alt"></span></a>
                         </td>
                     </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>

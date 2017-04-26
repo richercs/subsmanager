@@ -278,6 +278,13 @@ class SessionEventController extends Controller
             return $this->redirectToRoute('subscription_list_all');
         }
 
+        /** @var AdminStatsController $adminStatsController */
+        $adminStatsController = $this->get('admin_stats');
+
+        $revenue = $adminStatsController->calculateRevenueAction($sessionevent);
+
+        $sessionevent->setRevenue($revenue);
+
         return $this->render('event/viewSessionEvent.html.twig',
             array(
                 'sessionevent' => $sessionevent,

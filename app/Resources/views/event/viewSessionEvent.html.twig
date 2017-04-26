@@ -30,8 +30,9 @@
                 </tbody>
             </table><br/>
             <h4><b>Eladott Napidíjak: </b></h4>{{ sessionevent.getSessionFeeNumbersSold }}<br/>
-            <h4><b>Napidíj Bevétel: </b></h4>{{ sessionevent.getSessionFeeRevenueSold }} HUF<br/>
-            <h4><b>Teljes Bevétel: </b></h4>TODO<br/>
+            <h4><b>Napidíj Bevétel: </b></h4>{{ sessionevent.getSessionFeeRevenueSold }} Ft<br/>
+            <h4><b>Teljes Bevétel: </b></h4>{{ sessionevent.getRevenue }} Ft<br/>
+            <h4><b>Létrehozva: </b></h4>{{ sessionevent.getCreated|date('Y.m.d. H:i:s') }}<br/>
         </div>
         <br>
         <a id="formBackButton" href="#" class="btn btn-primary">Vissza</a>

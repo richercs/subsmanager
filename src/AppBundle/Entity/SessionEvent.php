@@ -71,6 +71,11 @@ class SessionEvent
     protected $created;
 
     /**
+     * @var int $revenue
+     */
+    protected $revenue;
+
+    /**
      * @return string
      */
     public function __toString()
@@ -159,6 +164,30 @@ class SessionEvent
     public function setAttendees($attendees)
     {
         $this->attendees = $attendees;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAttendeeFullCount()
+    {
+        return $this->attendees->count() + $this->sessionFeeNumbersSold;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRevenue()
+    {
+        return $this->revenue;
+    }
+
+    /**
+     * @param mixed $revenue
+     */
+    public function setRevenue($revenue)
+    {
+        $this->revenue = $revenue;
     }
 
     /**

@@ -10,8 +10,12 @@ namespace AppBundle\Controller;
 
 
 
+use AppBundle\Entity\AttendanceHistory;
+use AppBundle\Entity\SessionEvent;
 use AppBundle\Entity\Subscription;
 use AppBundle\Entity\UserAccount;
+use AppBundle\Repository\AttendanceHistoryRepository;
+use AppBundle\Repository\SessionEventRepository;
 use AppBundle\Repository\UserAccountRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
@@ -40,14 +44,58 @@ class AdminStatsController extends Controller
         /** @var EntityManager $em */
         $em = $this->get('doctrine.orm.default_entity_manager');
 
-        /** @var UserAccountRepository $userAccountRepository */
-        $userAccountRepository = $em->getRepository('AppBundle\Entity\UserAccount');
+        /** @var SessionEventRepository $sessionEventRepository */
+        $sessionEventRepository = $em->getRepository('AppBundle\Entity\SessionEvent');
 
-        // TODO: Implementation
+        $events = $sessionEventRepository->findAll();
+
+        /** @var SessionEvent $event */
+        foreach ($events as $event) {
+
+            $revenue = $this->calculateRevenueAction($event);
+
+            $event->setRevenue($revenue);
+        }
+
 
         return $this->render('stats/viewAdminStats.html.twig', array(
+            'events' => $events,
             'logged_in_user' => $loggedInUser
         ));
+    }
+
+    /**
+     * Calculates the revenue of one session event.
+     *
+     * @param SessionEvent $sessionEvent
+     * @return int
+     */
+    public function calculateRevenueAction($sessionEvent) {
+
+        /** @var EntityManager $em */
+        $em = $this->get('doctrine.orm.default_entity_manager');
+
+        /** @var AttendanceHistoryRepository $attendanceHistoryRepo */
+        $attendanceHistoryRepo = $em->getRepository('AppBundle\Entity\AttendanceHistory');
+
+        $resultRevenue = 0;
+
+        /** @var AttendanceHistory $record*/
+        foreach ($sessionEvent->getAttendees() as $record) {
+
+            /** @var ArrayCollection $subscriptionUsages */
+            $subscriptionUsages = $attendanceHistoryRepo->findBy(array('subscription' => $record->getSubscription()));
+
+            $count = count($subscriptionUsages);
+
+            $recordRevenue = $record->getSubscription()->getPrice() / $count;
+
+            $resultRevenue = $resultRevenue + round($recordRevenue,0);
+        }
+
+        $resultRevenue = $resultRevenue + $sessionEvent->getSessionFeeRevenueSold();
+
+        return $resultRevenue;
     }
 
 }
