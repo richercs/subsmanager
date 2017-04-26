@@ -4,13 +4,12 @@
     {{ parent() }}
     <h3>Statisztikai Adatok Megtekintése</h3>
     <div id="white-wrapper">
+        <h4><b>Időszak</b></h4>
         <form action="{{ path('admin_stats') }}" method="get" class="form-inline">
             <div class="form-group">
-                <label for="email">-tól:</label>
                 <input name="statsStart" type="text" class="form-control datetimepicker" id="statsStartDate" placeholder="-tól">
             </div>
             <div class="form-group">
-                <label for="pwd">-ig:</label>
                 <input name="statsDue" type="text" class="form-control datetimepicker" id="statsDueDate" placeholder="-ig">
             </div>
             <button type="submit" class="btn btn-default"><span style="font-size:16px;" class="pull-right showopacity glyphicon glyphicon-search"></span></button>
