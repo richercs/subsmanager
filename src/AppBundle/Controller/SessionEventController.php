@@ -74,25 +74,25 @@ class SessionEventController extends Controller
         /** @var SessionEventRepository $sessionEventRepository */
         $sessionEventRepository = $em->getRepository('AppBundle\Entity\SessionEvent');
 
-        $statsStartDate = $request->get('searchStart');
+        $searchStartDate = $request->get('searchStart');
 
-        $statsDueDate = $request->get('searchDue');
+        $searchDueDate = $request->get('searchDue');
 
-        $statsScheduleItemId = $request->get('searchScheduleItemId');
+        $searchScheduleItemId = $request->get('searchScheduleItemId');
 
-        if(is_null($statsScheduleItemId) || $statsScheduleItemId == "") {
+        if(is_null($searchScheduleItemId) || $searchScheduleItemId == "") {
 
-            if(is_null($statsStartDate) && is_null($statsDueDate) || $statsStartDate == "" && $statsDueDate == "") {
+            if(is_null($searchStartDate) && is_null($searchDueDate) || $searchStartDate == "" && $searchDueDate == "") {
                 $events = $sessionEventRepository->getLastFiftySessions();
             } else {
-                $events = $sessionEventRepository->getSessionsBetweenDates($statsStartDate, $statsDueDate);
+                $events = $sessionEventRepository->getSessionsBetweenDates($searchStartDate, $searchDueDate);
             }
         } else {
 
             /** @var ScheduleItemRepository $scheduleItemRepository */
             $scheduleItemRepository = $em->getRepository(ScheduleItem::class);
 
-            $filteredScheduleItem = $scheduleItemRepository->find($statsScheduleItemId);
+            $filteredScheduleItem = $scheduleItemRepository->find($searchScheduleItemId);
 
             if (!$filteredScheduleItem) {
                 $this->addFlash(
@@ -101,10 +101,10 @@ class SessionEventController extends Controller
                 );
             }
 
-            if(is_null($statsStartDate) && is_null($statsDueDate) || $statsStartDate == "" && $statsDueDate == "") {
+            if(is_null($searchStartDate) && is_null($searchDueDate) || $searchStartDate == "" && $searchDueDate == "") {
                 $events = $sessionEventRepository->getLastFiftySessionsFilteredScheduleItem($filteredScheduleItem);
             } else {
-                $events = $sessionEventRepository->getSessionsBetweenDatesFilteredScheduleItem($statsStartDate, $statsDueDate, $filteredScheduleItem);
+                $events = $sessionEventRepository->getSessionsBetweenDatesFilteredScheduleItem($searchStartDate, $searchDueDate, $filteredScheduleItem);
             }
         }
 
@@ -122,6 +122,9 @@ class SessionEventController extends Controller
 
         return $this->render('event/listSessionEventsEdit.html.twig', array(
             'events' => $events,
+            'searchStart' => $searchStartDate,
+            'searchDue' =>$searchDueDate,
+            'searchScheduleItemId' => $searchScheduleItemId,
             'logged_in_user' => $loggedInUser
         ));
     }
@@ -173,7 +176,7 @@ class SessionEventController extends Controller
                 'notice',
                 'Változtatások Elmentve!'
             );
-            return $this->redirectToRoute('session_event_list_all');
+            return $this->redirectToRoute('sessionevent_search_edit');
         }
 
         return $this->render('event/addSessionEvent.html.twig',
@@ -213,6 +216,13 @@ class SessionEventController extends Controller
         /** @var SessionEventRepository $sessionEventRepository */
         $sessionEventRepository = $em->getRepository('AppBundle\Entity\SessionEvent');
 
+        // This is for the back URL
+        $searchStartDate = $request->get('searchStart');
+
+        $searchDueDate = $request->get('searchDue');
+
+        $searchScheduleItemId = $request->get('searchScheduleItemId');
+
         // Editing session event
         /** @var SessionEvent $sessionEvent */
         $sessionEvent = $sessionEventRepository->find($id);
@@ -222,7 +232,7 @@ class SessionEventController extends Controller
                 'error',
                 'Nincs ilyen azonosítójú óra esemény: ' . $id . '!'
             );
-            return $this->redirectToRoute('session_event_list_all');
+            return $this->redirectToRoute('sessionevent_search_edit');
         }
 
         $originalAttendees = new ArrayCollection();
@@ -259,7 +269,11 @@ class SessionEventController extends Controller
                 );
 
                 // show list
-                return $this->redirectToRoute('session_event_list_all');
+                return $this->redirectToRoute('sessionevent_search_edit', array(
+                    'searchStart' => $searchStartDate,
+                    'searchDue' =>$searchDueDate,
+                    'searchScheduleItemId' => $searchScheduleItemId,
+                ));
             }
             // Check attendee records for errors
             // Rule #1 - Every attendance record is unique
@@ -298,6 +312,9 @@ class SessionEventController extends Controller
             return $this->render('event/editSessionEvent.html.twig',
                 array(
                     'sessionevent' => $sessionEvent,
+                    'searchStart' => $searchStartDate,
+                    'searchDue' =>$searchDueDate,
+                    'searchScheduleItemId' => $searchScheduleItemId,
                     'form' => $form->createView(),
                     'subscription_id' => $subscriptionId,
                     'logged_in_user' => $loggedInUser
@@ -307,6 +324,9 @@ class SessionEventController extends Controller
         return $this->render('event/editSessionEvent.html.twig',
             array(
                 'sessionevent' => $sessionEvent,
+                'searchStart' => $searchStartDate,
+                'searchDue' =>$searchDueDate,
+                'searchScheduleItemId' => $searchScheduleItemId,
                 'form' => $form->createView(),
                 'subscription_id' => $subscriptionId,
                 'logged_in_user' => $loggedInUser
@@ -342,7 +362,7 @@ class SessionEventController extends Controller
                 'error',
                 'Nincs ilyen azonosítójú óra esemény: ' . $id . '!'
             );
-            return $this->redirectToRoute('subscription_list_all');
+            return $this->redirectToRoute('sessionevent_search_edit');
         }
 
         /** @var AdminStatsController $adminStatsController */

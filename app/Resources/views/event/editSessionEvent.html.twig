@@ -34,7 +34,7 @@
             <label><input type="checkbox" id="confirmDeleteCheckBox" value="">Törlés engedélyezve</label>
         </div>
         {% if subscription_id is null %}
-            <a id="formBackButton" href="#" class="btn btn-primary">Vissza</a>
+            <a href="{{ path('sessionevent_search_edit', {'searchStart': searchStart, 'searchDue': searchDue, 'searchScheduleItemId': searchScheduleItemId}) }}" class="btn btn-primary">Vissza</a>
         {% else %}
             <a href="{{ path('subscription_check_sessionsevents', {'id': subscription_id}) }}" class="btn btn-primary">Vissza</a>
         {% endif %}
@@ -65,12 +65,6 @@
             allow_down: false,
             add_at_the_end: true
         });
-    </script>
-
-    <script type="text/javascript">
-        $('#formBackButton').click( function () {
-            window.history.back()
-        })
     </script>
 
     <script>

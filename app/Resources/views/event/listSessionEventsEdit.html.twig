@@ -52,7 +52,7 @@
                             {{ sessionevent.getAttendeeFullCount }}
                         </td>
                         <td>
-                            <a href="{{ path('session_edit_session_event', {'id': sessionevent.getId}) }}" class="btn btn-link"><span style="font-size:16px; padding-left: 8px;" class="pull-right showopacity glyphicon glyphicon-list-alt"></span></a>
+                            <a href="{{ path('session_edit_session_event', {'id': sessionevent.getId, 'searchStart': searchStart, 'searchDue': searchDue, 'searchScheduleItemId': searchScheduleItemId }) }}" class="btn btn-link"><span style="font-size:16px; padding-left: 8px;" class="pull-right showopacity glyphicon glyphicon-list-alt"></span></a>
                         </td>
                     </tr>
                 {% endfor %}
