@@ -46,4 +46,44 @@ class SessionEventRepository extends EntityRepository
         return $result;
     }
 
+    public function getSessionsBetweenDatesFilteredScheduleItem($stats_start, $stats_due, $statsScheduleItem) {
+
+        $query = $this->_em->createQuery('
+                SELECT sessionevent
+                FROM AppBundle\Entity\SessionEvent sessionevent 
+                WHERE sessionevent.sessionEventDate >= :stats_start
+                AND sessionevent.sessionEventDate <= :stats_due
+                AND sessionevent.scheduleItem = :filter
+           ');
+
+        $query->setParameters(array(
+            'stats_start' => $stats_start,
+            'stats_due' => $stats_due,
+            'filter' => $statsScheduleItem
+        ));
+
+        $result = $query->getResult();
+
+        return $result;
+    }
+
+    public function getLastFiftySessionsFilteredScheduleItem($statsScheduleItem) {
+
+        $query = $this->_em->createQuery('
+                SELECT sessionevent
+                FROM AppBundle\Entity\SessionEvent sessionevent
+                WHERE sessionevent.scheduleItem = :filter
+                ORDER BY sessionevent.id DESC
+           ');
+
+        $query->setParameters(array(
+            'filter' => $statsScheduleItem
+        ));
+
+        $query->setMaxResults(50);
+
+        $result = $query->getResult();
+
+        return $result;
+    }
 }

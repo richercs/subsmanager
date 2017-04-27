@@ -11,10 +11,12 @@ namespace AppBundle\Controller;
 
 
 use AppBundle\Entity\AttendanceHistory;
+use AppBundle\Entity\ScheduleItem;
 use AppBundle\Entity\SessionEvent;
 use AppBundle\Entity\Subscription;
 use AppBundle\Entity\UserAccount;
 use AppBundle\Repository\AttendanceHistoryRepository;
+use AppBundle\Repository\ScheduleItemRepository;
 use AppBundle\Repository\SessionEventRepository;
 use AppBundle\Repository\SubscriptionRepository;
 use AppBundle\Repository\UserAccountRepository;
@@ -52,11 +54,36 @@ class AdminStatsController extends Controller
 
         $statsDueDate = $request->get('statsDue');
 
-        if(is_null($statsStartDate) && is_null($statsDueDate) || $statsStartDate == "" && $statsDueDate == "") {
-            $events = $sessionEventRepository->getLastFiftySessions();
+        $statsScheduleItemId = $request->get('statsScheduleItemId');
+
+        if(is_null($statsScheduleItemId) || $statsScheduleItemId == "") {
+
+            if(is_null($statsStartDate) && is_null($statsDueDate) || $statsStartDate == "" && $statsDueDate == "") {
+                $events = $sessionEventRepository->getLastFiftySessions();
+            } else {
+                $events = $sessionEventRepository->getSessionsBetweenDates($statsStartDate, $statsDueDate);
+            }
         } else {
-            $events = $sessionEventRepository->getSessionsBetweenDates($statsStartDate, $statsDueDate);
+
+            /** @var ScheduleItemRepository $scheduleItemRepository */
+            $scheduleItemRepository = $em->getRepository(ScheduleItem::class);
+
+            $filteredScheduleItem = $scheduleItemRepository->find($statsScheduleItemId);
+
+            if (!$filteredScheduleItem) {
+                $this->addFlash(
+                    'error',
+                    'Nincs ilyen azonosítójú órarendi elem: ' . $filteredScheduleItem . '!'
+                );
+            }
+
+            if(is_null($statsStartDate) && is_null($statsDueDate) || $statsStartDate == "" && $statsDueDate == "") {
+                $events = $sessionEventRepository->getLastFiftySessionsFilteredScheduleItem($filteredScheduleItem);
+            } else {
+                $events = $sessionEventRepository->getSessionsBetweenDatesFilteredScheduleItem($statsStartDate, $statsDueDate, $filteredScheduleItem);
+            }
         }
+
 
         /** @var SessionEvent $event */
         foreach ($events as $event) {
