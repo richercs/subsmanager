@@ -1,0 +1,85 @@
+{% extends 'event/layout.html.twig' %}
+
+{% block body %}
+    {{ parent() }}
+    <div id="white-wrapper">
+        <h4><b>Keresés</b></h4>
+        <form action="{{ path('sessionevent_search_edit') }}" method="get" class="form-inline">
+            <div class="form-group">
+                <input name="searchStart" type="text" class="form-control datetimepicker" id="searchStartDate" placeholder="-tól">
+            </div>
+            <div class="form-group">
+                <input name="searchDue" type="text" class="form-control datetimepicker" id="searchDueDate" placeholder="-ig">
+            </div>
+            <div class="form-group">
+                <input name="searchScheduleItemId" type="number" class="form-control" id="searchScheduleItemId" placeholder="óra azonosító">
+            </div>
+            <button type="submit" class="btn btn-default"><span style="font-size:16px;" class="pull-right showopacity glyphicon glyphicon-search"></span></button>
+        </form>
+    </div>
+
+    <div id="stats-wrapper">
+        <div id="view-user-account-wrapper">
+            <h4><b>Űrlapok</b></h4>
+            <br>
+            <table class="table colored-table">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Órarendi Elem</th>
+                    <th>Időpont</th>
+                    <th>Bevétel</th>
+                    <th>Létszám</th>
+                    <th>Szerkesztés</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for sessionevent in events %}
+                    <tr>
+                        <td>
+                            {{ sessionevent.getId }}
+                        </td>
+                        <td>
+                            {{ sessionevent.getScheduleItem }}
+                        </td>
+                        <td>
+                            {{ sessionevent.getSessionEventDateString }}
+                        </td>
+                        <td>
+                            {{ sessionevent.getRevenue|number_format(0, '.', ' ') }} Ft
+                        </td>
+                        <td style="text-align: center">
+                            {{ sessionevent.getAttendeeFullCount }}
+                        </td>
+                        <td>
+                            <a href="{{ path('session_edit_session_event', {'id': sessionevent.getId}) }}" class="btn btn-link"><span style="font-size:16px; padding-left: 8px;" class="pull-right showopacity glyphicon glyphicon-list-alt"></span></a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+
+{% block stylesheets %}
+
+    <link rel="stylesheet" href="{{ asset('assets/vendor/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css') }}" />    {{ parent() }}
+{% endblock %}
+
+{% block javascript %}
+    <script src="{{ asset('assets/vendor/symfony-collection/jquery.collection.js') }}"></script>
+    <script src="{{ asset('assets/vendor/moment/min/moment.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js') }}"></script>
+
+{% endblock %}
+
+{% block body_end_javascripts %}
+    <script>
+        $(function () {
+            $('.datetimepicker').datetimepicker({
+                format: 'YYYY-MM-DD HH:mm'
+            });
+        });
+    </script>
+{% endblock %}

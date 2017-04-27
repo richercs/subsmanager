@@ -10,9 +10,11 @@ namespace AppBundle\Controller;
 
 
 use AppBundle\Entity\AttendanceHistory;
+use AppBundle\Entity\ScheduleItem;
 use AppBundle\Entity\SessionEvent;
 use AppBundle\Entity\UserAccount;
 use AppBundle\Form\SessionEventType;
+use AppBundle\Repository\ScheduleItemRepository;
 use AppBundle\Repository\SessionEventRepository;
 use AppBundle\Repository\UserAccountRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -51,6 +53,77 @@ class SessionEventController extends Controller
                 'events' => $events,
                 'logged_in_user' => $loggedInUser
             ));
+    }
+
+    /**
+     * @Route("sessionevent/search_edit_sessionevent", name="sessionevent_search_edit")
+     *
+     * @Security("has_role('ROLE_ADMIN')")
+     *
+     * @param Request request
+     * @return array
+     */
+    public function searchSessionEventsForEditAction(Request $request)
+    {
+        /** UserAccount $loggedInUser */
+        $loggedInUser = $this->getUser();
+
+        /** @var EntityManager $em */
+        $em = $this->get('doctrine.orm.default_entity_manager');
+
+        /** @var SessionEventRepository $sessionEventRepository */
+        $sessionEventRepository = $em->getRepository('AppBundle\Entity\SessionEvent');
+
+        $statsStartDate = $request->get('searchStart');
+
+        $statsDueDate = $request->get('searchDue');
+
+        $statsScheduleItemId = $request->get('searchScheduleItemId');
+
+        if(is_null($statsScheduleItemId) || $statsScheduleItemId == "") {
+
+            if(is_null($statsStartDate) && is_null($statsDueDate) || $statsStartDate == "" && $statsDueDate == "") {
+                $events = $sessionEventRepository->getLastFiftySessions();
+            } else {
+                $events = $sessionEventRepository->getSessionsBetweenDates($statsStartDate, $statsDueDate);
+            }
+        } else {
+
+            /** @var ScheduleItemRepository $scheduleItemRepository */
+            $scheduleItemRepository = $em->getRepository(ScheduleItem::class);
+
+            $filteredScheduleItem = $scheduleItemRepository->find($statsScheduleItemId);
+
+            if (!$filteredScheduleItem) {
+                $this->addFlash(
+                    'error',
+                    'Nincs ilyen azonosítójú órarendi elem: ' . $filteredScheduleItem . '!'
+                );
+            }
+
+            if(is_null($statsStartDate) && is_null($statsDueDate) || $statsStartDate == "" && $statsDueDate == "") {
+                $events = $sessionEventRepository->getLastFiftySessionsFilteredScheduleItem($filteredScheduleItem);
+            } else {
+                $events = $sessionEventRepository->getSessionsBetweenDatesFilteredScheduleItem($statsStartDate, $statsDueDate, $filteredScheduleItem);
+            }
+        }
+
+        /** @var AdminStatsController $adminStatsController */
+        $adminStatsController = $this->get('admin_stats');
+
+
+        /** @var SessionEvent $event */
+        foreach ($events as $event) {
+
+            $revenue = $adminStatsController->calculateRevenueAction($event);
+
+            $event->setRevenue($revenue);
+        }
+
+        return $this->render('event/listSessionEventsEdit.html.twig', array(
+            'events' => $events,
+            'logged_in_user' => $loggedInUser
+        ));
     }
 
     /**
@@ -287,5 +360,7 @@ class SessionEventController extends Controller
 
 
     }
+
+
 
 }
