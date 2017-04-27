@@ -8,6 +8,15 @@
             <b>Keresztnév: </b>{{ user_account.getFirstName }}<br/>
             <b>Vezetéknév: </b>{{ user_account.getLastName }}<br/>
             <b>Email: </b>{{ user_account.getEmail }}<br/>
+            {% block AdminLinkToEditUserAccount %}
+                {% if logged_in_user is not null %}
+                    {% if logged_in_user.getIsAdmin %}
+                        <br>
+                        <a href="{{ path('useraccount_edit_user', {'id': user_account.getId}) }}" class="btn btn-default">Szerkesztés<span style="font-size:16px; padding-left: 8px; padding-top: 2px;" class="pull-right showopacity glyphicon glyphicon-cog"></span></a>
+                        <br>
+                    {% endif %}
+                {% endif %}
+            {%  endblock %}
             <br>
             <h4><b>Bérletek</b></h4>
             <table class="table colored-table">
@@ -37,6 +46,13 @@
                             </td>
                             <td>
                                 <a href="{{ path('subscription_view_attendances', {'id': subscription.id}) }}" class="btn btn-default"><span style="font-size:16px; padding-left: 8px;" class="pull-right showopacity glyphicon glyphicon-chevron-right"></span></a>
+                                {% block AdminLinkToEditSubscription %}
+                                    {% if logged_in_user is not null %}
+                                        {% if logged_in_user.getIsAdmin %}
+                                            <a href="{{ path('subscription_edit_subscription', {'id': subscription.getId, 'user_account_id': user_account.getId}) }}" class="btn btn-link"><span style="font-size:16px; padding-left: 8px;" class="pull-right showopacity glyphicon glyphicon-cog"></span></a>
+                                        {% endif %}
+                                    {% endif %}
+                                {%  endblock %}
                             </td>
                         </tr>
                     {% endfor %}

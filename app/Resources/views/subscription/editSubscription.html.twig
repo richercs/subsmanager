@@ -30,7 +30,9 @@
         </div>
         <br>
         {% if break_event_id is null %}
-            <a href="{{ path('subscription_list_all') }}" class="btn btn-primary">Vissza</a>
+            {% if user_account_id is defined%}
+                <a href="{{ path('useraccount_view', {'id': user_account_id}) }}" class="btn btn-primary">Vissza</a>
+            {% endif %}
         {% else %}
             <a href="{{ path('breakevent_check_subscriptions', {'id': break_event_id}) }}" class="btn btn-primary">Vissza</a>
         {% endif %}

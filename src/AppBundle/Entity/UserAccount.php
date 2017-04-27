@@ -76,7 +76,7 @@ class UserAccount extends BaseUser
      */
     public function __toString()
     {
-        return $this->getFirstName() . ' ' . $this->getLastName() . ' [' . $this->getId() . ']';
+        return $this->getUsername() . ' [' . $this->getId() . ']';
     }
 
     /**

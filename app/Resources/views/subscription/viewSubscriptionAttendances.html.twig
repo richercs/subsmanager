@@ -6,7 +6,13 @@
     <div id="yellow-wrapper">
         <div id="view-subscription-attendances-wrapper">
             <h4><b>Bérlet Adatok</b></h4>
-            <b>Bérlet Azonosító: </b>{{ subscription.getId }}<br/>
+            {% block AdminSubscriptionId %}
+                {% if logged_in_user is not null %}
+                    {% if logged_in_user.getIsAdmin %}
+                        <b>Bérlet Azonosító: </b>{{ subscription.getId }}<br/>
+                    {% endif %}
+                {% endif %}
+            {%  endblock %}
             <b>Tulajdonos: </b>{{ subscription.getOwner.getFirstName }} {{ subscription.getOwner.getLastName }}<br/>
             <b>Vásárló: </b>{{ subscription.getBuyer.getFirstName }} {{ subscription.getBuyer.getLastName }}<br/>
             <b>Alkalmak Száma: </b>{{ subscription.getAttendanceCount }}<br/>

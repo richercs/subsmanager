@@ -18,14 +18,14 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 class UserAccountController extends Controller
 {
     /**
-     * @Route("/useraccount/list_all", name="useraccount_list_all")
+     * @Route("/useraccount/search_useraccount", name="useraccount_search_useraccount")
      *
      * @Security("has_role('ROLE_ADMIN')")
      *
      * @param Request request
      * @return array
      */
-    public function listAllUserAccountsAction(Request $request)
+    public function searchUserAccountsAction(Request $request)
     {
         /** @var UserAccount $loggedInUser */
         $loggedInUser = $this->getUser();
@@ -36,9 +36,11 @@ class UserAccountController extends Controller
         /** @var UserAccountRepository $userRepo */
         $userRepo = $em->getRepository('AppBundle\Entity\UserAccount');
 
-        $users = $userRepo->findAll();
+        $searchLikeUserName = $request->get('searchLikeUsername');
 
-        return $this->render('users/listAllUserAccounts.html.twig',
+        $users = $userRepo->findLikeUserName($searchLikeUserName);
+
+        return $this->render('users/searchUserAccounts.html.twig',
             array(
                 'base_dir' => realpath($this->container->getParameter('kernel.root_dir') . '/..') . DIRECTORY_SEPARATOR,
                 'users' => $users,
@@ -209,7 +211,7 @@ class UserAccountController extends Controller
                 'error',
                 'Nincs ilyen azonosítójú felhasználó: ' . $id . '!'
             );
-            return $this->redirectToRoute('useraccount_list_all');
+            return $this->redirectToRoute('useraccount_search_useraccount');
         }
 
         $form = $this->createForm(new UserAccountType($loggedInUser), $userAccount);
@@ -231,7 +233,7 @@ class UserAccountController extends Controller
                 );
 
                 // show list
-                return $this->redirectToRoute('useraccount_list_all');
+                return $this->redirectToRoute('useraccount_search_useraccount');
             }
             // CHANGE password
             if ($form->has('change_password') && $form->get('change_password')->isClicked()) {
@@ -243,6 +245,12 @@ class UserAccountController extends Controller
                         'error',
                         'A felhasználó jelszava nem változtatható meg, azonosító: ' . $id . '!'
                     );
+
+                    if($loggedInUser->getIsAdmin()) {
+                        return $this->redirectToRoute('useraccount_edit_user', array(
+                            'id' => $id
+                        ));
+                    }
                     return $this->redirectToRoute('useraccount_edit_user', array(
                         'id' => $loggedInUser->getId()
                     ));
@@ -256,15 +264,13 @@ class UserAccountController extends Controller
             );
 
             if($loggedInUser->getIsAdmin()) {
-
-                return $this->redirectToRoute('useraccount_list_all');
-
-            } else {
-
                 return $this->redirectToRoute('useraccount_edit_user', array(
-                    'id' => $loggedInUser->getId()
+                    'id' => $id
                 ));
             }
+            return $this->redirectToRoute('useraccount_edit_user', array(
+                'id' => $loggedInUser->getId()
+            ));
         }
 
         return $this->render('users/editUserAccount.html.twig',

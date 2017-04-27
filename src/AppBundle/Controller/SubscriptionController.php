@@ -149,9 +149,38 @@ class SubscriptionController extends Controller
                 'notice',
                 'Változtatások Elmentve!'
             );
+
+            $userAccountIDFromGet = $request->get('user_account_id');
+
+            if(!is_null($userAccountIDFromGet)) {
+
+                return $this->render('subscription/editSubscription.html.twig',
+                    array(
+                        'subscription' => $subscription,
+                        'user_account_id' => intval($userAccountIDFromGet),
+                        'form' => $form->createView(),
+                        'break_event_id' => $breakEventId,
+                        'logged_in_user' => $loggedInUser
+                    ));
+            }
+
             return $this->render('subscription/editSubscription.html.twig',
                 array(
                     'subscription' => $subscription,
+                    'form' => $form->createView(),
+                    'break_event_id' => $breakEventId,
+                    'logged_in_user' => $loggedInUser
+                ));
+        }
+
+        $userAccountIDFromGet = $request->get('user_account_id');
+
+        if(!is_null($userAccountIDFromGet)) {
+
+            return $this->render('subscription/editSubscription.html.twig',
+                array(
+                    'subscription' => $subscription,
+                    'user_account_id' => intval($userAccountIDFromGet),
                     'form' => $form->createView(),
                     'break_event_id' => $breakEventId,
                     'logged_in_user' => $loggedInUser

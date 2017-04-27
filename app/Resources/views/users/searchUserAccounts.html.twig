@@ -1,0 +1,29 @@
+{% extends 'users/layout.html.twig' %}
+
+{% block body %}
+    {{ parent() }}
+    <h3>Felhasználók</h3>
+    <div id="white-wrapper">
+        <h4><b>Keresés</b></h4>
+        <form action="{{ path('useraccount_search_useraccount') }}" method="get" class="form-inline">
+            <div class="form-group">
+                <input name="searchLikeUsername" type="text" class="form-control datetimepicker" id="searchLikeUsername" placeholder="felhasználónév">
+            </div>
+            <button type="submit" class="btn btn-default"><span style="font-size:16px;" class="pull-right showopacity glyphicon glyphicon-search"></span></button>
+        </form>
+    </div>
+    <div id="yellow-wrapper">
+        <div class="list-group">
+            {% for user in users %}
+                <a href="{{ path('useraccount_view',{'id': user.id}) }}" class="list-group-item">
+                    {{ user }}
+                    <b>Létrehozva: <b>{{ user.created|date('Y-m-d H:i:s') }}</b></b>
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
