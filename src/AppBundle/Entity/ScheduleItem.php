@@ -4,6 +4,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Knp\DoctrineBehaviors\Model as ORMBehaviors;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -15,6 +16,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class ScheduleItem
 {
+    use ORMBehaviors\SoftDeletable\SoftDeletable;
     /**
      * @var int
      *
@@ -65,13 +67,6 @@ class ScheduleItem
      * @ORM\Column(name="session_name", length=140, nullable = true)
      */
     protected $session_name;
-
-    /**
-     * @var boolean
-     *
-     * @ORM\Column(name="is_active", nullable=false)
-     */
-    protected $isActive = 0;
 
     /**
      * @ORM\Column(name="date_updated", type="datetime", nullable = true)
@@ -202,22 +197,6 @@ class ScheduleItem
     public function setSessionName($session_name)
     {
         $this->session_name = $session_name;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getIsActive()
-    {
-        return $this->isActive;
-    }
-
-    /**
-     * @param mixed $isActive
-     */
-    public function setIsActive($isActive)
-    {
-        $this->isActive = $isActive;
     }
 
     /**
