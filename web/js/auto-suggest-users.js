@@ -53,11 +53,21 @@ $(document).ready(function () {
   
   $('.subscriptions-input-wrap').find('select').attr('disabled', true);
 
+  var form = $('.form-horizontal');
+
+  form.submit(function() {
+      $('.subscriptions-input-wrap').find('select').prop("disabled", false);
+  });
+
   var pathname = window.location.pathname; // Returns path only
 
   if (pathname != '/sessionevent/add_session_event') {
 
     $('#appbundle_sessionevent_scheduleItem').attr('disabled', true);
+
+    form.submit(function() {
+        $("#appbundle_sessionevent_scheduleItem").prop("disabled", false);
+    });
   }
 
 });
