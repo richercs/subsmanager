@@ -251,7 +251,19 @@ class SessionEventController extends Controller
             $originalAttendees->add($attendee);
         }
 
-        $form = $this->createForm(new SessionEventType(), $sessionEvent);
+        /** @var ScheduleItemRepository $scheduleItemRepository */
+        $scheduleItemRepository = $em->getRepository(ScheduleItem::class);
+
+        $scheduleItemCollection = $scheduleItemRepository->findAll();
+
+        /** @var ScheduleItem $scheduleItem */
+        foreach ($scheduleItemCollection as $key => $scheduleItem) {
+            if($scheduleItem->isDeleted()) {
+                unset($scheduleItemCollection[$key]);
+            }
+        }
+
+        $form = $this->createForm(new SessionEventType($scheduleItemCollection), $sessionEvent);
         $form->handleRequest($request);
 
         if ($form->isValid()) {
