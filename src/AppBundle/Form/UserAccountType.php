@@ -85,7 +85,7 @@ class UserAccountType extends AbstractType
                 // Add new user account or register login credentials based on user contact as admin
                 $builder
                     ->add('source_user_account_id', ChoiceType::class, array(
-                        'label' => 'Felhasználók',
+                        'label' => 'Felhasználó Keresés',
                         'mapped' => false,
                         'choices' => $this->userCollection,
                         'data' => null,
