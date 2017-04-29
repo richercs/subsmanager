@@ -140,9 +140,11 @@ class AdminStatsController extends Controller
 
             $count = count($subscriptionUsages);
 
-            $recordRevenue = $record->getSubscription()->getPrice() / $count;
+            if (!is_null($record->getSubscription())) {
+                $recordRevenue = $record->getSubscription()->getPrice() / $count;
 
-            $resultRevenue = $resultRevenue + round($recordRevenue,0);
+                $resultRevenue = $resultRevenue + round($recordRevenue,0);
+            }
         }
 
         $resultRevenue = $resultRevenue + $sessionEvent->getSessionFeeRevenueSold();

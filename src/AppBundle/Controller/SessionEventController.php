@@ -150,6 +150,8 @@ class SessionEventController extends Controller
 
         $scheduleItemCollection = $scheduleItemRepository->findAll();
 
+        $scheduleItemCollection = array_combine(range(1, count($scheduleItemCollection)), array_values($scheduleItemCollection));
+
         /** @var ScheduleItem $scheduleItem */
         foreach ($scheduleItemCollection as $key => $scheduleItem) {
             if($scheduleItem->isDeleted()) {
@@ -164,6 +166,13 @@ class SessionEventController extends Controller
 
         if ($form->isValid())
         {
+
+            $scheduleItemId = $request->get('appbundle_sessionevent')['scheduleItem'];
+
+            $scheduleItem = $scheduleItemRepository->find($scheduleItemId);
+
+            $newEvent->setScheduleItem($scheduleItem);
+
             // save and continue button that redirects to the edit page
             if($form->get('saveAndContinue')->isClicked()) {
                 // The OneToMany association and the symfony-collection bundle manages the attendees ArrayCollection
@@ -251,19 +260,8 @@ class SessionEventController extends Controller
             $originalAttendees->add($attendee);
         }
 
-        /** @var ScheduleItemRepository $scheduleItemRepository */
-        $scheduleItemRepository = $em->getRepository(ScheduleItem::class);
 
-        $scheduleItemCollection = $scheduleItemRepository->findAll();
-
-        /** @var ScheduleItem $scheduleItem */
-        foreach ($scheduleItemCollection as $key => $scheduleItem) {
-            if($scheduleItem->isDeleted()) {
-                unset($scheduleItemCollection[$key]);
-            }
-        }
-
-        $form = $this->createForm(new SessionEventType($scheduleItemCollection, false), $sessionEvent);
+        $form = $this->createForm(new SessionEventType(array(), false), $sessionEvent);
         $form->handleRequest($request);
 
         if ($form->isValid()) {
@@ -306,7 +304,9 @@ class SessionEventController extends Controller
 
             /** @var AttendanceHistory $attendee */
             foreach ($sessionEvent->getAttendees() as $attendee) {
-                if ($attendee->getSubscription()->isIsMonthlyTicket() &&
+
+                if (!is_null($attendee->getSubscription()) &&
+                    $attendee->getSubscription()->isIsMonthlyTicket() &&
                     $attendee->getAttendee() != $attendee->getSubscription()->getOwner())
                 {
                     $this->addFlash(

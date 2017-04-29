@@ -34,7 +34,7 @@ $(document).ready(function () {
       success: function (data) {
         var subscriptionFiledId = "#appbundle_sessionevent_attendees_".concat(recordNumber, '_subscription');
   
-        $(subscriptionFiledId).find('option').remove();
+        $(subscriptionFiledId).find('option').not('option:first').remove();
         
         $.each(data, function(key, value) {
           
@@ -45,8 +45,6 @@ $(document).ready(function () {
             .attr("value", value['id'])
             .text(value['label']));
         });
-
-        $('#subscription-info')
       }
     });
   }

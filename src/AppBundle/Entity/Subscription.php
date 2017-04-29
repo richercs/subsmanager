@@ -99,12 +99,11 @@ class Subscription
     {
         // TODO: Get rid of getStatus to short this string (it is used for select)
 
-        return $this->getOwner()->getUsername()
+        return ' [' . $this->getId() . '] ' . $this->getOwner()->getUsername()
         . ' {' . $this->getStatus() . '}'
         . ' ' .  $this->getIsMonthlyTicketString() . ' '
         . ' (' . $this->getStartDateString() .' -'
-        . ' ' . $this->getDueDateString()
-        . ' [' . $this->getId() . ']';
+        . ' ' . $this->getDueDateString();
     }
 
     /**
