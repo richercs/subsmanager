@@ -290,21 +290,6 @@ class Subscription
             $status = $status . 'LEJÁRT';
         }
 
-        if (!$this->isIsMonthlyTicket()) {
-
-//            /** @var EntityManager $em */
-//            $em = $this->get('doctrine.orm.default_entity_manager');
-//
-//            /** @var AttendanceHistoryRepository $attendanceHistoryRepository */
-//            $attendanceHistoryRepository = $em->getRepository('AppBundle\Entity\AttendanceHistory');
-//
-//            $usages = $attendanceHistoryRepository->findBy(array('subscription' => $this->getId()));
-//
-//            if ($usages >= $this->getAttendanceCount()) {
-//                $status = $status - ' 0 ALKALOM';
-//            }
-        }
-
         if(empty($status)) {
             $status = 'AKTÍV';
         }
