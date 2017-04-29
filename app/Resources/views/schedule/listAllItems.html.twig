@@ -9,6 +9,9 @@
                 <a href="{{ path('schedule_edit_item', {'id': item.id}) }}" class="list-group-item">
                     {{ item }}
                     <b>Létrehozva: <b>{{ item.created|date('Y-m-d H:i:s') }}</b></b>
+                    {% if item.isDeleted %}
+                        --TÖRÖLVE--
+                    {% endif %}
                 </a>
             {% endfor %}
         </div>

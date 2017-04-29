@@ -145,12 +145,21 @@ class SessionEventController extends Controller
         /** @var EntityManager $em */
         $em = $this->get('doctrine.orm.default_entity_manager');
 
-        /** @var UserAccountRepository $userAccountRepository */
-        $userAccountRepository = $em->getRepository('AppBundle\Entity\UserAccount');
+        /** @var ScheduleItemRepository $scheduleItemRepository */
+        $scheduleItemRepository = $em->getRepository(ScheduleItem::class);
+
+        $scheduleItemCollection = $scheduleItemRepository->findAll();
+
+        /** @var ScheduleItem $scheduleItem */
+        foreach ($scheduleItemCollection as $key => $scheduleItem) {
+            if($scheduleItem->isDeleted()) {
+                unset($scheduleItemCollection[$key]);
+            }
+        }
 
         $newEvent = new SessionEvent();
 
-        $form = $this->createForm(new SessionEventType(), $newEvent);
+        $form = $this->createForm(new SessionEventType($scheduleItemCollection), $newEvent);
         $form->handleRequest($request);
 
         if ($form->isValid())

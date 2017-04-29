@@ -3,12 +3,28 @@
 namespace AppBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 
 class SessionEventType extends AbstractType
 {
+
+    /**
+     * @var array
+     */
+    protected $scheduleItemCollection;
+
+    /**
+     * Constructor.
+     *
+     */
+    public function __construct(array $scheduleItemCollection = array())
+    {
+        $this->scheduleItemCollection = $scheduleItemCollection;
+    }
+
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
@@ -22,7 +38,14 @@ class SessionEventType extends AbstractType
                 'format' => 'yyyy-MM-dd HH:mm',
                 'html5' => false,
             ))
-            ->add('scheduleItem')
+            ->add('scheduleItem', ChoiceType::class, array(
+                'label' => 'Órarendi Elem',
+                'mapped' => false,
+                'choices' => $this->scheduleItemCollection,
+                'data' => null,
+                'placeholder' => 'Válasz egy órát',
+                'required' => true,
+            ))
             ->add(
                 'attendees', 'collection', array(
                     'entry_type' => AttendanceHistoryType::class,
