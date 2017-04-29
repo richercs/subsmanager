@@ -71,4 +71,27 @@ class SubscriptionRepository extends EntityRepository
         return $result;
     }
 
+    public function findUsableSubscriptions()
+    {
+        $query = $this->_em->createQuery('
+            SELECT
+              s.id, COUNT(ah.id) as c, COALESCE(s.attendanceCount, 0) AS treshold
+            FROM
+                AppBundle\Entity\Subscription s
+            LEFT JOIN 
+              AppBundle\Entity\AttendanceHistory ah WITH ah.subscription = s.id
+            WHERE
+              s.dueDate >= CURRENT_DATE()
+            GROUP BY 
+              s.id
+            HAVING 
+              c < treshold
+        ');
+
+        $runningSubs = $query->getArrayResult();
+
+        $runningSubIds = array_column($runningSubs, 'id');
+
+        return $this->findBy(array('id' => $runningSubIds));
+    }
 }

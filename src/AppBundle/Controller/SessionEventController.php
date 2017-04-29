@@ -159,7 +159,7 @@ class SessionEventController extends Controller
 
         $newEvent = new SessionEvent();
 
-        $form = $this->createForm(new SessionEventType($scheduleItemCollection), $newEvent);
+        $form = $this->createForm(new SessionEventType($scheduleItemCollection, true), $newEvent);
         $form->handleRequest($request);
 
         if ($form->isValid())
@@ -263,7 +263,7 @@ class SessionEventController extends Controller
             }
         }
 
-        $form = $this->createForm(new SessionEventType($scheduleItemCollection), $sessionEvent);
+        $form = $this->createForm(new SessionEventType($scheduleItemCollection, false), $sessionEvent);
         $form->handleRequest($request);
 
         if ($form->isValid()) {

@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Subscription;
 use AppBundle\Entity\UserAccount;
+use AppBundle\Repository\SubscriptionRepository;
 use AppBundle\Repository\UserAccountRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
@@ -75,27 +76,37 @@ class AutoCompleteController extends Controller
 
 
     /**
-     * @Route("/load_subscription_record", name="load_subscription_record")
+     * @Route("/loadSubscription", name="load_subscription_record")
      *
      * @Security("has_role('ROLE_ADMIN')")
      *
      * @param Request request
      * @return Response
      */
-    public function loadSubscriptionRecord(Request $request) {
+    public function loadSubscriptionRecord(Request $request)
+    {
         $ownerId = $request->get('owner_id');
-        /** @var EntityManager $em */
-        $em = $this->get('doctrine.orm.default_entity_manager');
+
+        /** @var SubscriptionRepository $repository */
+        $repository = $this->get('doctrine.orm.default_entity_manager')->getRepository(Subscription::class);
+
+        $subscriptions = $repository->findUsableSubscriptions();
+
+        $responseArray = [];
 
         /** @var Subscription $subscription */
-        $subscription = $em->getRepository(Subscription::class)->findOneBy(array('owner' => $ownerId));
+        foreach ($subscriptions as $subscription) {
+            $responseArray[] = array(
+                'id' => $subscription->getId(),
+                'label' => (string)$subscription,
+                'owner' => $subscription->getOwner()->getId(),
+                'is_owned' => ($ownerId == $subscription->getOwner()->getId())
+            );
+        }
 
         $response = new JsonResponse();
-        return $response->setData(array(
-            'id' => $subscription->getId(),
-            'label' => (string) $subscription,
-            'owner' => $ownerId
-        ));
+
+        return $response->setData($responseArray);
     }
 
 
