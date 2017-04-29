@@ -11,10 +11,10 @@
         {{ form_row(form.last_name, {'label': 'Vezetéknév'}) }}
         {{ form_row(form.email, {'label': 'Email'}) }}
         {{ form_end(form, {'render_rest': true}) }}
-        <div class="checkbox">
-            <label><input type="checkbox" id="confirmDeleteCheckBox" value="">Törlés engedélyezve</label>
-        </div>
         {%  if logged_in_user.getIsAdmin %}
+            <div class="checkbox">
+                <label><input type="checkbox" id="confirmDeleteCheckBox" value="">Törlés engedélyezve</label>
+            </div>
             <a href="{{ path('useraccount_view', {'id': useraccount.getId}) }}" class="btn btn-primary">Megtekintés</a>
         {% else %}
             <a href="{{ path('homepage') }}" class="btn btn-primary">Vissza</a>
