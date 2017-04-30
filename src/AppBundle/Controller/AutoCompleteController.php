@@ -3,8 +3,10 @@
 namespace AppBundle\Controller;
 
 
+use AppBundle\Entity\AttendanceHistory;
 use AppBundle\Entity\Subscription;
 use AppBundle\Entity\UserAccount;
+use AppBundle\Repository\AttendanceHistoryRepository;
 use AppBundle\Repository\SubscriptionRepository;
 use AppBundle\Repository\UserAccountRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -141,6 +143,41 @@ class AutoCompleteController extends Controller
             'lastname' => (string) $selectedUserAccount->getLastName(),
             'email' => (string) $selectedUserAccount->getEmail(),
             'username' => (string) $selectedUserAccount->getUsername(),
+        ));
+    }
+
+    /**
+     * @Route("/loadSubscriptionInfo", name="load_subscription_info")
+     *
+     * @Security("has_role('ROLE_ADMIN')")
+     *
+     * @param Request request
+     * @return Response
+     */
+    public function loadSubscriptionInfo(Request $request)
+    {
+        $subscriptionId = $request->get('subscription_id');
+
+        /** @var SubscriptionRepository $repository */
+        $repository = $this->get('doctrine.orm.default_entity_manager')->getRepository(Subscription::class);
+
+        /** @var Subscription $subscription */
+        $subscription = $repository->find($subscriptionId);
+
+        /** @var AttendanceHistoryRepository $attendaceHistoryRepo */
+        $attendaceHistoryRepo = $this->get('doctrine.orm.default_entity_manager')->getRepository(AttendanceHistory::class);
+
+        $subscriptionUsages = $attendaceHistoryRepo->findBy(array('subscription' => $subscriptionId));
+
+        $countOfSubscriptionUsages = count($subscriptionUsages);
+
+        $response = new JsonResponse();
+
+        return $response->setData(array(
+            'id' => $subscription->getId(),
+            'attendance_limit' => $subscription->getAttendanceCount(),
+            'attendance_left' => ($subscription->getAttendanceCount() - $countOfSubscriptionUsages),
+            'attendance_count' => $countOfSubscriptionUsages
         ));
     }
 }
