@@ -261,7 +261,7 @@ class SessionEventController extends Controller
         }
 
 
-        $form = $this->createForm(new SessionEventType(array(), false), $sessionEvent);
+        $form = $this->createForm(new SessionEventType(), $sessionEvent);
         $form->handleRequest($request);
 
         if ($form->isValid()) {

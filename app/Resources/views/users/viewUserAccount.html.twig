@@ -12,7 +12,7 @@
                 {% if logged_in_user is not null %}
                     {% if logged_in_user.getIsAdmin %}
                         <br>
-                        <a href="{{ path('useraccount_edit_user', {'id': user_account.getId}) }}" class="btn btn-default">Szerkesztés<span style="font-size:16px; padding-left: 8px; padding-top: 2px;" class="pull-right showopacity glyphicon glyphicon-cog"></span></a>
+                        <a href="{{ path('useraccount_edit_user', {'id': user_account.getId}) }}" class="btn btn-default"><span style="font-size:16px; padding-left: 8px; padding-top: 2px;" class="pull-right showopacity glyphicon glyphicon-cog"></span>Szerkesztés</a>
                         <br>
                     {% endif %}
                 {% endif %}
