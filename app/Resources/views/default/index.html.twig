@@ -1,14 +1,91 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Kezdő oldal fejlesztés alatt..</h1>
+    {% if logged_in_user is not null %}
+        {% if logged_in_user.getIsAdmin %}
+            <h2>Admin Felület</h2>
+            <div id="white-wrapper">
+                <p>Jelenlegi rendszer adatok száma:</p>
+                {{ count_users }} felhasználó<br>
+                {{ count_subscriptions }} bérlet<br>
+                {{ count_scheduleItems }} órarendi elem ({{ count_scheduleItems_active }} aktív)<br>
+                {{ count_sessionEvents }} óra esemény űrlap<br>
+            </div>
+        {% endif %}
+    {% endif %}
+
+    <h1>Órarend</h1>
     <div id="yellow-wrapper">
-        <p>Jelenleg a rendszerben szerepel:</p>
-        <p>{{ count_users }} felhasználó</p>
-        <p>{{ count_subscriptions }} bérlet</p>
-        <p>{{ count_scheduleItems }} órarendi elem</p>
-        <p>és {{ count_sessionEvents }} óra esemény elmentve.</p>
-        <a href="{{ path('usercontact_list_all') }}" class="btn btn-primary">Kapcsolat Felvételi Űrlapok</a>
+        <b>Hétfő:</b>
+            <ul>
+                {% for item in ordered_schedule_items %}
+                    {% if item.getScheduledDay == "1" %}
+                        <li>
+                            {{ item.getScheduledStartTime }} - {{ item.getScheduledDueTime }}: {{ item.getSessionName }} {{ item.getLocation }}
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        <b>Kedd:</b>
+        <ul>
+            {% for item in ordered_schedule_items %}
+                {% if item.getScheduledDay == "2" %}
+                    <li>
+                        {{ item.getScheduledStartTime }} - {{ item.getScheduledDueTime }}: {{ item.getSessionName }} {{ item.getLocation }}
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+        <b>Szerda:</b>
+        <ul>
+            {% for item in ordered_schedule_items %}
+                {% if item.getScheduledDay == "3" %}
+                    <li>
+                        {{ item.getScheduledStartTime }} - {{ item.getScheduledDueTime }}: {{ item.getSessionName }} {{ item.getLocation }}
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+        <b>Csütrörtök:</b>
+        <ul>
+            {% for item in ordered_schedule_items %}
+                {% if item.getScheduledDay == "4" %}
+                    <li>
+                        {{ item.getScheduledStartTime }} - {{ item.getScheduledDueTime }}: {{ item.getSessionName }} {{ item.getLocation }}
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+        <b>Péntek:</b>
+        <ul>
+            {% for item in ordered_schedule_items %}
+                {% if item.getScheduledDay == "5" %}
+                    <li>
+                        {{ item.getScheduledStartTime }} - {{ item.getScheduledDueTime }}: {{ item.getSessionName }} {{ item.getLocation }}
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+        <b>Szombat:</b>
+        <ul>
+            {% for item in ordered_schedule_items %}
+                {% if item.getScheduledDay == "6" %}
+                    <li>
+                        {{ item.getScheduledStartTime }} - {{ item.getScheduledDueTime }}: {{ item.getSessionName }} {{ item.getLocation }}
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+        <b>Vasárnap:</b>
+        <ul>
+            {% for item in ordered_schedule_items %}
+                {% if item.getScheduledDay == "7" %}
+                    <li>
+                        {{ item.getScheduledStartTime }} - {{ item.getScheduledDueTime }}: {{ item.getSessionName }} {{ item.getLocation }}
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
     </div>
 {% endblock %}
 

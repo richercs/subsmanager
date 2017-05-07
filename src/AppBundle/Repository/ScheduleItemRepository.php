@@ -9,26 +9,19 @@ use Doctrine\ORM\EntityRepository;
 
 class ScheduleItemRepository extends EntityRepository
 {
-    public function getRunningScheduleItems() {
+    public function getOrderedScheduleItems() {
+
+        $query = $this->_em->createQuery('
+                SELECT item
+                FROM AppBundle\Entity\ScheduleItem item 
+                ORDER BY item.scheduledDay, item.scheduledStartTime
+           ');
+
+        $result = $query->getResult();
+
+        return $result;
     }
 
-//    FatalErrorException in DateTimeType.php line 53:
-//    Error: Call to a member function format() on a non-object
 
-//    public function getAllNotDeleted()
-//    {
-//        $result = $this->findBy(['deletedAt' => !null]);
-//        $indexedResult = [];
-//        if (empty($result)) {
-//            return [];
-//        } else {
-//            /** @var ScheduleItem $scheduleItem */
-//            foreach ($result as $scheduleItem) {
-//                $indexedResult[$scheduleItem->getId()] = $scheduleItem;
-//            }
-//        }
-//
-//        return $indexedResult;
-//    }
 
 }

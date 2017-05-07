@@ -3,8 +3,12 @@
 namespace AppBundle\Controller;
 
 
+use AppBundle\Entity\ScheduleItem;
 use AppBundle\Entity\UserAccount;
 use AppBundle\Entity\UserContact;
+use AppBundle\Repository\ScheduleItemRepository;
+use AppBundle\Repository\SessionEventRepository;
+use AppBundle\Repository\SubscriptionRepository;
 use AppBundle\Repository\UserContactRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use AppBundle\Repository\UserAccountRepository;
@@ -32,14 +36,26 @@ class HomePageController extends Controller
 
         /** @var UserAccountRepository $user_repo */
         $user_repo = $em->getRepository('AppBundle\Entity\UserAccount');
+        /** @var SubscriptionRepository $subscription_repo */
         $subscription_repo = $em->getRepository('AppBundle\Entity\Subscription');
+        /** @var ScheduleItemRepository $scheduleItem_repo */
         $scheduleItem_repo = $em->getRepository('AppBundle\Entity\ScheduleItem');
+        /** @var SessionEventRepository $sessionEvent_repo */
         $sessionEvent_repo = $em->getRepository('AppBundle\Entity\SessionEvent');
 
         $count_users = count($user_repo->findAll());
         $count_subscriptions = count($subscription_repo->findAll());
         $count_scheduleItems = count($scheduleItem_repo->findAll());
         $count_sessionEvents = count($sessionEvent_repo->findAll());
+
+        $scheduleItemsOrdered = $scheduleItem_repo->getOrderedScheduleItems();
+
+        /** @var ScheduleItem $scheduleItem */
+        foreach ($scheduleItemsOrdered as $key => $scheduleItem) {
+            if($scheduleItem->isDeleted()) {
+                unset($scheduleItemsOrdered[$key]);
+            }
+        }
 
         return $this->render('default/index.html.twig',
             array(
@@ -48,7 +64,9 @@ class HomePageController extends Controller
                 'count_subscriptions' => $count_subscriptions,
                 'count_scheduleItems' => $count_scheduleItems,
                 'count_sessionEvents' => $count_sessionEvents,
-                'logged_in_user' => $loggedInUser
+                'logged_in_user' => $loggedInUser,
+                'ordered_schedule_items' => $scheduleItemsOrdered,
+                'count_scheduleItems_active' => count($scheduleItemsOrdered)
             ));
     }
 
