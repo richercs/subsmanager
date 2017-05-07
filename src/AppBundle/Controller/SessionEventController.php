@@ -12,10 +12,13 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\AttendanceHistory;
 use AppBundle\Entity\ScheduleItem;
 use AppBundle\Entity\SessionEvent;
+use AppBundle\Entity\Subscription;
 use AppBundle\Entity\UserAccount;
 use AppBundle\Form\SessionEventType;
+use AppBundle\Repository\AttendanceHistoryRepository;
 use AppBundle\Repository\ScheduleItemRepository;
 use AppBundle\Repository\SessionEventRepository;
+use AppBundle\Repository\SubscriptionRepository;
 use AppBundle\Repository\UserAccountRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -251,6 +254,33 @@ class SessionEventController extends Controller
                 'Nincs ilyen azonosítójú óra esemény: ' . $id . '!'
             );
             return $this->redirectToRoute('sessionevent_search_edit');
+        }
+
+        /** @var AttendanceHistory $attendee */
+        foreach ($sessionEvent->getAttendees() as $attendee) {
+            $subscriptionIdInRecord = $attendee->getSubscription()->getId();
+
+            /** @var SubscriptionRepository $repository */
+            $repository = $this->get('doctrine.orm.default_entity_manager')->getRepository(Subscription::class);
+
+            /** @var Subscription $subscription */
+            $subscription = $repository->find($subscriptionIdInRecord);
+
+            /** @var AttendanceHistoryRepository $attendaceHistoryRepo */
+            $attendaceHistoryRepo = $this->get('doctrine.orm.default_entity_manager')->getRepository(AttendanceHistory::class);
+
+            $subscriptionUsages = $attendaceHistoryRepo->findBy(array('subscription' => $subscriptionIdInRecord));
+
+            $countOfSubscriptionUsages = count($subscriptionUsages);
+
+            if(is_null($subscription->getAttendanceCount())) {
+                $attendee->setSubscriptionInfo("Havi bérlet (használatok száma: " . $countOfSubscriptionUsages . ")");
+            } else {
+                $attendee->setSubscriptionInfo("Alkalmak Száma: " . $subscription->getAttendanceCount()
+                    . "\n"
+                    . "Fennmaradó: " . ($subscription->getAttendanceCount() - $countOfSubscriptionUsages));
+            }
+
         }
 
         $originalAttendees = new ArrayCollection();
