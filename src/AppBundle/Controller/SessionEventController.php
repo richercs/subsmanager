@@ -258,29 +258,32 @@ class SessionEventController extends Controller
 
         /** @var AttendanceHistory $attendee */
         foreach ($sessionEvent->getAttendees() as $attendee) {
-            $subscriptionIdInRecord = $attendee->getSubscription()->getId();
 
-            /** @var SubscriptionRepository $repository */
-            $repository = $this->get('doctrine.orm.default_entity_manager')->getRepository(Subscription::class);
+            if(!is_null($attendee->getSubscription())) {
 
-            /** @var Subscription $subscription */
-            $subscription = $repository->find($subscriptionIdInRecord);
+                $subscriptionIdInRecord = $attendee->getSubscription()->getId();
 
-            /** @var AttendanceHistoryRepository $attendaceHistoryRepo */
-            $attendaceHistoryRepo = $this->get('doctrine.orm.default_entity_manager')->getRepository(AttendanceHistory::class);
+                /** @var SubscriptionRepository $repository */
+                $repository = $this->get('doctrine.orm.default_entity_manager')->getRepository(Subscription::class);
 
-            $subscriptionUsages = $attendaceHistoryRepo->findBy(array('subscription' => $subscriptionIdInRecord));
+                /** @var Subscription $subscription */
+                $subscription = $repository->find($subscriptionIdInRecord);
 
-            $countOfSubscriptionUsages = count($subscriptionUsages);
+                /** @var AttendanceHistoryRepository $attendaceHistoryRepo */
+                $attendaceHistoryRepo = $this->get('doctrine.orm.default_entity_manager')->getRepository(AttendanceHistory::class);
 
-            if(is_null($subscription->getAttendanceCount())) {
-                $attendee->setSubscriptionInfo("Havi bérlet (használatok száma: " . $countOfSubscriptionUsages . ")");
-            } else {
-                $attendee->setSubscriptionInfo("Alkalmak Száma: " . $subscription->getAttendanceCount()
-                    . "\n"
-                    . "Fennmaradó: " . ($subscription->getAttendanceCount() - $countOfSubscriptionUsages));
+                $subscriptionUsages = $attendaceHistoryRepo->findBy(array('subscription' => $subscriptionIdInRecord));
+
+                $countOfSubscriptionUsages = count($subscriptionUsages);
+
+                if(is_null($subscription->getAttendanceCount())) {
+                    $attendee->setSubscriptionInfo("Havi bérlet (használatok száma: " . $countOfSubscriptionUsages . ")");
+                } else {
+                    $attendee->setSubscriptionInfo("Alkalmak Száma: " . $subscription->getAttendanceCount()
+                        . "\n"
+                        . "Fennmaradó: " . ($subscription->getAttendanceCount() - $countOfSubscriptionUsages));
+                }
             }
-
         }
 
         $originalAttendees = new ArrayCollection();
