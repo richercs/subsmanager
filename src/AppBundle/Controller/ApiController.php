@@ -36,7 +36,6 @@ class ApiController extends Controller
      *
      *
      * @param Request request
-     * @param id
      * @return Response
      */
     public function getUserDataAction(Request $request)
@@ -73,16 +72,25 @@ class ApiController extends Controller
 
         $subscriptions = $subscriptionRepository->findBy(array('owner' => $userAccount->getId()));
 
-        /** @var ArrayCollection $subscriptionDatas */
-        $subscriptionDatas = new ArrayCollection();
+        /** @var AttendanceHistoryRepository $attendanceHistoryRepo */
+        $attendanceHistoryRepo =$em->getRepository('AppBundle\Entity\AttendanceHistory');
+
+        /** @var ArrayCollection $subscriptionData */
+        $subscriptionData = new ArrayCollection();
 
         /** @var Subscription $subscription */
         foreach ($subscriptions as $subscription) {
-            $subscriptionDatas->add(array(
+
+            $attendancRecords = $attendanceHistoryRepo->findBy(array('subscription' => $subscription->getId()));
+
+            $attendancesLeft = $subscription->getAttendanceCount() - count($attendancRecords);
+
+            $subscriptionData->add(array(
                 'id' => $subscription->getId(),
                 'owner_first_name' => $subscription->getOwner()->getFirstName(),
                 'owner_last_name' => $subscription->getOwner()->getLastName(),
                 'attendance_count' => $subscription->getAttendanceCount(),
+                'attendances_left' => $attendancesLeft,
                 'start_date_string' =>$subscription->getStartDateString(),
                 'price' => $subscription->getPrice()
             ));
@@ -97,7 +105,7 @@ class ApiController extends Controller
                 'lastName' =>$userAccount->getLastName(),
                 'email' => $userAccount->getEmail(),
             ),
-            'subscriptionsData' => $subscriptionDatas->toArray(),
+            'subscriptionsData' => $subscriptionData->toArray(),
             'error' => null
         ));
     }
@@ -112,6 +120,12 @@ class ApiController extends Controller
      */
     public function getSubscriptionDataAction($id, Request $request)
     {
+
+        $loggedInUser = $this->getUser();
+
+        if (!$loggedInUser) {
+            return new Response(null);
+        }
 
         /** @var EntityManager $em */
         $em = $this->get('doctrine.orm.default_entity_manager');
@@ -131,17 +145,30 @@ class ApiController extends Controller
             ));
         }
 
+        $subscriptionsOwned = $subscriptionRepo->findBy(array('owner' => $loggedInUser->getId()));
+
+        $subscriptionsOwnedCollection = new ArrayCollection();
+
+        foreach ($subscriptionsOwned as $subscriptionOwned) {
+            $subscriptionsOwnedCollection->add($subscriptionOwned);
+        }
+
+        if(!$subscriptionsOwnedCollection->contains($subscription)) {
+
+            return new Response(null);
+        }
+
         /** @var AttendanceHistoryRepository $attendanceHistoryRepo */
         $attendanceHistoryRepo =$em->getRepository('AppBundle\Entity\AttendanceHistory');
 
         $attendancRecords = $attendanceHistoryRepo->findBy(array('subscription' => $subscription->getId()));
 
-        /** @var ArrayCollection $attendanceDatas */
-        $attendanceDatas = new ArrayCollection();
+        /** @var ArrayCollection $attendanceData */
+        $attendanceData = new ArrayCollection();
 
         /** @var AttendanceHistory $attendancRecord */
         foreach ($attendancRecords as $attendancRecord) {
-            $attendanceDatas->add(array(
+            $attendanceData->add(array(
                 'session_type_name' => $attendancRecord->getSessionEvent()->getScheduleItem()->getSessionName(),
                 'session_date' => $attendancRecord->getSessionEvent()->getSessionEventDateString(),
                 'session_attendee_first_name' => $attendancRecord->getAttendee()->getFirstName(),
@@ -163,7 +190,7 @@ class ApiController extends Controller
                 'due_date_string' => $subscription->getDueDateString(),
                 'price' => $subscription->getPrice()
             ),
-            'attendanceDatas' => $attendanceDatas->toArray(),
+            'attendanceData' => $attendanceData->toArray(),
             'error' => null
         ));
     }
