@@ -32,15 +32,22 @@ class ApiController extends Controller
 {
 
     /**
-     * @Route("/api/userdata/{id}", name="userdata_get")
+     * @Route("/api/userdata", name="userdata_get")
      *
      *
      * @param Request request
      * @param id
      * @return Response
      */
-    public function getUserDataAction($id, Request $request)
+    public function getUserDataAction(Request $request)
     {
+        $loggedInUser = $this->getUser();
+
+        if (!$loggedInUser) {
+            return new Response(null);
+        }
+
+        $id = $loggedInUser->getId();
 
         /** @var EntityManager $em */
         $em = $this->get('doctrine.orm.default_entity_manager');
