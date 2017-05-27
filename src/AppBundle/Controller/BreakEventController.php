@@ -153,7 +153,7 @@ class BreakEventController extends Controller
             $em->flush();
             $this->addFlash(
                 'notice',
-                'Változtatások Elmentve!'
+                'Szünet napja elmentve!'
             );
             return $this->redirectToRoute('breakevent_check_subscriptions', array(
                 'id' => $breakEvent->getId(),
@@ -221,7 +221,7 @@ class BreakEventController extends Controller
                 $subscriptionExtensionCount = $clashingSub->getNumberOfExtensions();
 
 
-                $clashingSub->setDueDate($subscriptionDueDate->modify('+1 week'));
+                $clashingSub->setDueDateTime($subscriptionDueDate->modify('+1 week'));
                 $clashingSub->setNumberOfExtensions($subscriptionExtensionCount + 1);
 
                 $resultArray->add(array(

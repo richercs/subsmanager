@@ -13,6 +13,20 @@
         <div class="attendee-input-wrap">
             {{ form_row(form.buyer, {'label': 'Vásárló'}) }}
         </div>
+        <div class="form-group">
+            <div class="col-sm-2"></div>
+            <div class="col-sm-10">
+                <label class="radio-inline">
+                    <input type="radio" name="optradio" value="1">4 Alkalmas
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="optradio" value="2">10 Alkalmas
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="optradio" value="3">Egyéb
+                </label>
+            </div>
+        </div>
         {{ form_row(form.attendanceCount, {'label': 'Alkalmak Száma'}) }}
         {{ form_row(form.startDate, {'label': 'Kezdeti Időpont'}) }}
         {{ form_row(form.dueDate, {'label': 'Lejárati Időpont'}) }}
@@ -43,6 +57,52 @@
         $(function () {
             $('.datetimepicker').datetimepicker({
                 format: 'YYYY-MM-DD HH:mm'
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block body_end_javascripts %}
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            var today = moment().format('YYYY-MM-DD H:mm');
+
+            var extensionDate;
+
+            $("input[name='optradio']").change(function(){
+
+                if ($(this).val() === '1') {
+
+                    extensionDate = moment(today, "YYYY-MM-DD H:mm").add(1, 'months');
+
+                    $('#app_subscription_attendanceCount').val(4);
+                    $('#app_subscription_startDate').val(today);
+                    $('#app_subscription_dueDate').val(extensionDate.format('YYYY-MM-DD H:mm'));
+
+                } else if ($(this).val() === '2') {
+
+                    extensionDate = moment(today, "YYYY-MM-DD H:mm").add(2, 'months');
+
+                    $('#app_subscription_attendanceCount').val(10);
+                    $('#app_subscription_startDate').val(today);
+                    $('#app_subscription_dueDate').val(extensionDate.format('YYYY-MM-DD H:mm'));
+
+                } else {
+
+                    extensionDate = moment(today, "YYYY-MM-DD H:mm").add(1, 'months');
+
+                    $('#app_subscription_attendanceCount').val(0);
+                    $('#app_subscription_startDate').val(today);
+                    $('#app_subscription_dueDate').val(extensionDate.format('YYYY-MM-DD H:mm'));
+                }
+
+                var form = $('.form-horizontal');
+
+                form.submit(function () {
+                    $('#app_subscription_numberOfExtensions').prop("disabled", false);
+                });
             });
         });
     </script>

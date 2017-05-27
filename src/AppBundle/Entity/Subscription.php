@@ -97,9 +97,9 @@ class Subscription
         // TODO: Get rid of getStatus to short this string (it is used for select)
 
         return ' [' . $this->getId() . '] ' . $this->getOwner()->getUsername()
-        . ' {' . $this->getStatus() . '}'
+        . ' {' . $this->getStatusString() . '}'
         . ' (' . $this->getStartDateString() .' -'
-        . ' ' . $this->getDueDateString();
+        . ' ' . $this->getDueDateString() . ')';
     }
 
     /**
@@ -131,8 +131,16 @@ class Subscription
      */
     public function setStartDate($startDate)
     {
+        $this->startDate = $startDate;
+    }
+
+    /**
+     * @param mixed $startDateTime
+     */
+    public function setStartDateTime($startDateTime)
+    {
         // WILL be saved in the database
-        $this->dueDate = new \DateTime($startDate->format('Y-m-d H:i:s'));
+        $this->startDate = new \DateTime($startDateTime->format('Y-m-d H:i:s'));
     }
 
     /**
@@ -155,8 +163,16 @@ class Subscription
      */
     public function setDueDate($dueDate)
     {
+        $this->dueDate = $dueDate;
+    }
+
+    /**
+     * @param mixed $dueDateTime
+     */
+    public function setDueDateTime($dueDateTime)
+    {
         // WILL be saved in the database
-        $this->dueDate = new \DateTime($dueDate->format('Y-m-d H:i:s'));
+        $this->dueDate = new \DateTime($dueDateTime->format('Y-m-d H:i:s'));
     }
 
     /**
@@ -266,7 +282,7 @@ class Subscription
     /**
      * @return string
      */
-    public function getStatus()
+    public function getStatusString()
     {
         $status = '';
 

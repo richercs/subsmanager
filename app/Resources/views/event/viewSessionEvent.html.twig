@@ -25,7 +25,7 @@
                         <td>
                             {% if attendanceRecord.getSubscription is not null %}
                                 {{ attendanceRecord.getSubscription }}
-                                {{ attendanceRecord.getSubscription.getStatus }}
+                                {{ attendanceRecord.getSubscription.getStatusString }}
                             {% endif %}
                         </td>
                     </tr>
