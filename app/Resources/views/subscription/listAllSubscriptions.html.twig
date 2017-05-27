@@ -5,40 +5,45 @@
     <h3>Bérletek</h3>
     {% if break_event is defined %}
         <div id="white-wrapper">
-            <b>Szünet Eleje:</b> {{ break_event.getStartDate|date('Y.m.d. H:i:s') }}<br>
-            <b>Szünet Vége:</b> {{ break_event.getDueDate|date('Y.m.d. H:i:s') }}<br>
             <b>Szünet ID:</b> {{ break_event.getId }}<br>
+            <b>Szünet Napja:</b> {{ break_event.getBreakEventDay|date('Y.m.d.') }}<br>
             <br>
         </div>
-    {% endif %}
-    <div id="yellow-wrapper">
-        {% if break_event is defined %}
+        <div id="yellow-wrapper">
             <h4><b>Érintett Bérletek</b></h4>
             <br>
-        {% endif %}
-        <div class="list-group">
-            {% for subscription in subscriptions %}
-                {% if break_event_id is defined %}
-                    <a href="{{ path('subscription_edit_subscription', {'id': subscription.id, 'break_event_id': break_event_id}) }}" class="list-group-item">
-                        {{ subscription }}
-                        <p>Létrehozvaaa: <b>{{ subscription.created|date('Y.m.d. H:i:s') }}</b></p>
-                    </a>
-                {% else %}
-                    <a href="{{ path('subscription_edit_subscription', {'id': subscription.id}) }}" class="list-group-item">
-                        {{ subscription }}
-                        <p>Létrehozva: <b>{{ subscription.created|date('Y.m.d. H:i:s') }}</b></p>
-                    </a>
-                {% endif %}
-            {% endfor %}
-        </div>
-        {% if break_event_id is defined %}
-            <a href="{{ path('break_edit_break_event', {'id': break_event_id}) }}" class="btn btn-primary">Vissza</a>
-        {% else %}
-            <a href="{{ path('homepage') }}" class="btn btn-primary">Vissza</a>
-        {% endif %}
-    </div>
-{% endblock %}
+            <ul>
+                {% for subscription in subscriptions %}
+                    <li>
+                        {{ subscription['subscription'].getOwner }}
+                        <br>Bérlet Azonosító: <b>{{ subscription['subscription'].getId }}</b> [{{ subscription['subscription'].getAttendanceCount }} alkalmas]
+                        Hosszabítás Száma: {{ subscription['subscription'].getNumberOfExtensions }}
+                        <br>{{ subscription['subscription'].getStartDateString }} -
+                        (<span style="color: grey">{{ subscription['oldDueDate'] }} </span>)
+                        <b>Új:</b> <span style="color: green">{{ subscription['subscription'].getDueDateString }} </span>
+                        <a href="{{ path('subscription_edit_subscription', {'id': subscription['subscription'].getId, 'break_event_id': break_event_id}) }}" class="btn btn-link"><span style="font-size:16px; padding-left: 8px;" class="pull-right showopacity glyphicon glyphicon-cog"></span></a>
+                    </li>
+                {% endfor %}
+            </ul>
 
+            {{ form(form) }}
+
+            <a href="{{ path('break_edit_break_event', {'id': break_event_id}) }}" class="btn btn-primary">Vissza</a>
+        </div>
+    {% else %}
+        <div id="white-wrapper">
+            <div class="list-group">
+            {% for subscription in subscriptions %}
+                <a href="{{ path('subscription_edit_subscription', {'id': subscription.id}) }}" class="list-group-item">
+                    {{ subscription }}
+                    <p>Létrehozva: <b>{{ subscription.created|date('Y.m.d. H:i:s') }}</b></p>
+                </a>
+            {% endfor %}
+            </div>
+            <a href="{{ path('homepage') }}" class="btn btn-primary">Vissza</a>
+        </div>
+    {% endif %}
+{% endblock %}
 {% block stylesheets %}
     {{ parent() }}
 {% endblock %}

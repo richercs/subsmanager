@@ -32,7 +32,6 @@ class SubscriptionType extends AbstractType
             ->add('buyer',  AutocompleteType::class, array(
                 'class' => 'AppBundle:UserAccount'
             ))
-            ->add('isMonthlyTicket')
             ->add('attendanceCount')
             ->add('startDate', DateType::class, array(
                 'widget' => 'single_text',
@@ -45,6 +44,10 @@ class SubscriptionType extends AbstractType
                 'attr' => array( 'class' => 'datetimepicker'),
                 'format' => 'yyyy-MM-dd HH:mm',
                 'html5' => false,
+            ))
+            ->add('numberOfExtensions', 'integer', array(
+                'disabled' => true,
+                'label' => 'Hosszabítások Száma'
             ))
             ->add('price', 'money', array(
                 'currency' => 'HUF',

@@ -33,14 +33,6 @@ class Subscription
     protected $id;
 
     /**
-     * @var boolean
-     *
-     * @ORM\Column(name="is_monthly_ticket", type="boolean")
-     *
-     */
-    protected $isMonthlyTicket;
-
-    /**
      * @ORM\Column(name="date_start_date", type="datetime", nullable = false)
      */
     protected $startDate;
@@ -49,6 +41,11 @@ class Subscription
      * @ORM\Column(name="date_due_date", type="datetime", nullable = false)
      */
     protected $dueDate;
+
+    /**
+     * @ORM\Column(name="extensions_count", type="integer", nullable = false)
+     */
+    protected $numberOfExtensions = 0;
 
     /**
      * @ORM\Column(name="attendance_count", type="integer", nullable = true)
@@ -101,7 +98,6 @@ class Subscription
 
         return ' [' . $this->getId() . '] ' . $this->getOwner()->getUsername()
         . ' {' . $this->getStatus() . '}'
-        . ' ' .  $this->getIsMonthlyTicketString() . ' '
         . ' (' . $this->getStartDateString() .' -'
         . ' ' . $this->getDueDateString();
     }
@@ -123,33 +119,6 @@ class Subscription
     }
 
     /**
-     * @return boolean
-     */
-    public function isIsMonthlyTicket()
-    {
-        return $this->isMonthlyTicket;
-    }
-
-    /**
-     * @param boolean $isMonthlyTicket
-     */
-    public function setIsMonthlyTicket($isMonthlyTicket)
-    {
-        $this->isMonthlyTicket = $isMonthlyTicket;
-    }
-
-    /**
-     * @return string
-     */
-    public function getIsMonthlyTicketString() {
-        if($this->isIsMonthlyTicket()) {
-            return 'Havi';
-        } else {
-            return 'Alkalmas';
-        }
-    }
-
-    /**
      * @return \DateTime
      */
     public function getStartDate()
@@ -162,7 +131,8 @@ class Subscription
      */
     public function setStartDate($startDate)
     {
-        $this->startDate = $startDate;
+        // WILL be saved in the database
+        $this->dueDate = new \DateTime($startDate->format('Y-m-d H:i:s'));
     }
 
     /**
@@ -185,7 +155,8 @@ class Subscription
      */
     public function setDueDate($dueDate)
     {
-        $this->dueDate = $dueDate;
+        // WILL be saved in the database
+        $this->dueDate = new \DateTime($dueDate->format('Y-m-d H:i:s'));
     }
 
     /**
@@ -193,6 +164,22 @@ class Subscription
      */
     public function getDueDateString() {
         return $this->getDueDate()->format('Y.m.d. H:i');
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNumberOfExtensions()
+    {
+        return $this->numberOfExtensions;
+    }
+
+    /**
+     * @param mixed $numberOfExtensions
+     */
+    public function setNumberOfExtensions($numberOfExtensions)
+    {
+        $this->numberOfExtensions = $numberOfExtensions;
     }
 
     /**

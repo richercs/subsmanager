@@ -18,18 +18,17 @@ class SubscriptionRepository extends EntityRepository
      *@param BreakEvent $breakEvent
      * @return array
      */
-    public function getClashingSubscriptions($break_start, $break_due) {
+    public function getClashingSubscriptions($break_day) {
 
         $query = $this->_em->createQuery('
                 SELECT subscription
                 FROM AppBundle\Entity\Subscription subscription 
-                WHERE subscription.dueDate >= :break_start
-                AND subscription.startDate <= :break_due
+                WHERE subscription.startDate <= :break_day
+                AND subscription.dueDate >= :break_day
            ');
 
         $query->setParameters(array(
-            'break_start' => $break_start,
-            'break_due' => $break_due
+            'break_day' => $break_day,
         ));
 
         $result = $query->getResult();

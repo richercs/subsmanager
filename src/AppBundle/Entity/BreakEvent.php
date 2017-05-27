@@ -24,14 +24,9 @@ class BreakEvent
     protected $id;
 
     /**
-     * @ORM\Column(name="break_event_start_date", type="datetime", nullable = false)
+     * @ORM\Column(name="break_event_day", type="datetime", nullable = false)
      */
-    protected $startDate;
-
-    /**
-     * @ORM\Column(name="break_event_due_date", type="datetime", nullable = false)
-     */
-    protected $dueDate;
+    protected $breakEventDay;
 
     /**
      * @ORM\Column(name="date_updated", type="datetime", nullable = true)
@@ -48,8 +43,7 @@ class BreakEvent
      */
     public function __toString()
     {
-        return $this->getStartDate()->format('Y-m-d H:i')
-        . ' - ' . $this->getDueDate()->format('Y-m-d H:i')
+        return $this->getBreakEventDay()->format('Y-m-d H:i')
         . ' [' . $this->getId() . ']';
     }
 
@@ -72,33 +66,17 @@ class BreakEvent
     /**
      * @return mixed
      */
-    public function getStartDate()
+    public function getBreakEventDay()
     {
-        return $this->startDate;
+        return $this->breakEventDay;
     }
 
     /**
-     * @param mixed $startDate
+     * @param mixed $breakEventDay
      */
-    public function setStartDate($startDate)
+    public function setBreakEventDay($breakEventDay)
     {
-        $this->startDate = $startDate;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getDueDate()
-    {
-        return $this->dueDate;
-    }
-
-    /**
-     * @param mixed $dueDate
-     */
-    public function setDueDate($dueDate)
-    {
-        $this->dueDate = $dueDate;
+        $this->breakEventDay = $breakEventDay;
     }
 
     /**

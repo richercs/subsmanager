@@ -6,11 +6,13 @@ namespace AppBundle\Controller;
 
 
 use AppBundle\Entity\BreakEvent;
+use AppBundle\Entity\Subscription;
 use AppBundle\Entity\UserAccount;
 use AppBundle\Form\BreakEventType;
 use AppBundle\Repository\BreakEventRepository;
 use AppBundle\Repository\SubscriptionRepository;
 use AppBundle\Repository\UserAccountRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -202,12 +204,67 @@ class BreakEventController extends Controller
         /** @var SubscriptionRepository $subscriptionRepository */
         $subscriptionRepository = $em->getRepository('AppBundle\Entity\Subscription');
 
-        $subscriptionWithClash = $subscriptionRepository->getClashingSubscriptions($breakEvent->getStartDate(), $breakEvent->getDueDate());
+        $subscriptionsWithClash = $subscriptionRepository->getClashingSubscriptions($breakEvent->getBreakEventDay());
+
+        /** @var ArrayCollection $resultArray */
+        $resultArray = new ArrayCollection();
+
+        /** @var Subscription $clashingSub */
+        foreach ($subscriptionsWithClash as $clashingSub) {
+            if($clashingSub->getNumberOfExtensions() < 2) {
+                // if the subscription has been extended zero or one time then do another +1 week extension
+
+                /** @var \DateTime $subscriptionDueDate */
+                $subscriptionDueDate = $clashingSub->getDueDate();
+                /** @var \DateTime $oldDueDate */
+                $oldDueDate = new \DateTime($subscriptionDueDate->format('Y-m-d H:i'));
+                $subscriptionExtensionCount = $clashingSub->getNumberOfExtensions();
+
+
+                $clashingSub->setDueDate($subscriptionDueDate->modify('+1 week'));
+                $clashingSub->setNumberOfExtensions($subscriptionExtensionCount + 1);
+
+                $resultArray->add(array(
+                    'subscription' => $clashingSub,
+                    'oldDueDate' => $oldDueDate->format('Y.m.d H:i')
+                ));
+            } else if ($clashingSub->getNumberOfExtensions() >= 2) {
+                // do nothing because the max number of extensions allowed is 2
+            }
+        }
+
+        $form = $this->createFormBuilder()
+            ->add('save', 'submit', array(
+                'attr' => array( 'class' => 'btn btn-success'),
+                'label' => 'Mentés'
+            ))
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            /** @var Subscription $extendedSubs */
+            foreach ($subscriptionsWithClash as $extendedSubs) {
+                $em->persist($extendedSubs);
+            }
+
+            $em->flush();
+            $this->addFlash(
+                'notice',
+                'Változtatások Elmentve!'
+            );
+
+            return $this->redirectToRoute('breakevent_check_subscriptions', array(
+                'id' => $id
+            ));
+        }
 
         return $this->render('subscription/listAllSubscriptions.html.twig',
             array(
                 'base_dir' => realpath($this->container->getParameter('kernel.root_dir').'/..').DIRECTORY_SEPARATOR,
-                'subscriptions' => $subscriptionWithClash,
+                'subscriptions' => $resultArray,
+                'form' => $form->createView(),
                 'break_event_id' => $id,
                 'break_event' => $breakEvent,
                 'logged_in_user' => $loggedInUser

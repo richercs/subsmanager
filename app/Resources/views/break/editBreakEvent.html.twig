@@ -7,8 +7,7 @@
         {{ form_start(form) }}
         {{ form_errors(form) }}
         {{ form_row(form._token) }}
-        {{ form_row(form.startDate, {'label': 'Szünet Kezdete'}) }}
-        {{ form_row(form.dueDate, {'label': 'Szünet Vége'}) }}
+        {{ form_row(form.breakEventDay, {'label': 'Szünet Napja'}) }}
         {{ form_row(form.save) }}
         {{ form_end(form, {'render_rest': true}) }}
         <div class="checkbox">

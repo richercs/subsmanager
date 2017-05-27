@@ -15,13 +15,7 @@ class BreakEventType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('startDate', DateType::class, array(
-                'widget' => 'single_text',
-                'attr' => array( 'class' => 'datetimepicker'),
-                'format' => 'yyyy-MM-dd HH:mm',
-                'html5' => false,
-            ))
-            ->add('dueDate', DateType::class, array(
+            ->add('breakEventDay', DateType::class, array(
                 'widget' => 'single_text',
                 'attr' => array( 'class' => 'datetimepicker'),
                 'format' => 'yyyy-MM-dd HH:mm',
