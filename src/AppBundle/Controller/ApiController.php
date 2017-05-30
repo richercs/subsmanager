@@ -75,11 +75,11 @@ class ApiController extends Controller
         /** @var AttendanceHistoryRepository $attendanceHistoryRepo */
         $attendanceHistoryRepo =$em->getRepository('AppBundle\Entity\AttendanceHistory');
 
-        /** @var ArrayCollection $subscriptionData */
-        $subscriptionData = new ArrayCollection();
+        /** @var ArrayCollection $activeSubscriptions */
+        $activeSubscriptions = new ArrayCollection();
 
-        /** @var ArrayCollection $activeSubscription */
-        $activeSubscription = new ArrayCollection();
+        /** @var ArrayCollection $inactiveSubscriptions */
+        $inactiveSubscriptions = new ArrayCollection();
 
         /** @var Subscription $subscription */
         foreach ($subscriptions as $subscription) {
@@ -88,18 +88,29 @@ class ApiController extends Controller
 
             $attendancesLeft = $subscription->getAttendanceCount() - count($attendancRecords);
 
-            $subscriptionData->add(array(
-                'id' => $subscription->getId(),
-                'owner_first_name' => $subscription->getOwner()->getFirstName(),
-                'owner_last_name' => $subscription->getOwner()->getLastName(),
-                'attendance_count' => $subscription->getAttendanceCount(),
-                'attendances_left' => $attendancesLeft,
-                'start_date_string' =>$subscription->getStartDateString(),
-                'price' => $subscription->getPrice()
-            ));
+            if ($subscription->getStatusBoolean() && $attendancesLeft > 0) {
 
-            if ($subscription->getStatusBoolean()) {
-                $activeSubscription->add($subscription->getId());
+                $activeSubscriptions->add(array(
+                    'id' => $subscription->getId(),
+                    'owner_first_name' => $subscription->getOwner()->getFirstName(),
+                    'owner_last_name' => $subscription->getOwner()->getLastName(),
+                    'attendance_count' => $subscription->getAttendanceCount(),
+                    'attendances_left' => $attendancesLeft,
+                    'start_date_string' =>$subscription->getStartDateString(),
+                    'price' => $subscription->getPrice()
+                ));
+
+            } else {
+
+                $inactiveSubscriptions->add(array(
+                    'id' => $subscription->getId(),
+                    'owner_first_name' => $subscription->getOwner()->getFirstName(),
+                    'owner_last_name' => $subscription->getOwner()->getLastName(),
+                    'attendance_count' => $subscription->getAttendanceCount(),
+                    'attendances_left' => $attendancesLeft,
+                    'start_date_string' =>$subscription->getStartDateString(),
+                    'price' => $subscription->getPrice()
+                ));
             }
 
         }
@@ -113,8 +124,8 @@ class ApiController extends Controller
                 'lastName' =>$userAccount->getLastName(),
                 'email' => $userAccount->getEmail(),
             ),
-            'subscriptionsData' => $subscriptionData->toArray(),
-            'activeSubscriptionIds' => $activeSubscription->toArray(),
+            'activeSubscriptions' => $activeSubscriptions->toArray(),
+            'inactiveSubscriptions' => $inactiveSubscriptions->toArray(),
             'error' => null
         ));
     }
