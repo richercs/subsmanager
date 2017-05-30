@@ -55,6 +55,12 @@ class AttendanceHistory
     protected $subscriptionInfo;
 
     /**
+     * @var int
+     *
+     */
+    protected $subscriptionUsageCount;
+
+    /**
      * @ORM\Column(name="date_updated", type="datetime", nullable = true)
      */
     protected $updated;
@@ -147,6 +153,22 @@ class AttendanceHistory
     public function setSubscriptionInfo($subscriptionInfo)
     {
         $this->subscriptionInfo = $subscriptionInfo;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSubscriptionUsageCount()
+    {
+        return $this->subscriptionUsageCount;
+    }
+
+    /**
+     * @param mixed $subscriptionUsageCount
+     */
+    public function setSubscriptionUsageCount($subscriptionUsageCount)
+    {
+        $this->subscriptionUsageCount = $subscriptionUsageCount;
     }
 
     /**

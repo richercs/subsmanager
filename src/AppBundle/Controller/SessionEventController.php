@@ -333,25 +333,6 @@ class SessionEventController extends Controller
             // TODO: Implement Rule #1
             // TODO: Is it possible to set it for form.row.error?
 
-            // Rule #2 - Monthly subscription can only be used by the owner
-
-            /** @var AttendanceHistory $attendee */
-            foreach ($sessionEvent->getAttendees() as $attendee) {
-
-                if (!is_null($attendee->getSubscription()) &&
-                    $attendee->getSubscription()->isIsMonthlyTicket() &&
-                    $attendee->getAttendee() != $attendee->getSubscription()->getOwner())
-                {
-                    $this->addFlash(
-                        'error',
-                        'Hibás résztvevő: Havi bérletet csak a tulajdonos használhat!'
-                    );
-                    return $this->redirectToRoute('session_edit_session_event', array(
-                        'id' => $id
-                    ));
-                }
-            }
-
             // Rule #3 - Attendance count limit not reached by multiple usage
 
             // TODO: Implement Rule #3
@@ -425,6 +406,19 @@ class SessionEventController extends Controller
         $revenue = $adminStatsController->calculateRevenueAction($sessionevent);
 
         $sessionevent->setRevenue($revenue);
+
+        /** @var AttendanceHistoryRepository $attendanceHistoryRepo */
+        $attendanceHistoryRepo = $em->getRepository('AppBundle\Entity\AttendanceHistory');
+
+        /** @var AttendanceHistory $attendanceRecord */
+        foreach ($sessionevent->getAttendees() as $attendanceRecord) {
+
+            $subscriptionInUseId = $attendanceRecord->getSubscription();
+
+            $subscriptionUsagesCount = count($attendanceHistoryRepo->findBy(array('subscription' => $subscriptionInUseId)));
+
+            $attendanceRecord->setSubscriptionUsageCount($subscriptionUsagesCount);
+        }
 
         return $this->render('event/viewSessionEvent.html.twig',
             array(

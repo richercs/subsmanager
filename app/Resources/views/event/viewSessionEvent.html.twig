@@ -20,12 +20,13 @@
                 {% for attendanceRecord in sessionevent.getAttendees %}
                     <tr>
                         <td>
-                            {{ attendanceRecord.getAttendee }}
+                            {{ attendanceRecord.getAttendee.getLastName }} {{ attendanceRecord.getAttendee.getFirstName }}
                         </td>
                         <td>
                             {% if attendanceRecord.getSubscription is not null %}
-                                {{ attendanceRecord.getSubscription }}
-                                {{ attendanceRecord.getSubscription.getStatusString }}
+                                {{ attendanceRecord.getSubscription.getOwner.getLastName }} {{ attendanceRecord.getSubscription.getOwner.getFirstName }}
+                                ({{ attendanceRecord.getSubscription.getStartDateString }} - {{ attendanceRecord.getSubscription.getDueDateString }})
+                                Alkalmak: {{ attendanceRecord.getSubscription.getAttendanceCount }}/{{ attendanceRecord.getSubscriptionUsageCount }}
                             {% endif %}
                         </td>
                     </tr>
