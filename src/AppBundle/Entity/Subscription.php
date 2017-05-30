@@ -147,7 +147,7 @@ class Subscription
      * @return string
      */
     public function getStartDateString() {
-        return $this->getStartDate()->format('Y.m.d. H:i');
+        return $this->getStartDate()->format('Y.m.d.');
     }
 
     /**
@@ -179,7 +179,7 @@ class Subscription
      * @return string
      */
     public function getDueDateString() {
-        return $this->getDueDate()->format('Y.m.d. H:i');
+        return $this->getDueDate()->format('Y.m.d.');
     }
 
     /**
