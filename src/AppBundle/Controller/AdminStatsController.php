@@ -124,24 +124,13 @@ class AdminStatsController extends Controller
      */
     public function calculateRevenueAction($sessionEvent) {
 
-        /** @var EntityManager $em */
-        $em = $this->get('doctrine.orm.default_entity_manager');
-
-        /** @var AttendanceHistoryRepository $attendanceHistoryRepo */
-        $attendanceHistoryRepo = $em->getRepository('AppBundle\Entity\AttendanceHistory');
-
         $resultRevenue = 0;
 
         /** @var AttendanceHistory $record*/
         foreach ($sessionEvent->getAttendees() as $record) {
 
-            /** @var ArrayCollection $subscriptionUsages */
-            $subscriptionUsages = $attendanceHistoryRepo->findBy(array('subscription' => $record->getSubscription()));
-
-            $count = count($subscriptionUsages);
-
             if (!is_null($record->getSubscription())) {
-                $recordRevenue = $record->getSubscription()->getPrice() / $count;
+                $recordRevenue = $record->getSubscription()->getPrice() / $record->getSubscription()->getAttendanceCount();
 
                 $resultRevenue = $resultRevenue + round($recordRevenue,0);
             }
