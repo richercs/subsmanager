@@ -78,6 +78,9 @@ class ApiController extends Controller
         /** @var ArrayCollection $subscriptionData */
         $subscriptionData = new ArrayCollection();
 
+        /** @var ArrayCollection $activeSubscription */
+        $activeSubscription = new ArrayCollection();
+
         /** @var Subscription $subscription */
         foreach ($subscriptions as $subscription) {
 
@@ -94,6 +97,11 @@ class ApiController extends Controller
                 'start_date_string' =>$subscription->getStartDateString(),
                 'price' => $subscription->getPrice()
             ));
+
+            if ($subscription->getStatusBoolean()) {
+                $activeSubscription->add($subscription->getId());
+            }
+
         }
 
         $response = new JsonResponse();
@@ -106,6 +114,7 @@ class ApiController extends Controller
                 'email' => $userAccount->getEmail(),
             ),
             'subscriptionsData' => $subscriptionData->toArray(),
+            'activeSubscriptionIds' => $activeSubscription->toArray(),
             'error' => null
         ));
     }

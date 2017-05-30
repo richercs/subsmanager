@@ -278,7 +278,6 @@ class Subscription
         $this->usages = $usages;
     }
 
-
     /**
      * @return string
      */
@@ -297,6 +296,20 @@ class Subscription
         }
 
         return $status;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getStatusBoolean()
+    {
+        $now = new \DateTime();
+
+        if($this->getDueDate() <$now) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     /**
