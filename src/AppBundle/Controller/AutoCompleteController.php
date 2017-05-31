@@ -96,14 +96,34 @@ class AutoCompleteController extends Controller
 
         $responseArray = [];
 
+        $ownerSet = false;
+
         /** @var Subscription $subscription */
         foreach ($subscriptions as $subscription) {
-            $responseArray[] = array(
-                'id' => $subscription->getId(),
-                'label' => (string)$subscription,
-                'owner' => $subscription->getOwner()->getId(),
-                'is_owned' => ($ownerId == $subscription->getOwner()->getId())
-            );
+
+            if (!$ownerSet) {
+
+                $responseArray[] = array(
+                    'id' => $subscription->getId(),
+                    'label' => (string)$subscription,
+                    'owner' => $subscription->getOwner()->getId(),
+                    'is_owned' => ($ownerId == $subscription->getOwner()->getId())
+                );
+
+                if(($ownerId == $subscription->getOwner()->getId())) {
+
+                    $ownerSet = true;
+                }
+
+            } else {
+
+                $responseArray[] = array(
+                    'id' => $subscription->getId(),
+                    'label' => (string)$subscription,
+                    'owner' => $subscription->getOwner()->getId(),
+                    'is_owned' => ($ownerId == $subscription->getOwner()->getId()) && !$ownerSet
+                );
+            }
         }
 
         $response = new JsonResponse();
