@@ -97,6 +97,7 @@ class ApiController extends Controller
                     'attendance_count' => $subscription->getAttendanceCount(),
                     'attendances_left' => $attendancesLeft,
                     'start_date_string' =>$subscription->getStartDateString(),
+                    'due_date_string' =>$subscription->getDueDateString(),
                     'price' => $subscription->getPrice()
                 ));
 
@@ -109,6 +110,7 @@ class ApiController extends Controller
                     'attendance_count' => $subscription->getAttendanceCount(),
                     'attendances_left' => $attendancesLeft,
                     'start_date_string' =>$subscription->getStartDateString(),
+                    'due_date_string' =>$subscription->getDueDateString(),
                     'price' => $subscription->getPrice()
                 ));
             }
@@ -203,8 +205,6 @@ class ApiController extends Controller
                 'id' => $subscription->getId(),
                 'owner_first_name' => $subscription->getOwner()->getFirstName(),
                 'owner_last_name' => $subscription->getOwner()->getLastName(),
-                'buyer_first_name' => $subscription->getBuyer()->getFirstName(),
-                'buyer_last_name' => $subscription->getBuyer()->getLastName(),
                 'attendance_count' => $subscription->getAttendanceCount(),
                 'start_date_string' => $subscription->getStartDateString(),
                 'due_date_string' => $subscription->getDueDateString(),

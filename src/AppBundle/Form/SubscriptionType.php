@@ -29,9 +29,6 @@ class SubscriptionType extends AbstractType
             ->add('owner', AutocompleteType::class, array(
                 'class' => 'AppBundle:UserAccount'
             ))
-            ->add('buyer',  AutocompleteType::class, array(
-                'class' => 'AppBundle:UserAccount'
-            ))
             ->add('attendanceCount')
             ->add('startDate', DateType::class, array(
                 'widget' => 'single_text',

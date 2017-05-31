@@ -61,14 +61,6 @@ class Subscription
     protected $owner;
 
     /**
-     * @var UserAccount
-     *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\UserAccount")
-     * @ORM\JoinColumn(name="buyer_id", referencedColumnName="id", nullable=false)
-     */
-    protected $buyer;
-
-    /**
      * @var int
      * @ORM\Column(name="price", type="integer")
      */
@@ -228,22 +220,6 @@ class Subscription
     public function setOwner($owner)
     {
         $this->owner = $owner;
-    }
-
-    /**
-     * @return UserAccount
-     */
-    public function getBuyer()
-    {
-        return $this->buyer;
-    }
-
-    /**
-     * @param mixed $buyer
-     */
-    public function setBuyer($buyer)
-    {
-        $this->buyer = $buyer;
     }
 
     /**
