@@ -5,8 +5,8 @@
     <h3>Felhasználó Adatainak Megtekintése</h3>
     <div id="yellow-wrapper">
         <div id="view-user-account-wrapper">
-            <b>Keresztnév: </b>{{ user_account.getFirstName }}<br/>
             <b>Vezetéknév: </b>{{ user_account.getLastName }}<br/>
+            <b>Keresztnév: </b>{{ user_account.getFirstName }}<br/>
             <b>Email: </b>{{ user_account.getEmail }}<br/>
             {% block AdminLinkToEditUserAccount %}
                 {% if logged_in_user is not null %}
@@ -33,7 +33,7 @@
                     {% for subscription in subscriptions %}
                         <tr>
                             <td>
-                                {{ subscription.owner.getFirstName }} {{ subscription.owner.getLastName }}
+                                {{ subscription.owner.getLastName }} {{ subscription.owner.getFirstName }}
                             </td>
                             <td>
                                 {{ subscription.attendanceCount }}

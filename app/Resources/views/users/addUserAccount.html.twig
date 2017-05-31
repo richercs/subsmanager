@@ -7,8 +7,8 @@
         {{ form_start(form) }}
         {{ form_errors(form) }}
         {{ form_row(form._token) }}
-        {{ form_row(form.first_name, {'label': 'Keresztnév'}) }}
         {{ form_row(form.last_name, {'label': 'Vezetéknév'}) }}
+        {{ form_row(form.first_name, {'label': 'Keresztnév'}) }}
         {{ form_row(form.email, {'label': 'Email'}) }}
         {{ form_row(form.username, {'label': 'Felhasználónév'}) }}
         {{ form_row(form.save) }}

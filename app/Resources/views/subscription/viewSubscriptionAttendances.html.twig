@@ -13,8 +13,7 @@
                     {% endif %}
                 {% endif %}
             {%  endblock %}
-            <b>Tulajdonos: </b>{{ subscription.getOwner.getFirstName }} {{ subscription.getOwner.getLastName }}<br/>
-            <b>Vásárló: </b>{{ subscription.getBuyer.getFirstName }} {{ subscription.getBuyer.getLastName }}<br/>
+            <b>Tulajdonos: </b>{{ subscription.getOwner.getLastName }} {{ subscription.getOwner.getFirstName }}<br/>
             <b>Alkalmak Száma: </b>{{ subscription.getAttendanceCount }}<br/>
             <b>Kezdeti Időpont: </b>{{ subscription.getStartDateString }}<br/>
             <b>Lejárati Időpont: </b>{{ subscription.getDueDateString }}<br/>
@@ -46,7 +45,7 @@
                             {{ attendanceRecord.getSessionEvent.getSessionEventDateString }}
                         </td>
                         <td>
-                            {{ attendanceRecord.getAttendee.getFirstName }} {{ attendanceRecord.getAttendee.getLastName }}
+                            {{ attendanceRecord.getAttendee.getLastName }} {{ attendanceRecord.getAttendee.getFirstName }}
                         </td>
                         {% block AdminLinkToFormBody %}
                             {% if logged_in_user is not null %}
