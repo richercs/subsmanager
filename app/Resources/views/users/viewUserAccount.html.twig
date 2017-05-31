@@ -22,9 +22,10 @@
             <table class="table colored-table">
                 <thead>
                 <tr>
-                    <th>Tulajdonos</th>
-                    <th>Alkalmak</th>
-                    <th>Indul</th>
+                    <th>#</th>
+                    <th>Tulaj.</th>
+                    <th>Alk.</th>
+                    <th>Indul/Lejár</th>
                     <th>Ár</th>
                     <th>Részletek</th>
                 </tr>
@@ -33,13 +34,16 @@
                     {% for subscription in subscriptions %}
                         <tr>
                             <td>
+                                {{ subscription.id }}
+                            </td>
+                            <td>
                                 {{ subscription.owner.getLastName }} {{ subscription.owner.getFirstName }}
                             </td>
                             <td>
                                 {{ subscription.attendanceCount }}
                             </td>
                             <td>
-                                {{ subscription.getStartDateString }}
+                                {{ subscription.getStartDateString }} - {{ subscription.getDueDateString }}
                             </td>
                             <td>
                                 {{ subscription.price }}

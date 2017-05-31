@@ -24,6 +24,7 @@
                         </td>
                         <td>
                             {% if attendanceRecord.getSubscription is not null %}
+                                [{{ attendanceRecord.getSubscription.getId }}]
                                 {{ attendanceRecord.getSubscription.getOwner.getLastName }} {{ attendanceRecord.getSubscription.getOwner.getFirstName }}
                                 ({{ attendanceRecord.getSubscription.getStartDateString }} - {{ attendanceRecord.getSubscription.getDueDateString }})
                                 Alkalmak: {{ attendanceRecord.getSubscription.getAttendanceCount }}/{{ attendanceRecord.getSubscriptionUsageCount }}
