@@ -448,19 +448,6 @@ class SessionEventController extends Controller
 
         $sessionevent->setRevenue($revenue);
 
-        /** @var AttendanceHistoryRepository $attendanceHistoryRepo */
-        $attendanceHistoryRepo = $em->getRepository('AppBundle\Entity\AttendanceHistory');
-
-        /** @var AttendanceHistory $attendanceRecord */
-        foreach ($sessionevent->getAttendees() as $attendanceRecord) {
-
-            $subscriptionInUseId = $attendanceRecord->getSubscription();
-
-            $subscriptionUsagesCount = count($attendanceHistoryRepo->findBy(array('subscription' => $subscriptionInUseId)));
-
-            $attendanceRecord->setSubscriptionUsageCount($subscriptionUsagesCount);
-        }
-
         return $this->render('event/viewSessionEvent.html.twig',
             array(
                 'sessionevent' => $sessionevent,
