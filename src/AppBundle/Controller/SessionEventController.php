@@ -178,6 +178,39 @@ class SessionEventController extends Controller
 
             // save and continue button that redirects to the edit page
             if($form->get('saveAndContinue')->isClicked()) {
+
+                // Attendance Records Validation
+                // Rule #1 - Every attendee is unique
+
+                $duplicateAttendees = $this->validateAttendeesCount($newEvent);
+
+                if (!empty($duplicateAttendees)) {
+                    // message
+                    $this->addFlash(
+                        'error',
+                        'Név többször szerpel az űrlapon: ' . PHP_EOL . implode(', ', $duplicateAttendees)
+                    );
+
+                    // show list
+                    return $this->redirectToRoute('session_add_session_event');
+
+                }
+
+                // Rule #2 - One subscription can only be present on a session event twice
+
+                $duplicateSubscriptions = $this->validateSubscriptionsCount($newEvent);
+
+                if (!empty($duplicateSubscriptions)) {
+                    // message
+                    $this->addFlash(
+                        'error',
+                        'Bérlet többször szerpel az űrlapon mint 2, azonosító: ' . PHP_EOL . implode(', ', $duplicateSubscriptions)
+                    );
+
+                    // show list
+                    return $this->redirectToRoute('session_add_session_event');
+                }
+
                 // The OneToMany association and the symfony-collection bundle manages the attendees ArrayCollection
                 $em->persist($newEvent);
                 $em->flush();
@@ -188,6 +221,38 @@ class SessionEventController extends Controller
                 return $this->redirectToRoute('session_edit_session_event', array(
                     'id' => $newEvent->getId()
                 ));
+            }
+
+            // Attendance Records Validation
+            // Rule #1 - Every attendee is unique
+
+            $duplicateAttendees = $this->validateAttendeesCount($newEvent);
+
+            if (!empty($duplicateAttendees)) {
+                // message
+                $this->addFlash(
+                    'error',
+                    'Név többször szerpel az űrlapon: ' . PHP_EOL . implode(', ', $duplicateAttendees)
+                );
+
+                // show list
+                return $this->redirectToRoute('session_add_session_event');
+
+            }
+
+            // Rule #2 - One subscription can only be present on a session event twice
+
+            $duplicateSubscriptions = $this->validateSubscriptionsCount($newEvent);
+
+            if (!empty($duplicateSubscriptions)) {
+                // message
+                $this->addFlash(
+                    'error',
+                    'Bérlet többször szerpel az űrlapon mint 2, azonosító: ' . PHP_EOL . implode(', ', $duplicateSubscriptions)
+                );
+
+                // show list
+                return $this->redirectToRoute('session_add_session_event');
             }
 
             // The OneToMany association and the symfony-collection bundle manages the attendees ArrayCollection
@@ -327,16 +392,42 @@ class SessionEventController extends Controller
                     'searchScheduleItemId' => $searchScheduleItemId,
                 ));
             }
-            // Check attendee records for errors
-            // Rule #1 - Every attendance record is unique
 
-            // TODO: Implement Rule #1
-            // TODO: Is it possible to set it for form.row.error?
+            // Attendance Records Validation
+            // Rule #1 - Every attendee is unique
 
-            // Rule #3 - Attendance count limit not reached by multiple usage
+            $duplicateAttendees = $this->validateAttendeesCount($sessionEvent);
 
-            // TODO: Implement Rule #3
+            if (!empty($duplicateAttendees)) {
+                // message
+                $this->addFlash(
+                    'error',
+                    'Név többször szerpel az űrlapon: ' . PHP_EOL . implode(', ', $duplicateAttendees)
+                );
 
+                // show list
+                return $this->redirectToRoute('session_edit_session_event', array(
+                    'id' => $sessionEvent->getId()
+                ));
+
+            }
+
+            // Rule #2 - One subscription can only be present on a session event twice
+
+            $duplicateSubscriptions = $this->validateSubscriptionsCount($sessionEvent);
+
+            if (!empty($duplicateSubscriptions)) {
+                // message
+                $this->addFlash(
+                    'error',
+                    'Bérlet többször szerpel az űrlapon mint 2, azonosító: ' . PHP_EOL . implode(', ', $duplicateSubscriptions)
+                );
+
+                // show list
+                return $this->redirectToRoute('session_edit_session_event', array(
+                    'id' => $sessionEvent->getId()
+                ));
+            }
 
 
 
@@ -347,6 +438,8 @@ class SessionEventController extends Controller
                 'Változtatások Elmentve!'
             );
 
+
+            // Update the subscription Info textareas on each Attendance Record
 
             /** @var SessionEvent $sessionEvent */
             $sessionEvent = $sessionEventRepository->find($id);
@@ -457,6 +550,90 @@ class SessionEventController extends Controller
 
     }
 
+    /**
+     *
+     * @param SessionEvent $sessionEvent
+     *
+     * $return array
+     */
+    public function validateAttendeesCount($sessionEvent) {
 
+        // Attendee validation
+        // Rule #1 - Every attendee is unique
+
+        $attendees = new ArrayCollection();
+
+        /** @var AttendanceHistory $attendee */
+        foreach ($sessionEvent->getAttendees() as $attendee) {
+            $attendees->add($attendee->getAttendee());
+        }
+
+        $duplicates = new ArrayCollection();
+
+        /** @var UserAccount $attendee */
+        foreach ($attendees as $attendee) {
+
+            $countDuplicates = 0;
+
+            foreach ($attendees as $attendeetoCheck) {
+                if ($attendee == $attendeetoCheck) {
+                    $countDuplicates = $countDuplicates + 1;
+                }
+            }
+
+            if ($countDuplicates >= 2) {
+
+                $duplicates->add($attendee->getUsername());
+            }
+        }
+
+        if ($duplicates->count() >= 1) {
+            return $duplicates->toArray();
+        }
+        return array();
+    }
+
+    /**
+     *
+     * @param SessionEvent $sessionEvent
+     *
+     * $return array
+     */
+    public function validateSubscriptionsCount($sessionEvent) {
+
+        // Subscription validation
+        // Rule #2 - One subscription can only be present on a session event twice
+
+        $subscriptions = new ArrayCollection();
+
+        /** @var AttendanceHistory $attendanceRecord */
+        foreach ($sessionEvent->getAttendees() as $attendanceRecord) {
+            $subscriptions->add($attendanceRecord->getSubscription());
+        }
+
+        $duplicates = new ArrayCollection();
+
+        /** @var Subscription $subscription */
+        foreach ($subscriptions as $subscription) {
+
+            $countDuplicates = 0;
+
+            foreach ($subscriptions as $subscriptiontoCheck) {
+                if ($subscription == $subscriptiontoCheck) {
+                    $countDuplicates = $countDuplicates + 1;
+                }
+            }
+
+            if ($countDuplicates >= 3) {
+
+                $duplicates->add($subscription->getId());
+            }
+        }
+
+        if ($duplicates->count() >= 1) {
+            return $duplicates->toArray();
+        }
+        return array();
+    }
 
 }
