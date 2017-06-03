@@ -6,9 +6,11 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\AttendanceHistory;
 use AppBundle\Entity\Subscription;
 use AppBundle\Entity\UserAccount;
+use AppBundle\Entity\UserContact;
 use AppBundle\Repository\AttendanceHistoryRepository;
 use AppBundle\Repository\SubscriptionRepository;
 use AppBundle\Repository\UserAccountRepository;
+use AppBundle\Repository\UserContactRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -141,7 +143,10 @@ class AutoCompleteController extends Controller
      * @return Response
      */
     public function fillOutSelectedUser(Request $request) {
+
         $selectedUserId = $request->get('selectFieldValue');
+
+        $userContactId = $request->get('userContactId');
 
         /** @var EntityManager $em */
         $em = $this->get('doctrine.orm.default_entity_manager');
@@ -152,17 +157,27 @@ class AutoCompleteController extends Controller
         /** @var UserAccount $selectedUserAccount */
         $selectedUserAccount = $userAccountRepository->find($selectedUserId);
 
+        /** @var UserContactRepository $userContactRepository */
+        $userContactRepository = $em->getRepository('AppBundle\Entity\UserContact');
+
+        /** @var UserContact $userContact */
+        $userContact = $userContactRepository->find($userContactId);
+
         $response = new JsonResponse();
 
-        if (is_null($selectedUserAccount)) {
+        if (is_null($selectedUserAccount) || is_null($userContact)) {
             return $response;
         }
 
         return $response->setData(array(
-            'firstname' => (string) $selectedUserAccount->getFirstName(),
-            'lastname' => (string) $selectedUserAccount->getLastName(),
-            'email' => (string) $selectedUserAccount->getEmail(),
-            'username' => (string) $selectedUserAccount->getUsername(),
+            'user' => array(
+                'username' => (string) $selectedUserAccount->getUsername(),
+            ),
+            'contact' => array(
+                'firstname' => (string) $userContact->getContactFirstName(),
+                'lastname' => (string) $userContact->getContactLastName(),
+                'email' => (string) $userContact->getContactEmail()
+            )
         ));
     }
 

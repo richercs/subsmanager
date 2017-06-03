@@ -4,6 +4,7 @@
     {{ parent() }}
     <h3>Kapcsolat Felvételi Űrlap feldolgozása</h3>
     <div id="white-wrapper">
+        <b>Kapcsolat Felvételi Űrlap Azonosító:</b> <span id="userContactId">{{ user_contact.getId }}</span><br>
         <b>Kapcsolat Vezetéknév:</b> {{ user_contact.contactlastname }}<br>
         <b>Kapcsolat Keresztnév:</b> {{ user_contact.contactfirstname }}<br>
         <b>Kapcsolat Email Cím:</b> {{ user_contact.contactemail }}<br>
