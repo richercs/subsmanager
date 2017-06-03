@@ -2,17 +2,9 @@
 
 {% block body %}
     {{ parent() }}
-    <h3>Szünet Esemény Szerkesztése</h3>
+    <h3>Szünet Esemény Törlése</h3>
     <div id="yellow-wrapper">
-        {{ form_start(form) }}
-        {{ form_errors(form) }}
-        {{ form_row(form._token) }}
-        {{ form_row(form.breakEventDay, {'label': 'Szünet Napja'}) }}
-        {{ form_row(form.save) }}
-        {{ form_end(form, {'render_rest': true}) }}
-        <div class="checkbox">
-            <label><input type="checkbox" id="confirmDeleteCheckBox" value="">Törlés engedélyezve</label>
-        </div>
+        {{ form(form) }}
         <a href="{{ path('break_event_list_all') }}" class="btn btn-primary">Vissza</a>
     </div>
 {% endblock %}
@@ -35,31 +27,5 @@
                 format: 'YYYY-MM-DD HH:mm'
             });
         });
-    </script>
-{% endblock %}
-
-{% block body_end_javascripts %}
-    <script type="text/javascript">
-
-        var confirmDeleteCheckbox = $('#confirmDeleteCheckBox');
-
-        if (confirmDeleteCheckbox.is(":checked")) {
-            // let it submit
-            $('#appbundle_breakevent_delete').attr("disabled", false);
-        } else {
-            // don't let it submit
-            $('#appbundle_breakevent_delete').attr("disabled", true);
-        }
-
-        confirmDeleteCheckbox.click( function () {
-            if ($('#confirmDeleteCheckBox').is(":checked")) {
-                // let it submit
-                $('#appbundle_breakevent_delete').attr("disabled", false);
-            } else {
-                // don't let it submit
-                $('#appbundle_breakevent_delete').attr("disabled", true);
-            }
-        });
-
     </script>
 {% endblock %}

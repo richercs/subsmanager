@@ -15,6 +15,7 @@ use AppBundle\Repository\UserAccountRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -45,7 +46,7 @@ class BreakEventController extends Controller
         return $this->render('break/listAllBreakEvents.html.twig',
             array(
                 'base_dir' => realpath($this->container->getParameter('kernel.root_dir').'/..').DIRECTORY_SEPARATOR,
-                'breaks' => $breaks,
+                'breaks' => array_reverse($breaks),
                 'logged_in_user' => $loggedInUser
             ));
     }
@@ -66,8 +67,8 @@ class BreakEventController extends Controller
         /** @var EntityManager $em */
         $em = $this->get('doctrine.orm.default_entity_manager');
 
-        /** @var UserAccountRepository $userAccountRepository */
-        $userAccountRepository = $em->getRepository('AppBundle\Entity\UserAccount');
+        /** @var BreakEventRepository $breakEventRepository */
+        $breakEventRepository = $em->getRepository('AppBundle\Entity\BreakEvent');
 
         $newBreak = new BreakEvent();
 
@@ -76,14 +77,26 @@ class BreakEventController extends Controller
 
         if ($form->isValid())
         {
-            $em->persist($newBreak);
-            $em->flush();
-            $this->addFlash(
-                'notice',
-                'Változtatások Elmentve!'
-            );
-            return $this->redirectToRoute('breakevent_check_subscriptions', array(
-                'id' => $newBreak->getId(),
+            $breakEvents = $breakEventRepository->findAll();
+
+            /** @var BreakEvent $existingBreakEvent */
+            foreach ($breakEvents as $existingBreakEvent) {
+
+                if ($newBreak->hasSameDay($existingBreakEvent)) {
+
+                    $this->addFlash(
+                        'error',
+                        'Erre a napra már meg van hírdetve szünet!' . PHP_EOL .
+                        'Szünet azonosító: ' . $existingBreakEvent->getId()
+                    );
+
+                    return $this->redirectToRoute('break_add_breakevent');
+                }
+
+            }
+
+            return $this->redirectToRoute('breakevent_check_and_extend_subscriptions', array(
+                'break_event_day' => $newBreak->getBreakEventDay()->format('Y-m-d H:i'),
             ));
         }
 
@@ -130,32 +143,25 @@ class BreakEventController extends Controller
             return $this->redirectToRoute('break_event_list_all');
         }
 
-        $form = $this->createForm(new BreakEventType(), $breakEvent);
+        /** @var Form $form */
+        $form = $this->createFormBuilder()
+            ->add('breakData', 'text', array(
+                'disabled' => true,
+                'label' => 'Szünet Napja',
+                'data' => $breakEvent->getBreakEventDay()->format('Y.m.d.'),
+            ))
+            ->add('save', 'submit', array(
+                'attr' => array( 'class' => 'btn btn-primary'),
+                'label' => 'Hosszabbítások Ellenőrzése'
+            ))
+            ->getForm();
+
         $form->handleRequest($request);
 
-        if ($form->isValid()) {
-            // DELETE Schedule item
-            if ($form->get('delete')->isClicked()) {
-                $em->remove($breakEvent);
-                $em->flush();
+        if ($form->isSubmitted() && $form->isValid())
+        {
 
-                // message
-                $this->addFlash(
-                    'notice',
-                    '"' . $id . '" azonosítójú szünet esemény sikeresen törölve!'
-                );
-
-                // show list
-                return $this->redirectToRoute('break_event_list_all');
-            }
-
-            $em->persist($breakEvent);
-            $em->flush();
-            $this->addFlash(
-                'notice',
-                'Szünet napja elmentve!'
-            );
-            return $this->redirectToRoute('breakevent_check_subscriptions', array(
+            return $this->redirectToRoute('breakevent_check_and_revert_subscriptions', array(
                 'id' => $breakEvent->getId(),
             ));
         }
@@ -170,8 +176,121 @@ class BreakEventController extends Controller
 
     /**
      * Check if the break event with passed $id clashes with active period of any subscription.
+     * Save the extended due dates to the database if the Save form is valind and sent.
      *
-     * @Route("/breakevent/check_subs/{id}", name="breakevent_check_subscriptions", defaults={"id" = -1})
+     * @Route("/breakevent/check_and_extend_subs", name="breakevent_check_and_extend_subscriptions")
+     *
+     * @Security("has_role('ROLE_ADMIN')")
+     *
+     * @param Request $request
+     * @return array
+     */
+    public function checkAndExtendSubscriptionAndBreakEventsAction(Request $request) {
+
+        /** @var UserAccount $loggedInUser */
+        $loggedInUser = $this->getUser();
+
+        /** @var EntityManager $em */
+        $em = $this->get('doctrine.orm.default_entity_manager');
+
+        if (!is_null($request->query->get('break_event_day'))) {
+
+            $breakEventDay = $request->query->get('break_event_day');
+
+        } else {
+
+            // message
+            $this->addFlash(
+                'error',
+                'Hiányzó szünet nap!'
+            );
+
+            // show list
+            return $this->redirectToRoute('break_event_list_all');
+        }
+
+        $breakEvent = new BreakEvent();
+
+        $breakEventDayDateTime = new \DateTime($breakEventDay);
+
+        $breakEvent->setBreakEventDay($breakEventDayDateTime);
+
+        /** @var SubscriptionRepository $subscriptionRepository */
+        $subscriptionRepository = $em->getRepository('AppBundle\Entity\Subscription');
+
+        $subscriptionsWithClash = $subscriptionRepository->getClashingSubscriptions($breakEvent->getBreakEventDay());
+
+        /** @var ArrayCollection $resultArray */
+        $resultArray = new ArrayCollection();
+
+        /** @var Subscription $clashingSub */
+        foreach ($subscriptionsWithClash as $clashingSub) {
+            if($clashingSub->getNumberOfExtensions() < 2) {
+                // if the subscription has been extended zero or one time then do another +1 week extension
+
+                /** @var \DateTime $subscriptionDueDate */
+                $subscriptionDueDate = $clashingSub->getDueDate();
+                /** @var \DateTime $oldDueDate */
+                $oldDueDate = new \DateTime($subscriptionDueDate->format('Y-m-d H:i'));
+                $subscriptionExtensionCount = $clashingSub->getNumberOfExtensions();
+
+
+                $clashingSub->setDueDateTime($subscriptionDueDate->modify('+1 week'));
+                $clashingSub->setNumberOfExtensions($subscriptionExtensionCount + 1);
+
+                $resultArray->add(array(
+                    'subscription' => $clashingSub,
+                    'oldDueDate' => $oldDueDate->format('Y.m.d')
+                ));
+            } else if ($clashingSub->getNumberOfExtensions() >= 2) {
+
+                $subscriptionExtensionCount = $clashingSub->getNumberOfExtensions();
+
+                $clashingSub->setNumberOfExtensions($subscriptionExtensionCount + 1);
+            }
+        }
+
+        $form = $this->createFormBuilder()
+            ->add('save', 'submit', array(
+                'attr' => array( 'class' => 'btn btn-success'),
+                'label' => 'Mentés',
+                'disabled' => true
+            ))
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            /** @var Subscription $extendedSubs */
+            foreach ($subscriptionsWithClash as $extendedSubs) {
+                $em->persist($extendedSubs);
+            }
+            $em->persist($breakEvent);
+            $em->flush();
+            $this->addFlash(
+                'notice',
+                'Változtatások Elmentve!' . PHP_EOL . 'Bérlet Hosszabbítások Elmentve!'
+            );
+
+            return $this->redirectToRoute('break_event_list_all');
+        }
+
+        return $this->render('subscription/listAllSubscriptions.html.twig',
+            array(
+                'base_dir' => realpath($this->container->getParameter('kernel.root_dir').'/..').DIRECTORY_SEPARATOR,
+                'subscriptions' => $resultArray,
+                'form' => $form->createView(),
+                'break_event' => $breakEvent,
+                'logged_in_user' => $loggedInUser
+            ));
+    }
+
+    /**
+     * Check if the break event with passed $id clashes with active period of any subscription.
+     * Revert the extended due dates in the database if the Save form is valind and sent.
+     *
+     * @Route("/breakevent/check_and_revert_subs/{id}", name="breakevent_check_and_revert_subscriptions", defaults={"id" = -1})
      *
      * @Security("has_role('ROLE_ADMIN')")
      *
@@ -179,7 +298,7 @@ class BreakEventController extends Controller
      * @param Request $request
      * @return array
      */
-    public function checkSubscriptionAndBreakEventDatesAction($id, Request $request) {
+    public function checkAndRevertSubscriptionAndBreakEventsAction($id, Request $request) {
 
         /** @var UserAccount $loggedInUser */
         $loggedInUser = $this->getUser();
@@ -211,8 +330,11 @@ class BreakEventController extends Controller
 
         /** @var Subscription $clashingSub */
         foreach ($subscriptionsWithClash as $clashingSub) {
-            if($clashingSub->getNumberOfExtensions() < 2) {
-                // if the subscription has been extended zero or one time then do another +1 week extension
+
+            if($clashingSub->getNumberOfExtensions() <= 0) {
+                // do nothing
+            } else if($clashingSub->getNumberOfExtensions() <= 2) {
+                // if the subscription has been extended zero or one time then do another -1 week extension
 
                 /** @var \DateTime $subscriptionDueDate */
                 $subscriptionDueDate = $clashingSub->getDueDate();
@@ -221,22 +343,28 @@ class BreakEventController extends Controller
                 $subscriptionExtensionCount = $clashingSub->getNumberOfExtensions();
 
 
-                $clashingSub->setDueDateTime($subscriptionDueDate->modify('+1 week'));
-                $clashingSub->setNumberOfExtensions($subscriptionExtensionCount + 1);
+                $clashingSub->setDueDateTime($subscriptionDueDate->modify('-1 week'));
+                $clashingSub->setNumberOfExtensions($subscriptionExtensionCount - 1);
 
                 $resultArray->add(array(
                     'subscription' => $clashingSub,
-                    'oldDueDate' => $oldDueDate->format('Y.m.d H:i')
+                    'oldDueDate' => $oldDueDate->format('Y.m.d')
                 ));
-            } else if ($clashingSub->getNumberOfExtensions() >= 2) {
-                // do nothing because the max number of extensions allowed is 2
+            } else {
+
+                $subscriptionExtensionCount = $clashingSub->getNumberOfExtensions();
+
+                $clashingSub->setNumberOfExtensions($subscriptionExtensionCount - 1);
             }
         }
 
         $form = $this->createFormBuilder()
             ->add('save', 'submit', array(
-                'attr' => array( 'class' => 'btn btn-success'),
-                'label' => 'Mentés'
+                'attr' => array(
+                    'class' => 'btn btn-danger',
+                ),
+                'label' => 'Mentés és Szünet Törlése',
+                'disabled' => true
             ))
             ->getForm();
 
@@ -244,20 +372,19 @@ class BreakEventController extends Controller
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            /** @var Subscription $extendedSubs */
-            foreach ($subscriptionsWithClash as $extendedSubs) {
-                $em->persist($extendedSubs);
+            /** @var Subscription $revertedSubs */
+            foreach ($subscriptionsWithClash as $revertedSubs) {
+                $em->persist($revertedSubs);
             }
 
+            $em->remove($breakEvent);
             $em->flush();
             $this->addFlash(
                 'notice',
-                'Változtatások Elmentve!'
+                'Változtatások Elmentve!' . PHP_EOL . 'Bérlet Hosszabbítások Visszaállítva!'
             );
 
-            return $this->redirectToRoute('breakevent_check_subscriptions', array(
-                'id' => $id
-            ));
+            return $this->redirectToRoute('break_event_list_all');
         }
 
         return $this->render('subscription/listAllSubscriptions.html.twig',
@@ -265,7 +392,7 @@ class BreakEventController extends Controller
                 'base_dir' => realpath($this->container->getParameter('kernel.root_dir').'/..').DIRECTORY_SEPARATOR,
                 'subscriptions' => $resultArray,
                 'form' => $form->createView(),
-                'break_event_id' => $id,
+                'reverting' => true,
                 'break_event' => $breakEvent,
                 'logged_in_user' => $loggedInUser
             ));

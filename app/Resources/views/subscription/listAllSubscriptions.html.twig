@@ -2,35 +2,50 @@
 
 {% block body %}
     {{ parent() }}
-    <h3>Bérletek</h3>
     {% if break_event is defined %}
+        <h3>Bérletek Ellenőrzés</h3>
         <div id="white-wrapper">
-            <b>Szünet ID:</b> {{ break_event.getId }}<br>
-            <b>Szünet Napja:</b> {{ break_event.getBreakEventDay|date('Y.m.d.') }}<br>
-            <br>
+            <b>Szünet Napja:</b> <span style="color: green">{{ break_event.getBreakEventDay|date('Y.m.d.') }}</span><br>
         </div>
         <div id="yellow-wrapper">
             <h4><b>Érintett Bérletek</b></h4>
             <br>
             <ul>
                 {% for subscription in subscriptions %}
-                    <li>
+                    <li class="bottom-padded-list">
                         {{ subscription['subscription'].getOwner }}
                         <br>Bérlet Azonosító: <b>{{ subscription['subscription'].getId }}</b> [{{ subscription['subscription'].getAttendanceCount }} alkalmas]
-                        Hosszabítás Száma: {{ subscription['subscription'].getNumberOfExtensions }}
+                        Hosszabítás Szám: <span style="color: green">{{ subscription['subscription'].getNumberOfExtensions }} </span>
                         <br>{{ subscription['subscription'].getStartDateString }} -
-                        (<span style="color: grey">{{ subscription['oldDueDate'] }} </span>)
-                        <b>Új:</b> <span style="color: green">{{ subscription['subscription'].getDueDateString }} </span>
-                        <a href="{{ path('subscription_edit_subscription', {'id': subscription['subscription'].getId, 'break_event_id': break_event_id}) }}" class="btn btn-link"><span style="font-size:16px; padding-left: 8px;" class="pull-right showopacity glyphicon glyphicon-cog"></span></a>
+                        {{ subscription['oldDueDate'] }}
+                        &nbsp;&nbsp;&nbsp;<b>Új:</b> <span style="color: green">{{ subscription['subscription'].getDueDateString }} </span>
                     </li>
                 {% endfor %}
             </ul>
 
-            {{ form(form) }}
+            {% if reverting is defined %}
+                <h4> Visszaállítások Mentése</h4>
+                {{ form(form) }}
 
-            <a href="{{ path('break_edit_break_event', {'id': break_event_id}) }}" class="btn btn-primary">Vissza</a>
+                <div class="checkbox">
+                    <label><input type="checkbox" id="confirmDeleteCheckBox" value="">Visszaállítás</label>
+                </div>
+
+                <a href="{{ path('break_edit_break_event', {'id': break_event.getId}) }}" class="btn btn-primary">Vissza</a>
+            {% else %}
+                <h4> Hosszabbítások Mentése</h4>
+                {{ form(form) }}
+
+                <div class="checkbox">
+                    <label><input type="checkbox" id="confirmExtendCheckBox" value="">Hosszabbítás</label>
+                </div>
+
+                <a href="{{ path('break_add_breakevent') }}" class="btn btn-primary">Vissza</a>
+            {% endif %}
+
         </div>
     {% else %}
+        <h3>Bérletek Lista</h3>
         <div id="white-wrapper">
             <div class="list-group">
             {% for subscription in subscriptions %}
@@ -46,4 +61,62 @@
 {% endblock %}
 {% block stylesheets %}
     {{ parent() }}
+{% endblock %}
+
+{% block body_end_javascripts %}
+
+    {% if reverting is defined %}
+
+        <script type="text/javascript">
+
+            var confirmDeleteCheckbox = $('#confirmDeleteCheckBox');
+
+            if (confirmDeleteCheckbox.is(":checked")) {
+                // let it submit
+                $('#form_save').attr("disabled", false);
+            } else {
+                // don't let it submit
+                $('#form_save').attr("disabled", true);
+            }
+
+            confirmDeleteCheckbox.click( function () {
+                if ($('#confirmDeleteCheckBox').is(":checked")) {
+                    // let it submit
+                    $('#form_save').attr("disabled", false);
+                } else {
+                    // don't let it submit
+                    $('#form_save').attr("disabled", true);
+                }
+            });
+
+        </script>
+
+    {% else %}
+
+        <script type="text/javascript">
+
+            var confirmExtendCheckbox = $('#confirmExtendCheckBox');
+
+            if (confirmExtendCheckbox.is(":checked")) {
+                // let it submit
+                $('#form_save').attr("disabled", false);
+            } else {
+                // don't let it submit
+                $('#form_save').attr("disabled", true);
+            }
+
+            confirmExtendCheckbox.click( function () {
+                if ($('#confirmExtendCheckBox').is(":checked")) {
+                    // let it submit
+                    $('#form_save').attr("disabled", false);
+                } else {
+                    // don't let it submit
+                    $('#form_save').attr("disabled", true);
+                }
+            });
+
+        </script>
+
+    {% endif %}
+
 {% endblock %}

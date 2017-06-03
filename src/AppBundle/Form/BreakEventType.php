@@ -22,7 +22,8 @@ class BreakEventType extends AbstractType
                 'html5' => false,
             ))
             ->add('save', 'submit', array(
-                'label' => 'Mentés'
+                'attr'      => array('class' => 'btn btn-primary'),
+                'label' => 'Hosszabbítások Ellenőrzése'
             ))
             ->add('delete','submit', array(
                 'attr'      => array('class' => 'button-link delete'),

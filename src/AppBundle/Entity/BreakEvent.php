@@ -48,6 +48,15 @@ class BreakEvent
     }
 
     /**
+     * @param BreakEvent $breakEvent
+     *
+     * @return boolean
+     */
+    public function hasSameDay($breakEvent) {
+        return ($this->getBreakEventDay()->format('Y-m-d') == $breakEvent->getBreakEventDay()->format('Y-m-d'));
+    }
+
+    /**
      * @return int
      */
     public function getId()
