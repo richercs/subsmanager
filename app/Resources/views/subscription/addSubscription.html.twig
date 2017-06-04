@@ -64,7 +64,7 @@
 
         $(document).ready(function () {
 
-            var today = moment().format('YYYY-MM-DD H:mm');
+            var today = moment().set({hour:0,minute:0,second:0,millisecond:0}).format('YYYY-MM-DD HH:mm');
 
             var extensionDate;
 
@@ -72,29 +72,29 @@
 
                 if ($(this).val() === '1') {
 
-                    extensionDate = moment(today, "YYYY-MM-DD H:mm").add(1, 'months');
+                    extensionDate = moment(today, "YYYY-MM-DD HH:mm").set({hour:23,minute:59,second:0,millisecond:0}).add(1, 'months');
 
                     $('#app_subscription_attendanceCount').val(4);
                     $('#app_subscription_startDate').val(today);
-                    $('#app_subscription_dueDate').val(extensionDate.format('YYYY-MM-DD H:mm'));
+                    $('#app_subscription_dueDate').val(extensionDate.format('YYYY-MM-DD HH:mm'));
                     $('#app_subscription_price').val(5000);
 
                 } else if ($(this).val() === '2') {
 
-                    extensionDate = moment(today, "YYYY-MM-DD H:mm").add(2, 'months');
+                    extensionDate = moment(today, "YYYY-MM-DD HH:mm").set({hour:23,minute:59,second:0,millisecond:0}).add(2, 'months');
 
                     $('#app_subscription_attendanceCount').val(10);
                     $('#app_subscription_startDate').val(today);
-                    $('#app_subscription_dueDate').val(extensionDate.format('YYYY-MM-DD H:mm'));
+                    $('#app_subscription_dueDate').val(extensionDate.format('YYYY-MM-DD HH:mm'));
                     $('#app_subscription_price').val(10000);
 
                 } else {
 
-                    extensionDate = moment(today, "YYYY-MM-DD H:mm").add(1, 'months');
+                    extensionDate = moment(today, "YYYY-MM-DD HH:mm").set({hour:23,minute:59,second:0,millisecond:0}).add(1, 'months');
 
                     $('#app_subscription_attendanceCount').val(0);
                     $('#app_subscription_startDate').val(today);
-                    $('#app_subscription_dueDate').val(extensionDate.format('YYYY-MM-DD H:mm'));
+                    $('#app_subscription_dueDate').val(extensionDate.format('YYYY-MM-DD HH:mm'));
                 }
 
                 var form = $('.form-horizontal');

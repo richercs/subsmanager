@@ -192,7 +192,7 @@ class ApiController extends Controller
         foreach ($attendancRecords as $attendancRecord) {
             $attendanceData->add(array(
                 'session_type_name' => $attendancRecord->getSessionEvent()->getScheduleItem()->getSessionName(),
-                'session_date' => $attendancRecord->getSessionEvent()->getSessionEventDateString(),
+                'session_date' => $attendancRecord->getSessionEvent()->getSessionEventDate()->format('Y.m.d.'),
                 'session_attendee_first_name' => $attendancRecord->getAttendee()->getFirstName(),
                 'session_attendee_last_name' => $attendancRecord->getAttendee()->getLastName()
             ));

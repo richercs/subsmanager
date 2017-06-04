@@ -42,7 +42,7 @@
                             {{ attendanceRecord.getSessionEvent.scheduleItem.getSessionName }}
                         </td>
                         <td>
-                            {{ attendanceRecord.getSessionEvent.getSessionEventDateString }}
+                            {{ attendanceRecord.getSessionEvent.getSessionEventDate|date('Y.m.d.')  }}
                         </td>
                         <td>
                             {{ attendanceRecord.getAttendee.getLastName }} {{ attendanceRecord.getAttendee.getFirstName }}
