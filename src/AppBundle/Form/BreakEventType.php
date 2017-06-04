@@ -18,7 +18,7 @@ class BreakEventType extends AbstractType
             ->add('breakEventDay', DateType::class, array(
                 'widget' => 'single_text',
                 'attr' => array( 'class' => 'datetimepicker'),
-                'format' => 'yyyy-MM-dd HH:mm',
+                'format' => 'yyyy-MM-dd',
                 'html5' => false,
             ))
             ->add('save', 'submit', array(

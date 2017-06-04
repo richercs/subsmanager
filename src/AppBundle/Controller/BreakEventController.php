@@ -96,7 +96,7 @@ class BreakEventController extends Controller
             }
 
             return $this->redirectToRoute('breakevent_check_and_extend_subscriptions', array(
-                'break_event_day' => $newBreak->getBreakEventDay()->format('Y-m-d H:i'),
+                'break_event_day' => $newBreak->getBreakEventDay()->format('Y-m-d'),
             ));
         }
 
@@ -231,7 +231,7 @@ class BreakEventController extends Controller
                 /** @var \DateTime $subscriptionDueDate */
                 $subscriptionDueDate = $clashingSub->getDueDate();
                 /** @var \DateTime $oldDueDate */
-                $oldDueDate = new \DateTime($subscriptionDueDate->format('Y-m-d H:i'));
+                $oldDueDate = new \DateTime($subscriptionDueDate->format('Y-m-d'));
                 $subscriptionExtensionCount = $clashingSub->getNumberOfExtensions();
 
 
@@ -339,7 +339,7 @@ class BreakEventController extends Controller
                 /** @var \DateTime $subscriptionDueDate */
                 $subscriptionDueDate = $clashingSub->getDueDate();
                 /** @var \DateTime $oldDueDate */
-                $oldDueDate = new \DateTime($subscriptionDueDate->format('Y-m-d H:i'));
+                $oldDueDate = new \DateTime($subscriptionDueDate->format('Y-m-d'));
                 $subscriptionExtensionCount = $clashingSub->getNumberOfExtensions();
 
 

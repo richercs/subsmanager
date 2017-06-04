@@ -24,7 +24,7 @@ class BreakEvent
     protected $id;
 
     /**
-     * @ORM\Column(name="break_event_day", type="datetime", nullable = false)
+     * @ORM\Column(name="break_event_day", type="date", nullable = false)
      */
     protected $breakEventDay;
 
@@ -43,7 +43,7 @@ class BreakEvent
      */
     public function __toString()
     {
-        return $this->getBreakEventDay()->format('Y-m-d H:i')
+        return $this->getBreakEventDay()->format('Y-m-d')
         . ' [' . $this->getId() . ']';
     }
 
