@@ -88,3 +88,6 @@ gregwar_captcha:
     height: 50
     length: 6
     invalid_message: 'Hibás kód'
+
+parameters:
+  frontend_host: http://tornazzvelem.hu
