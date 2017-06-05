@@ -62,6 +62,34 @@ code { background: #F5F5F5; max-width: 100px; padding: 2px 6px; word-wrap: break
     margin-bottom: 2em;
 }
 
+/* Embeded LOGIN Form Non-Responsive */
+
+.container-embeded {
+    width: 290px !important;
+    display: block;
+}
+
+#login_checkbox_embeded {
+    margin-left: 2em;
+    color: #717171;
+}
+
+.embeded-control-label {
+    margin-bottom: 0 !important;
+    margin-top: 5px !important;
+    color: #717171;
+}
+
+.embeded-form-login {
+    margin-right: 0 !important;
+}
+
+#embeded-login-form-error {
+    height: 30px;
+}
+
+/* END */
+
 .menubar-btn {
     text-align: left !important;
 }
