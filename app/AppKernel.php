@@ -20,6 +20,7 @@ class AppKernel extends Kernel
             new PUGX\AutocompleterBundle\PUGXAutocompleterBundle(),
             new Gregwar\CaptchaBundle\GregwarCaptchaBundle(),
             new AppBundle\AppBundle(),
+            new SubsmanagerUserBundle\SubsmanagerUserBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'), true)) {
