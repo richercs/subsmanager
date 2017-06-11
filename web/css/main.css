@@ -90,6 +90,22 @@ code { background: #F5F5F5; max-width: 100px; padding: 2px 6px; word-wrap: break
 
 /* END */
 
+/* Embeded USER CONTACT Form Non-Responsive */
+
+#yellow-embeded-wrapper {
+
+    background: #f2f7f9;
+    padding: 3em;
+
+}
+
+.usercontact-container-embeded {
+    width: 580px !important;
+    display: block;
+}
+
+/* END */
+
 .menubar-btn {
     text-align: left !important;
 }

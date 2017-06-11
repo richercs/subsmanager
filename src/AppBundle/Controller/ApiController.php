@@ -9,6 +9,9 @@
 namespace AppBundle\Controller;
 
 
+use AppBundle\Entity\UserContact;
+use AppBundle\Form\UserContactType;
+use AppBundle\Repository\UserContactRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use AppBundle\Entity\AttendanceHistory;
 use AppBundle\Entity\ScheduleItem;
@@ -27,6 +30,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use FOS\UserBundle\Util\PasswordUpdater;
 
 class ApiController extends Controller
 {
@@ -213,5 +217,65 @@ class ApiController extends Controller
             'attendanceData' => $attendanceData->toArray(),
             'error' => null
         ));
+    }
+
+    /**
+     * @Route("/api/add_usercontact", name="api_add_usercontact")
+     *
+     *
+     * @param Request request
+     * @return Response
+     */
+    public function addApiUserContactAction(Request $request)
+    {
+        /** @var EntityManager $em */
+        $em = $this->get('doctrine.orm.default_entity_manager');
+
+        /** @var PasswordUpdater $passwordHasher */
+        $passwordHasher = $this->get('fos_user.util.password_updater');
+
+        /** @var UserContactRepository $userContactRepository */
+        $userContactRepository = $em->getRepository('AppBundle\Entity\UserContact');
+
+        $newContact = new UserContact();
+
+        $form = $this->createForm(new UserContactType(), $newContact);
+        $form->handleRequest($request);
+
+        if ($form->isValid())
+        {
+
+            $dummyUser = new UserAccount();
+            $dummyUser->setPlainPassword($newContact->getPassword());
+
+            $passwordHasher->hashPassword($dummyUser);
+
+            $newContact->setPassword($dummyUser->getPassword());
+
+            $em->persist($newContact);
+
+            $em->flush();
+
+            return $this->redirectToRoute('api_add_usercontact_success');
+        }
+
+        return $this->render('contacts/addEmbededUserContact.html.twig',
+            array(
+                'new_contact' => $newContact,
+                'form' => $form->createView(),
+            ));
+    }
+
+    /**
+     * @Route("/api/add_usercontact_success", name="api_add_usercontact_success")
+     *
+     *
+     * @param Request request
+     * @return Response
+     */
+    public function addApiUserContactSuccessAction(Request $request)
+    {
+
+        return $this->render('contacts/addEmbededUserContactSuccess.html.twig');
     }
 }
