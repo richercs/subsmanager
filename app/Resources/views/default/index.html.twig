@@ -88,6 +88,12 @@
             {% endfor %}
         </ul>
     </div>
+
+    <script>
+        $(document).ready(function () {
+          window.parent.postMessage('logged_in','*');
+        });
+    </script>
 {% endblock %}
 
 {% block stylesheets %}

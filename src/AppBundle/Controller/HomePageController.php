@@ -13,6 +13,7 @@ use AppBundle\Repository\UserContactRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use AppBundle\Repository\UserAccountRepository;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
@@ -81,4 +82,15 @@ class HomePageController extends Controller
         return $userContactRepository->getPendingCount();
     }
 
+    /**
+     * @Route("/login_faliure", name="login_faliure")
+     *
+     * @param Request request
+     *
+     * @return RedirectResponse
+     */
+    public function executeLoginFaliure()
+    {
+        return new RedirectResponse($this->getParameter('login_faliure'));
+    }
 }
