@@ -27,7 +27,7 @@ framework:
     session:
         # handler_id set to null will use default session handler from php.ini
         handler_id:  null
-        cookie_domain: .tornazzvelem.dev
+        cookie_domain: .tornazzvelem.hu
         name: tornazzvelem_backend
     fragments:       ~
     http_method_override: true
