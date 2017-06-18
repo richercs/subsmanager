@@ -14,4 +14,4 @@ services:
 
     logout_handler:
       class: AppBundle\Controller\LogoutHandler
-      arguments: ['%frontend_host%']
+      arguments: ['%logouthandler.frontend_host%']

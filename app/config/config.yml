@@ -90,5 +90,5 @@ gregwar_captcha:
     invalid_message: 'Hibás kód'
 
 parameters:
-  frontend_host: http://tornazzvelem.hu
+  logouthandler.frontend_host: http://tornazzvelem.hu
   login_faliure: http://berletek.tornazzvelem.hu/login?embeded=true
