@@ -83,8 +83,8 @@ class ScheduleItem
      */
     public function __toString()
     {
-        return $this->getScheduledItemName()
-        . ' [' . $this->getId() . ']';
+        return ' [' . $this->getId() . '] ' .
+        $this->getScheduledItemName();
     }
 
     /**
