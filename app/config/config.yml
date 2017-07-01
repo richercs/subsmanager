@@ -7,6 +7,8 @@ imports:
 # http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale: hu
+    frontend_host: http://tornazzvelem.hu
+    login_faliure: http://berletek.tornazzvelem.hu/login?embeded=true
 
 framework:
     #esi:             ~
@@ -88,7 +90,3 @@ gregwar_captcha:
     height: 50
     length: 6
     invalid_message: 'Hibás kód'
-
-parameters:
-  logouthandler.frontend_host: http://tornazzvelem.hu
-  login_faliure: http://berletek.tornazzvelem.hu/login?embeded=true

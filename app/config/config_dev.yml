@@ -36,5 +36,5 @@ monolog:
         #    level:  info
 
 parameters:
-  logouthandler.frontend_host: http://tornazzvelem.dev
+  frontend_host: http://tornazzvelem.dev
   login_faliure: http://berletek.tornazzvelem.dev/login?embeded=true
