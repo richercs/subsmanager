@@ -1,14 +1,3 @@
-# CREATE TABLE `attendance_history_archive` (
-# 	`pk` int(11) NOT NULL AUTO_INCREMENT,
-# 	`id` int(11) NOT NULL,
-# 	`session_event_id` int(11) DEFAULT NULL,
-# 	`attendee_id` int(11) DEFAULT NULL,
-# 	`subscription_in_use_id` int(11) DEFAULT NULL,
-# 	`date_updated` datetime DEFAULT NULL,
-# 	`date_created` datetime NOT NULL,
-# 	`date_archived` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-# 	PRIMARY KEY (`pk`)
-# ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 DROP TRIGGER IF EXISTS attendance_history_after_insert;
 
@@ -28,7 +17,8 @@ BEGIN
 	`attendee_id`,
 	`subscription_in_use_id`,
 	`date_updated`,
-	`date_created`)
+	`date_created`,
+	`operation`)
 	VALUES
 	(
 		NEW.id,
@@ -36,7 +26,8 @@ BEGIN
 		NEW.attendee_id,
 		NEW.subscription_in_use_id,
 		NEW.date_updated,
-		NEW.date_created
+		NEW.date_created,
+		'INSERT'
     );
 END //
 
@@ -50,7 +41,8 @@ BEGIN
 	 `attendee_id`,
 	 `subscription_in_use_id`,
 	 `date_updated`,
-	 `date_created`)
+	 `date_created`,
+	 `operation`)
 	VALUES
 		(
 			NEW.id,
@@ -58,7 +50,8 @@ BEGIN
 			NEW.attendee_id,
 			NEW.subscription_in_use_id,
 			NEW.date_updated,
-			NEW.date_created
+			NEW.date_created,
+			'UPDATE'
 		);
 END //
 
@@ -72,7 +65,8 @@ BEGIN
    `attendee_id`,
    `subscription_in_use_id`,
    `date_updated`,
-   `date_created`)
+   `date_created`,
+   `operation`)
   VALUES
     (
       OLD.id,
@@ -80,6 +74,7 @@ BEGIN
       OLD.attendee_id,
       OLD.subscription_in_use_id,
       OLD.date_updated,
-      OLD.date_created
+      OLD.date_created,
+	    'DELETE'
     );
 END //

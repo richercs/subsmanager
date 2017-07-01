@@ -1,18 +1,3 @@
--- CREATE TABLE `subscription_archive` (
---   `pk` int(11) NOT NULL AUTO_INCREMENT,
---   `id` int(11) NOT NULL,
---   `owner_id` int(11) NOT NULL,
---   `date_start_date` datetime NOT NULL,
---   `date_due_date` datetime NOT NULL,
---   `extensions_count` int(11) NOT NULL,
---   `attendance_count` int(11) DEFAULT NULL,
---   `price` int(11) NOT NULL,
---   `date_updated` datetime DEFAULT NULL,
---   `date_created` datetime NOT NULL,
---   `date_archived` datetime DEFAULT CURRENT_TIMESTAMP,
---   PRIMARY KEY (`pk`)
--- ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
 
 DROP TRIGGER IF EXISTS subscription_after_insert;
 
@@ -35,7 +20,8 @@ BEGIN
 	`attendance_count`,
 	`price`,
 	`date_updated`,
-	`date_created`)
+	`date_created`,
+	`operation`)
 	VALUES
 	(
 		NEW.id,
@@ -46,7 +32,8 @@ BEGIN
 		NEW.attendance_count,
 		NEW.price,
 		NEW.date_updated,
-		NEW.date_created
+		NEW.date_created,
+		'INSERT'
     );
 
 END //
@@ -64,7 +51,8 @@ BEGIN
 	`attendance_count`,
 	`price`,
 	`date_updated`,
-	`date_created`)
+	`date_created`,
+	`operation`)
 	VALUES
 	(
 		NEW.id,
@@ -75,7 +63,8 @@ BEGIN
 		NEW.attendance_count,
 		NEW.price,
 		NEW.date_updated,
-		NEW.date_created
+		NEW.date_created,
+		'UPDATE'
     );
 END //
 
@@ -92,7 +81,8 @@ BEGIN
 	`attendance_count`,
 	`price`,
 	`date_updated`,
-	`date_created`)
+	`date_created`,
+	`operation`)
 	VALUES
 	(
 		OLD.id,
@@ -103,6 +93,7 @@ BEGIN
 		OLD.attendance_count,
 		OLD.price,
 		OLD.date_updated,
-		OLD.date_created
+		OLD.date_created,
+		'DELETE'
     );
 END //

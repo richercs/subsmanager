@@ -1,15 +1,3 @@
--- CREATE TABLE `session_event_archive` (
---   `pk` int(11) NOT NULL AUTO_INCREMENT,
---   `id` int(11) NOT NULL,
---   `schedule_item_id` int(11) NOT NULL,
---   `session_event_date` datetime NOT NULL,
---   `session_fee_numbers_sold` int(11) DEFAULT NULL,
---   `session_fee_revenue_sold` int(11) DEFAULT NULL,
---   `date_updated` datetime DEFAULT NULL,
---   `date_created` datetime NOT NULL,
---   `date_archived` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
---   PRIMARY KEY (`pk`)
--- ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 DROP TRIGGER IF EXISTS session_event_after_insert;
 
@@ -30,7 +18,8 @@ BEGIN
 	`session_fee_numbers_sold`,
 	`session_fee_revenue_sold`,
 	`date_updated`,
-	`date_created`)
+	`date_created`,
+	`operation`)
 	VALUES
 	(
 		NEW.id,
@@ -39,7 +28,8 @@ BEGIN
 		NEW.session_fee_numbers_sold,
 		NEW.session_fee_revenue_sold,
 		NEW.date_updated,
-		NEW.date_created
+		NEW.date_created,
+		'INSERT'
     );
 END //
 
@@ -54,7 +44,8 @@ BEGIN
 	 `session_fee_numbers_sold`,
 	 `session_fee_revenue_sold`,
 	 `date_updated`,
-	 `date_created`)
+	 `date_created`,
+   `operation`)
 	VALUES
 		(
 			NEW.id,
@@ -63,7 +54,8 @@ BEGIN
 			NEW.session_fee_numbers_sold,
 			NEW.session_fee_revenue_sold,
 			NEW.date_updated,
-			NEW.date_created
+			NEW.date_created,
+			'UPDATE'
 		);
 END //
 
@@ -78,7 +70,8 @@ BEGIN
 	 `session_fee_numbers_sold`,
 	 `session_fee_revenue_sold`,
 	 `date_updated`,
-	 `date_created`)
+	 `date_created`,
+	 `operation`)
 	VALUES
 		(
 			OLD.id,
@@ -87,6 +80,7 @@ BEGIN
 			OLD.session_fee_numbers_sold,
 			OLD.session_fee_revenue_sold,
 			OLD.date_updated,
-			OLD.date_created
+			OLD.date_created,
+			'DELETE'
 		);
 END //
