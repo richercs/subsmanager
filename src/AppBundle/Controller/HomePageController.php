@@ -30,6 +30,14 @@ class HomePageController extends Controller
         /** @var UserAccount $loggedInUser */
         $loggedInUser = $this->getUser();
 
+        if(!$loggedInUser->getIsAdmin()) {
+            return $this->render('default/loading.html.twig',
+                array(
+                    'base_dir' => realpath($this->container->getParameter('kernel.root_dir').'/..').DIRECTORY_SEPARATOR,
+                    'logged_in_user' => $loggedInUser,
+                ));
+        }
+
         /** @var EntityManager $em */
         $em = $this->get('doctrine.orm.default_entity_manager');
 
