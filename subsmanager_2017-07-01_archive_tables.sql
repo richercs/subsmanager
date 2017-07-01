@@ -6,7 +6,7 @@ CREATE TABLE `attendance_history_archive` (
   `subscription_in_use_id` int(11) DEFAULT NULL,
   `date_updated` datetime DEFAULT NULL,
   `date_created` datetime NOT NULL,
-  `date_archived` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `date_archived` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`pk`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -19,7 +19,7 @@ CREATE TABLE `session_event_archive` (
   `session_fee_revenue_sold` int(11) DEFAULT NULL,
   `date_updated` datetime DEFAULT NULL,
   `date_created` datetime NOT NULL,
-  `date_archived` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `date_archived` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`pk`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -34,6 +34,6 @@ CREATE TABLE `subscription_archive` (
   `price` int(11) NOT NULL,
   `date_updated` datetime DEFAULT NULL,
   `date_created` datetime NOT NULL,
-  `date_archived` datetime DEFAULT CURRENT_TIMESTAMP,
+  `date_archived` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`pk`)
 ) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
