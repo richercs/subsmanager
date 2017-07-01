@@ -30,7 +30,7 @@ class HomePageController extends Controller
         /** @var UserAccount $loggedInUser */
         $loggedInUser = $this->getUser();
 
-        if(!$loggedInUser->getIsAdmin()) {
+        if(!is_null($loggedInUser) && !$loggedInUser->getIsAdmin()) {
             return $this->render('default/loading.html.twig',
                 array(
                     'base_dir' => realpath($this->container->getParameter('kernel.root_dir').'/..').DIRECTORY_SEPARATOR,
