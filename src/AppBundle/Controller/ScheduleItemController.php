@@ -9,6 +9,7 @@ use AppBundle\Entity\UserAccount;
 use AppBundle\Form\ScheduleItemType;
 use AppBundle\Repository\ScheduleItemRepository;
 use AppBundle\Repository\UserAccountRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -38,10 +39,27 @@ class ScheduleItemController extends Controller
 
         $items = $scheduleItemRepo->findAll();
 
+        /** ArrayCollection activeItems */
+        $activeItems = new ArrayCollection();
+
+        /** ArrayCollection inactiveItems */
+        $inactiveItems = new ArrayCollection();
+
+        /** @var ScheduleItem $item */
+        foreach ($items as $item) {
+
+            if($item->isDeleted()) {
+                $inactiveItems->add($item);
+            } else {
+                $activeItems->add($item);
+            }
+        }
+
         return $this->render('schedule/listAllItems.html.twig',
             array(
                 'base_dir' => realpath($this->container->getParameter('kernel.root_dir').'/..').DIRECTORY_SEPARATOR,
-                'items' => $items,
+                'active_items' => $activeItems,
+                'inactive_items' => $inactiveItems,
                 'logged_in_user' => $loggedInUser
             ));
     }
