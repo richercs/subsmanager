@@ -123,11 +123,17 @@ class SessionEventController extends Controller
             $event->setRevenue($revenue);
         }
 
+        /** @var ScheduleItemRepository $scheduleItemRepository */
+        $scheduleItemRepository = $em->getRepository('AppBundle\Entity\ScheduleItem');
+
+        $scheduleItems = $scheduleItemRepository->findAll();
+
         return $this->render('event/listSessionEventsEdit.html.twig', array(
             'events' => $events,
             'searchStart' => $searchStartDate,
             'searchDue' =>$searchDueDate,
             'searchScheduleItemId' => $searchScheduleItemId,
+            'schedule_items' => $scheduleItems,
             'logged_in_user' => $loggedInUser
         ));
     }

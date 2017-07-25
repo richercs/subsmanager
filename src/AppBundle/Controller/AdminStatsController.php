@@ -107,11 +107,17 @@ class AdminStatsController extends Controller
             $totalAttendeeCount = $totalAttendeeCount + $event->getAttendeeFullCount();
         }
 
+        /** @var ScheduleItemRepository $scheduleItemRepository */
+        $scheduleItemRepository = $em->getRepository('AppBundle\Entity\ScheduleItem');
+
+        $scheduleItems = $scheduleItemRepository->findAll();
+
         return $this->render('stats/viewAdminStats.html.twig', array(
             'events' => $events,
             'event_count' => $eventCount,
             'total_revenue' => $totalRevenue,
             'total_attendee_count' => $totalAttendeeCount,
+            'schedule_items' => $scheduleItems,
             'logged_in_user' => $loggedInUser
         ));
     }

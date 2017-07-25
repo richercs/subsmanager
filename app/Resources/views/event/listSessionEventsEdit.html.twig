@@ -12,7 +12,14 @@
                 <input name="searchDue" type="text" class="form-control datetimepicker" id="searchDueDate" placeholder="-ig">
             </div>
             <div class="form-group">
-                <input name="searchScheduleItemId" type="number" class="form-control" id="searchScheduleItemId" placeholder="óra azonosító">
+                <select name="searchScheduleItemId" class="selectpicker form-control" id="searchScheduleItemId">
+                    <option value=""></option>
+                    {% for item in schedule_items %}
+                        <option value="{{ item.getId }}">
+                            [{{ item.getId }}] {{ item.getScheduledItemName }}
+                        </option>
+                    {% endfor %}
+                </select>
             </div>
             <button type="submit" class="btn btn-default"><span style="font-size:16px;" class="pull-right showopacity glyphicon glyphicon-search"></span></button>
         </form>
