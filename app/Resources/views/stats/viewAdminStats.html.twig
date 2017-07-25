@@ -56,7 +56,7 @@
                             {{ sessionevent.getScheduleItem }}
                         </td>
                         <td>
-                            {{ sessionevent.getSessionEventDateString }}
+                            {{ sessionevent.getSessionEventDate|date('Y.m.d.') }}
                         </td>
                         <td>
                             {{ sessionevent.getRevenue|number_format(0, '.', ' ') }} Ft
