@@ -8,6 +8,11 @@
             <b>Vezetéknév: </b>{{ user_account.getLastName }}<br/>
             <b>Keresztnév: </b>{{ user_account.getFirstName }}<br/>
             <b>Email: </b>{{ user_account.getEmail }}<br/>
+            <b>Legutóbbi belépés: </b>
+                {% if user_account.getLastLogin is not null %}
+                    {{ user_account.getLastLogin|date('Y.m.d. H:i:s') }}
+                {% endif %}
+            <br/>
             {% block AdminLinkToEditUserAccount %}
                 {% if logged_in_user is not null %}
                     {% if logged_in_user.getIsAdmin %}
