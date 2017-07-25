@@ -26,6 +26,7 @@ class UserAccountRepository extends EntityRepository
 
         $results = $this->createQueryBuilder('c')
             ->where('c.username LIKE :name')
+            ->orderBy('c.username', 'ASC')
             ->setParameter('name', '%'.$term.'%')
             ->getQuery()
             ->getResult();
