@@ -2,9 +2,13 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\AttendanceHistory;
+use AppBundle\Entity\Subscription;
 use AppBundle\Entity\UserContact;
+use AppBundle\Repository\AttendanceHistoryRepository;
 use AppBundle\Repository\SubscriptionRepository;
 use AppBundle\Repository\UserContactRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use FOS\UserBundle\Util\PasswordUpdater;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use AppBundle\Entity\UserAccount;
@@ -315,7 +319,76 @@ class UserAccountController extends Controller
 
         $subscriptions = $subscriptionRepository->findBy(array('owner' => $userAccount->getId()));
 
+        // Show only active subscriptions
+        // Two conditions for active subscriptions:
+
+        /** @var AttendanceHistoryRepository $attendanceHistoryRepo */
+        $attendanceHistoryRepo = $em->getRepository(AttendanceHistory::class);
+
+        /** ArrayCollection $activeSubs */
+        $activeSubs = new ArrayCollection();
+
+        /** @var Subscription $subscription */
+        foreach ($subscriptions as $subscription) {
+
+            // Condition #1 - the due date of the subscription is not in the past
+            if($subscription->getStatusBoolean()) {
+
+                //Condition #2 - actual usage count is lower then maximum usage count allowed
+                $usageCount = count($attendanceHistoryRepo->findBy(array('subscription' => $subscription)));
+
+                $subscription->setUsages($usageCount);
+
+                if($subscription->getUsages() < $subscription->getAttendanceCount()) {
+
+                    $activeSubs->add($subscription);
+                }
+            }
+        }
+
         return $this->render('users/viewUserAccount.html.twig',
+            array(
+                'user_account' => $userAccount,
+                'logged_in_user' => $loggedInUser,
+                'subscriptions' => $activeSubs
+            ));
+    }
+
+    /**
+     * @Route("useraccount/useraccount_view_all_subs/{id}", name="useraccount_view_all_subs", defaults={"id" = -1})
+     *
+     * @param Request request
+     * @return array
+     */
+    public function viewUserAccountAllSubsAction($id, Request $request)
+    {
+        /** @var UserAccount $loggedInUser */
+        $loggedInUser = $this->getUser();
+
+        if(is_null($loggedInUser)) {
+            return $this->redirectToRoute('fos_user_security_login');
+        }
+
+        if ($loggedInUser->getId() != $id && !$loggedInUser->getIsAdmin()) {
+            return $this->redirectToRoute('useraccount_view', array(
+                'id' => $loggedInUser->getId()
+            ));
+        }
+        /** @var EntityManager $em */
+        $em = $this->get('doctrine.orm.default_entity_manager');
+
+        /** @var UserAccountRepository $userAccountRepository */
+        $userAccountRepository = $em->getRepository('AppBundle\Entity\UserAccount');
+
+        /** @var UserAccount $userAccount */
+        $userAccount = $userAccountRepository->find($id);
+
+        /** @var SubscriptionRepository $subscriptionRepository */
+        $subscriptionRepository = $em->getRepository('AppBundle\Entity\Subscription');
+
+        $subscriptions = $subscriptionRepository->findBy(array('owner' => $userAccount->getId()));
+
+        return $this->render('users/viewUserAccountAllSubs.html.twig',
             array(
                 'user_account' => $userAccount,
                 'logged_in_user' => $loggedInUser,

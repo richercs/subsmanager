@@ -18,7 +18,7 @@
                 {% endif %}
             {%  endblock %}
             <br>
-            <h4><b>Bérletek</b></h4>
+            <h4><b>Aktív Bérletek</b></h4>
             <table class="table colored-table">
                 <thead>
                 <tr>
@@ -62,6 +62,7 @@
                     {% endfor %}
                 </tbody>
             </table>
+            <a href="{{ path('useraccount_view_all_subs', {'id': user_account.getId}) }}" class="btn btn-primary">Összes Bérlet Megtekintése</a>
         </div>
     </div>
 {% endblock %}
