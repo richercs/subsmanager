@@ -31,7 +31,7 @@ class SessionEventRepository extends EntityRepository
         return $result;
     }
 
-    public function getLastFiftySessions() {
+    public function getLastThirtySessions() {
 
         $query = $this->_em->createQuery('
                 SELECT sessionevent
@@ -39,7 +39,7 @@ class SessionEventRepository extends EntityRepository
                 ORDER BY sessionevent.id DESC
            ');
 
-        $query->setMaxResults(50);
+        $query->setMaxResults(30);
 
         $result = $query->getResult();
 
@@ -67,7 +67,7 @@ class SessionEventRepository extends EntityRepository
         return $result;
     }
 
-    public function getLastFiftySessionsFilteredScheduleItem($statsScheduleItem) {
+    public function getLastThirtySessionsFilteredScheduleItem($statsScheduleItem) {
 
         $query = $this->_em->createQuery('
                 SELECT sessionevent
@@ -80,7 +80,7 @@ class SessionEventRepository extends EntityRepository
             'filter' => $statsScheduleItem
         ));
 
-        $query->setMaxResults(50);
+        $query->setMaxResults(30);
 
         $result = $query->getResult();
 

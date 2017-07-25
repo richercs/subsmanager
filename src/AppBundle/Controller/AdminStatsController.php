@@ -59,7 +59,7 @@ class AdminStatsController extends Controller
         if(is_null($statsScheduleItemId) || $statsScheduleItemId == "") {
 
             if(is_null($statsStartDate) && is_null($statsDueDate) || $statsStartDate == "" && $statsDueDate == "") {
-                $events = $sessionEventRepository->getLastFiftySessions();
+                $events = $sessionEventRepository->getLastThirtySessions();
             } else {
                 $events = $sessionEventRepository->getSessionsBetweenDates($statsStartDate, $statsDueDate);
             }
@@ -78,7 +78,7 @@ class AdminStatsController extends Controller
             }
 
             if(is_null($statsStartDate) && is_null($statsDueDate) || $statsStartDate == "" && $statsDueDate == "") {
-                $events = $sessionEventRepository->getLastFiftySessionsFilteredScheduleItem($filteredScheduleItem);
+                $events = $sessionEventRepository->getLastThirtySessionsFilteredScheduleItem($filteredScheduleItem);
             } else {
                 $events = $sessionEventRepository->getSessionsBetweenDatesFilteredScheduleItem($statsStartDate, $statsDueDate, $filteredScheduleItem);
             }

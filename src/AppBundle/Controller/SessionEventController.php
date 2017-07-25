@@ -86,7 +86,7 @@ class SessionEventController extends Controller
         if(is_null($searchScheduleItemId) || $searchScheduleItemId == "") {
 
             if(is_null($searchStartDate) && is_null($searchDueDate) || $searchStartDate == "" && $searchDueDate == "") {
-                $events = $sessionEventRepository->getLastFiftySessions();
+                $events = $sessionEventRepository->getLastThirtySessions();
             } else {
                 $events = $sessionEventRepository->getSessionsBetweenDates($searchStartDate, $searchDueDate);
             }
@@ -105,7 +105,7 @@ class SessionEventController extends Controller
             }
 
             if(is_null($searchStartDate) && is_null($searchDueDate) || $searchStartDate == "" && $searchDueDate == "") {
-                $events = $sessionEventRepository->getLastFiftySessionsFilteredScheduleItem($filteredScheduleItem);
+                $events = $sessionEventRepository->getLastThirtySessionsFilteredScheduleItem($filteredScheduleItem);
             } else {
                 $events = $sessionEventRepository->getSessionsBetweenDatesFilteredScheduleItem($searchStartDate, $searchDueDate, $filteredScheduleItem);
             }
