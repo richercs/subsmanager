@@ -95,4 +95,35 @@
             });
         });
     </script>
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            var currentMonth = moment().month();
+
+            var currentMonthFirstDay = moment().set({'month':currentMonth,'date':1,'hour':0,'minute':0,'second':0,'millisecond':0}).format('YYYY-MM-DD HH:mm');
+
+            var currentMonthLastDay = moment(currentMonthFirstDay,  "YYYY-MM-DD HH:mm").set({'hour':23,'minute':59,'second':0,'millisecond':0}).add(1, 'months').subtract(1, 'day').format('YYYY-MM-DD HH:mm');
+
+            var url = window.location.href;
+
+            if(url.indexOf('?') == -1) {
+                $('#statsStartDate').val(currentMonthFirstDay);
+
+                $('#statsDueDate').val(currentMonthLastDay);
+            } else {
+                var urlObj = new URL(url);
+                var searchedStart = urlObj.searchParams.get("statsStart");
+                var searchedDue = urlObj.searchParams.get("statsDue");
+                var searchedScheduleItemId = urlObj.searchParams.get("statsScheduleItemId");
+
+                $('#statsStartDate').val(searchedStart);
+
+                $('#statsDueDate').val(searchedDue);
+
+                $('#statsScheduleItemId').val(searchedScheduleItemId);
+            }
+        });
+    </script>
 {% endblock %}
