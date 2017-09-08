@@ -3,7 +3,3 @@ services:
       class: AppBundle\Controller\AdminStatsController
       calls:
           - [ setContainer, [ @service_container ]]
-
-    logout_handler:
-      class: AppBundle\Controller\LogoutHandler
-      arguments: ['%frontend_host%']

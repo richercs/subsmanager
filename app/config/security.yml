@@ -27,7 +27,6 @@ security:
             logout:
                 path:   /logout
                 target: /
-                success_handler: logout_handler
             anonymous:    true
 
     access_control:
