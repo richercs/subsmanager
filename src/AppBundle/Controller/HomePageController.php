@@ -31,11 +31,29 @@ class HomePageController extends Controller
         $loggedInUser = $this->getUser();
 
         if(!is_null($loggedInUser) && !$loggedInUser->getIsAdmin()) {
-            return $this->render('default/loading.html.twig',
-                array(
-                    'base_dir' => realpath($this->container->getParameter('kernel.root_dir').'/..').DIRECTORY_SEPARATOR,
-                    'logged_in_user' => $loggedInUser,
-                ));
+            
+            /** @var EntityManager $em */
+            $em = $this->get('doctrine.orm.default_entity_manager');
+
+            /** @var ScheduleItemRepository $scheduleItem_repo */
+            $scheduleItem_repo = $em->getRepository('AppBundle\Entity\ScheduleItem');
+
+            $scheduleItemsOrdered = $scheduleItem_repo->getOrderedScheduleItems();
+
+            /** @var ScheduleItem $scheduleItem */
+            foreach ($scheduleItemsOrdered as $key => $scheduleItem) {
+                if($scheduleItem->isDeleted()) {
+                    unset($scheduleItemsOrdered[$key]);
+                }
+            }
+
+            return $this->render('default/index.html.twig',
+            array(
+                'base_dir' => realpath($this->container->getParameter('kernel.root_dir').'/..').DIRECTORY_SEPARATOR,
+                'logged_in_user' => $loggedInUser,
+                'ordered_schedule_items' => $scheduleItemsOrdered,
+                'count_scheduleItems_active' => count($scheduleItemsOrdered)
+            ));
         }
 
         /** @var EntityManager $em */
