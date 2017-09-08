@@ -90,15 +90,15 @@ class HomePageController extends Controller
         return $userContactRepository->getPendingCount();
     }
 
-    /**
-     * @Route("/login_faliure", name="login_faliure")
-     *
-     * @param Request request
-     *
-     * @return RedirectResponse
-     */
-    public function executeLoginFaliure()
-    {
-        return new RedirectResponse($this->getParameter('login_faliure'));
-    }
+//    /**
+//     * @Route("/login_faliure", name="login_faliure")
+//     *
+//     * @param Request request
+//     *
+//     * @return RedirectResponse
+//     */
+//    public function executeLoginFaliure()
+//    {
+//        return new RedirectResponse($this->getParameter('login_faliure'));
+//    }
 }

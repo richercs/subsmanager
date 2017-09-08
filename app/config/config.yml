@@ -8,7 +8,6 @@ imports:
 parameters:
     locale: hu
     frontend_host: http://tornazzvelem.hu
-    login_faliure: http://berletek.tornazzvelem.hu/login?embeded=true
 
 framework:
     #esi:             ~
