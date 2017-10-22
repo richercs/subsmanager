@@ -14,7 +14,12 @@
                 {% for subscription in subscriptions %}
                     <li class="bottom-padded-list">
                         {{ subscription['subscription'].getOwner }}
-                        <br>Bérlet Azonosító: <b>{{ subscription['subscription'].getId }}</b> [{{ subscription['subscription'].getAttendanceCount }} alkalmas]
+                        <br>Bérlet Azonosító: <b>{{ subscription['subscription'].getId }}</b>
+                        {% if subscription['subscription'].getAttendanceCount is not null %}
+                            [{{ subscription['subscription'].getAttendanceCount }} alkalmas]
+                        {% else %}
+                            [Havi bérlet]
+                        {% endif %}
                         Hosszabítás Szám: <span style="color: green">{{ subscription['subscription'].getNumberOfExtensions }} </span>
                         <br>{{ subscription['subscription'].getStartDateString }} -
                         {{ subscription['oldDueDate'] }}

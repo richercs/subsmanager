@@ -45,7 +45,11 @@
                             {{ subscription.owner.getLastName }} {{ subscription.owner.getFirstName }}
                         </td>
                         <td>
-                            {{ subscription.attendanceCount }}
+                            {% if subscription.attendanceCount  is not null %}
+                                {{ subscription.attendanceCount }}
+                            {% else %}
+                                HAVI
+                            {% endif %}
                         </td>
                         <td>
                             {{ subscription.getStartDateString }} - {{ subscription.getDueDateString }}

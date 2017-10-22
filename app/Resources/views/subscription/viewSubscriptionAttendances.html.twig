@@ -14,7 +14,11 @@
                 {% endif %}
             {%  endblock %}
             <b>Tulajdonos: </b>{{ subscription.getOwner.getLastName }} {{ subscription.getOwner.getFirstName }}<br/>
-            <b>Alkalmak Száma: </b>{{ subscription.getAttendanceCount }}<br/>
+            {% if subscription.getAttendanceCount  is not null %}
+                <b>Alkalmak Száma: </b>{{ subscription.getAttendanceCount }}<br/>
+            {% else %}
+                <b>Alkalmak Száma: </b>Havi bérlet<br/>
+            {% endif %}
             <b>Kezdeti Időpont: </b>{{ subscription.getStartDateString }}<br/>
             <b>Lejárati Időpont: </b>{{ subscription.getDueDateString }}<br/>
             <b>Hosszabbítások Száma: </b>{{ subscription.getNumberOfExtensions }}<br/>

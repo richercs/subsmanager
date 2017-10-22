@@ -74,7 +74,7 @@ class SubscriptionRepository extends EntityRepository
     {
         $query = $this->_em->createQuery('
             SELECT
-              s.id, COUNT(ah.id) as c, COALESCE(s.attendanceCount, 0) AS treshold
+              s.id, COUNT(ah.id) as c, COALESCE(s.attendanceCount, 0) AS treshold, s.attendanceCount as ac
             FROM
                 AppBundle\Entity\Subscription s
             LEFT JOIN 
@@ -84,7 +84,7 @@ class SubscriptionRepository extends EntityRepository
             GROUP BY 
               s.id
             HAVING 
-              c < treshold
+              c < treshold OR ac IS NULL
         ');
 
         $runningSubs = $query->getArrayResult();

@@ -334,14 +334,22 @@ class UserAccountController extends Controller
             // Condition #1 - the due date of the subscription is not in the past
             if($subscription->getStatusBoolean()) {
 
-                //Condition #2 - actual usage count is lower then maximum usage count allowed
-                $usageCount = count($attendanceHistoryRepo->findBy(array('subscription' => $subscription)));
-
-                $subscription->setUsages($usageCount);
-
-                if($subscription->getUsages() < $subscription->getAttendanceCount()) {
+                // monthly subscription
+                if (is_null($subscription->getAttendanceCount())) {
 
                     $activeSubs->add($subscription);
+
+                } else {
+
+                    //Condition #2 - actual usage count is lower then maximum usage count allowed
+                    $usageCount = count($attendanceHistoryRepo->findBy(array('subscription' => $subscription)));
+
+                    $subscription->setUsages($usageCount);
+
+                    if($subscription->getUsages() < $subscription->getAttendanceCount()) {
+
+                        $activeSubs->add($subscription);
+                    }
                 }
             }
         }

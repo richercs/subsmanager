@@ -132,13 +132,31 @@ class AdminStatsController extends Controller
 
         $resultRevenue = 0;
 
+        /** @var EntityManager $em */
+        $em = $this->get('doctrine.orm.default_entity_manager');
+
+        /** @var AttendanceHistoryRepository $attendanceHistoryRepo */
+        $attendanceHistoryRepo = $em->getRepository(AttendanceHistory::class);
+
         /** @var AttendanceHistory $record*/
         foreach ($sessionEvent->getAttendees() as $record) {
 
             if (!is_null($record->getSubscription())) {
-                $recordRevenue = $record->getSubscription()->getPrice() / $record->getSubscription()->getAttendanceCount();
 
-                $resultRevenue = $resultRevenue + round($recordRevenue,0);
+                if(!is_null($record->getSubscription()->getAttendanceCount())) {
+
+                    $recordRevenue = $record->getSubscription()->getPrice() / $record->getSubscription()->getAttendanceCount();
+
+                    $resultRevenue = $resultRevenue + round($recordRevenue,0);
+
+                } else {
+
+                    $usageCount = count($attendanceHistoryRepo->findBy(array('subscription' => $record->getSubscription())));
+
+                    $recordRevenue = $record->getSubscription()->getPrice() / $usageCount;
+
+                    $resultRevenue = $resultRevenue + round($recordRevenue,0);
+                }
             }
         }
 

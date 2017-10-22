@@ -20,7 +20,7 @@
                     <input type="radio" name="optradio" value="2">10 Alkalmas
                 </label>
                 <label class="radio-inline">
-                    <input type="radio" name="optradio" value="3">Egyéb
+                    <input type="radio" name="optradio" value="3">Havi
                 </label>
             </div>
         </div>
@@ -68,13 +68,18 @@
 
             var extensionDate;
 
+            var form = $('.form-horizontal');
+
+            var attendance_count = $('#app_subscription_attendanceCount');
+
             $("input[name='optradio']").change(function(){
 
                 if ($(this).val() === '1') {
 
                     extensionDate = moment(today, "YYYY-MM-DD HH:mm").set({hour:23,minute:59,second:0,millisecond:0}).add(1, 'months');
 
-                    $('#app_subscription_attendanceCount').val(4);
+                    attendance_count.prop("disabled", false);
+                    attendance_count.val(4);
                     $('#app_subscription_startDate').val(today);
                     $('#app_subscription_dueDate').val(extensionDate.format('YYYY-MM-DD HH:mm'));
                     $('#app_subscription_price').val(5000);
@@ -83,24 +88,28 @@
 
                     extensionDate = moment(today, "YYYY-MM-DD HH:mm").set({hour:23,minute:59,second:0,millisecond:0}).add(2, 'months');
 
-                    $('#app_subscription_attendanceCount').val(10);
+
+                    attendance_count.prop("disabled", false);
+                    attendance_count.val(10);
                     $('#app_subscription_startDate').val(today);
                     $('#app_subscription_dueDate').val(extensionDate.format('YYYY-MM-DD HH:mm'));
                     $('#app_subscription_price').val(10000);
 
-                } else {
+                } else if ($(this).val() === '3') {
 
                     extensionDate = moment(today, "YYYY-MM-DD HH:mm").set({hour:23,minute:59,second:0,millisecond:0}).add(1, 'months');
 
-                    $('#app_subscription_attendanceCount').val(0);
+                    attendance_count.val("");
+                    attendance_count.prop("disabled", true);
                     $('#app_subscription_startDate').val(today);
                     $('#app_subscription_dueDate').val(extensionDate.format('YYYY-MM-DD HH:mm'));
-                }
+                    $('#app_subscription_price').val(10000);
 
-                var form = $('.form-horizontal');
+                }
 
                 form.submit(function () {
                     $('#app_subscription_numberOfExtensions').prop("disabled", false);
+                    $('#app_subscription_attendanceCount').prop("disabled", false);
                 });
             });
         });

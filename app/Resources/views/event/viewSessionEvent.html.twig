@@ -27,7 +27,11 @@
                                 [{{ attendanceRecord.getSubscription.getId }}]
                                 {{ attendanceRecord.getSubscription.getOwner.getLastName }} {{ attendanceRecord.getSubscription.getOwner.getFirstName }}
                                 ({{ attendanceRecord.getSubscription.getStartDateString }} - {{ attendanceRecord.getSubscription.getDueDateString }})
-                                {{ attendanceRecord.getSubscription.getAttendanceCount }}
+                                {% if attendanceRecord.getSubscription.getAttendanceCount is not null %}
+                                    {{ attendanceRecord.getSubscription.getAttendanceCount }}
+                                {% else %}
+                                    Havi bérlet
+                                {% endif %}
                             {% endif %}
                         </td>
                     </tr>
