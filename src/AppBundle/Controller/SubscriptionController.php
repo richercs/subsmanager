@@ -74,6 +74,49 @@ class SubscriptionController extends Controller
             }
         }
 
+        /** ArrayCollection $activeSubsWithZeroAttendanceCount */
+        $activeSubsWithZeroAttendanceCount = new ArrayCollection();
+
+        /** ArrayCollection $activeSubsWithNonZeroAttendanceCount */
+        $activeSubsWithNonZeroAttendanceCount = new ArrayCollection();
+
+        /** @var Subscription $activeSub*/
+        foreach ($activeSubs as $activeSub) {
+
+            if($activeSub->getUsages() != 0 ) {
+
+                $activeSubsWithNonZeroAttendanceCount->add($activeSub);
+            } else {
+
+                $activeSubsWithZeroAttendanceCount->add($activeSub);
+            }
+        }
+
+
+        // Move subscriptions to non active where the subscription owner has another subscription
+        // that has not expired but has mnore than 0 usages left
+
+        $nonZeroActiveSubOwners = new ArrayCollection();
+
+        /** @var Subscription nonZeroActiveSub*/
+        foreach ($activeSubsWithNonZeroAttendanceCount as $nonZeroActiveSub) {
+
+            $nonZeroActiveSubOwners->add($nonZeroActiveSub->getOwner());
+        }
+
+        /** @var Subscription $zeroActiveSub*/
+        foreach ($activeSubsWithZeroAttendanceCount as $zeroActiveSub) {
+
+            $zeroActiveSubOwner = $zeroActiveSub->getOwner();
+
+            if($nonZeroActiveSubOwners->contains($zeroActiveSubOwner)) {
+
+                $activeSubs->removeElement($zeroActiveSub);
+
+                $nonActiveSubs->add($zeroActiveSub);
+            }
+        }
+
         // SORTING - Active ubscription sorted by the remaining attendace counts
 
         $activeSubsIterator = $activeSubs->getIterator();
