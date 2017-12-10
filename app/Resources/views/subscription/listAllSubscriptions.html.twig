@@ -65,57 +65,61 @@
 
 {% block body_end_javascripts %}
 
-    {% if reverting is defined %}
+    {% if break_event is defined %}
 
-        <script type="text/javascript">
+        {% if reverting is defined %}
 
-            var confirmDeleteCheckbox = $('#confirmDeleteCheckBox');
+            <script type="text/javascript">
 
-            if (confirmDeleteCheckbox.is(":checked")) {
-                // let it submit
-                $('#form_save').attr("disabled", false);
-            } else {
-                // don't let it submit
-                $('#form_save').attr("disabled", true);
-            }
+                var confirmDeleteCheckbox = $('#confirmDeleteCheckBox');
 
-            confirmDeleteCheckbox.click( function () {
-                if ($('#confirmDeleteCheckBox').is(":checked")) {
+                if (confirmDeleteCheckbox.is(":checked")) {
                     // let it submit
                     $('#form_save').attr("disabled", false);
                 } else {
                     // don't let it submit
                     $('#form_save').attr("disabled", true);
                 }
-            });
 
-        </script>
+                confirmDeleteCheckbox.click( function () {
+                    if ($('#confirmDeleteCheckBox').is(":checked")) {
+                        // let it submit
+                        $('#form_save').attr("disabled", false);
+                    } else {
+                        // don't let it submit
+                        $('#form_save').attr("disabled", true);
+                    }
+                });
 
-    {% else %}
+            </script>
 
-        <script type="text/javascript">
+        {% else %}
 
-            var confirmExtendCheckbox = $('#confirmExtendCheckBox');
+            <script type="text/javascript">
 
-            if (confirmExtendCheckbox.is(":checked")) {
-                // let it submit
-                $('#form_save').attr("disabled", false);
-            } else {
-                // don't let it submit
-                $('#form_save').attr("disabled", true);
-            }
+                var confirmExtendCheckbox = $('#confirmExtendCheckBox');
 
-            confirmExtendCheckbox.click( function () {
-                if ($('#confirmExtendCheckBox').is(":checked")) {
+                if (confirmExtendCheckbox.is(":checked")) {
                     // let it submit
                     $('#form_save').attr("disabled", false);
                 } else {
                     // don't let it submit
                     $('#form_save').attr("disabled", true);
                 }
-            });
 
-        </script>
+                confirmExtendCheckbox.click( function () {
+                    if ($('#confirmExtendCheckBox').is(":checked")) {
+                        // let it submit
+                        $('#form_save').attr("disabled", false);
+                    } else {
+                        // don't let it submit
+                        $('#form_save').attr("disabled", true);
+                    }
+                });
+
+            </script>
+
+        {% endif %}
 
     {% endif %}
 
