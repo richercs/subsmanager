@@ -40,12 +40,70 @@ class SubscriptionController extends Controller
         /** @var SubscriptionRepository $subscriptionRepo */
         $subscriptionRepo = $em->getRepository('AppBundle\Entity\Subscription');
 
+        /** @var AttendanceHistoryRepository $attendanceHistoryRepo */
+        $attendanceHistoryRepo = $em->getRepository(AttendanceHistory::class);
+
         $subscriptions = $subscriptionRepo->findAll();
+
+        /** @var Subscription $subscription */
+        foreach ($subscriptions as $subscription) {
+
+            $usageCount = count($attendanceHistoryRepo->findBy(array('subscription' => $subscription)));
+
+            $subscription->setUsages($subscription->getAttendanceCount() - $usageCount);
+        }
+
+        /** ArrayCollection $activeSubs */
+        $activeSubs = new ArrayCollection();
+
+
+        /** ArrayCollection $activeSubs */
+        $nonActiveSubs = new ArrayCollection();
+
+
+        /** @var Subscription $subscription */
+        foreach ($subscriptions as $subscription) {
+
+            // Condition #1 - the due date of the subscription is not in the past
+            if($subscription->getStatusBoolean()) {
+
+                $activeSubs->add($subscription);
+            } else {
+
+                $nonActiveSubs->add($subscription);
+            }
+        }
+
+        // SORTING - Active ubscription sorted by the remaining attendace counts
+
+        $activeSubsIterator = $activeSubs->getIterator();
+
+        $activeSubsIterator->uasort(function ($first, $second) {
+            /** @var Subscription $first */
+            /** @var Subscription $second */
+           return (int) $first->getUsages() > (int) $second->getUsages() ? 1 : -1;
+        });
+
+        $activeSubs = new ArrayCollection(iterator_to_array($activeSubsIterator));
+
+        // SORTING - Non Active subscriptions sorted by the due date
+
+        $nonActiveSubsIterator = $nonActiveSubs->getIterator();
+
+        $nonActiveSubsIterator->uasort(function ($first, $second) {
+            /** @var Subscription $first */
+            /** @var Subscription $second */
+            return $first->getDueDate() > $second->getDueDate() ? -1 : 1;
+        });
+
+        $nonActiveSubs = new ArrayCollection(iterator_to_array($nonActiveSubsIterator));
 
         return $this->render('subscription/listAllSubscriptions.html.twig',
             array(
                 'base_dir' => realpath($this->container->getParameter('kernel.root_dir').'/..').DIRECTORY_SEPARATOR,
                 'subscriptions' => $subscriptions,
+                'active_subscriptions' => $activeSubs,
+                'non_active_subscriptions' => $nonActiveSubs->slice(0,50), //show only the last fifty non active subs
                 'logged_in_user' => $loggedInUser
             ));
     }

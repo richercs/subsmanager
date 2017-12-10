@@ -45,16 +45,85 @@
 
         </div>
     {% else %}
-        <h3>Bérletek Lista</h3>
-        <div id="white-wrapper">
-            <div class="list-group">
-            {% for subscription in subscriptions %}
-                <a href="{{ path('subscription_edit_subscription', {'id': subscription.id}) }}" class="list-group-item">
-                    {{ subscription }}
-                    <p>Létrehozva: <b>{{ subscription.created|date('Y.m.d. H:i:s') }}</b></p>
-                </a>
-            {% endfor %}
+        <div id="stats-wrapper">
+            <div id="view-user-account-wrapper"> <!-- This id has no rules in CSS - TODO: review it -->
+                <h4><b>Aktív bérletek</b></h4>
+                <br>
+                <table class="table colored-table">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Név</th>
+                        <th>Lejárati Időpont</th>
+                        <th class="table-col-text-warpper">Alkalmak (Fennmaradó)</th>
+                        <th>Részletek</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for subscription in active_subscriptions %}
+                        <tr>
+                            <td>
+                                {{ subscription.getId }}
+                            </td>
+                            <td>
+                                {{ subscription.getOwner.getUserName }}
+                            </td>
+                            <td>
+                                {{ subscription.getDueDate|date('Y.m.d.') }}
+                            </td>
+                            <td>
+                                {{ subscription.getUsages }} /  {{ subscription.getAttendanceCount }}
+                            </td>
+                            <td>
+                                <a href="{{ path('subscription_view_attendances', {'id': subscription.getId}) }}" class="btn btn-default"><span style="font-size:16px; padding-left: 8px;" class="pull-right showopacity glyphicon glyphicon-chevron-right"></span></a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
             </div>
+        </div>
+
+        <div id="stats-wrapper">
+            <div id="view-user-account-wrapper"> <!-- This id has no rules in CSS - TODO: review it -->
+                <h4><b>Lejárt bérletek</b></h4>
+                <br>
+                <h5>Legutóbbi 50</h5>
+                <table class="table colored-table">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Név</th>
+                        <th>Lejárati Időpont</th>
+                        <th class="table-col-text-warpper">Alkalmak (Fennmaradó)</th>
+                        <th>Részletek</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for subscription in non_active_subscriptions %}
+                        <tr>
+                            <td>
+                                {{ subscription.getId }}
+                            </td>
+                            <td>
+                                {{ subscription.getOwner.getUserName }}
+                            </td>
+                            <td>
+                                {{ subscription.getDueDate|date('Y.m.d.') }}
+                            </td>
+                            <td>
+                                {{ subscription.getUsages }} /  {{ subscription.getAttendanceCount }}
+                            </td>
+                            <td>
+                                <a href="{{ path('subscription_view_attendances', {'id': subscription.getId}) }}" class="btn btn-default"><span style="font-size:16px; padding-left: 8px;" class="pull-right showopacity glyphicon glyphicon-chevron-right"></span></a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div id="white-wrapper">
             <a href="{{ path('homepage') }}" class="btn btn-primary">Vissza</a>
         </div>
     {% endif %}
