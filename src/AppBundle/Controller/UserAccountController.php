@@ -388,11 +388,32 @@ class UserAccountController extends Controller
 
         $subscriptions = $subscriptionRepository->findBy(array('owner' => $userAccount->getId()));
 
+        /** ArrayCollection $sortedSubs */
+        $sortedSubs = new ArrayCollection();
+
+        /** @var Subscription $subscription */
+        foreach ($subscriptions as $subscription) {
+
+            $sortedSubs->add($subscription);
+        }
+
+        // SORTING - All subscriptions sorted by the due date
+
+        $sortedSubsIterator = $sortedSubs->getIterator();
+
+        $sortedSubsIterator->uasort(function ($first, $second) {
+            /** @var Subscription $first */
+            /** @var Subscription $second */
+            return $first->getDueDate() > $second->getDueDate() ? -1 : 1;
+        });
+
+        $sortedSubs = new ArrayCollection(iterator_to_array($sortedSubsIterator));
+
         return $this->render('users/viewUserAccountAllSubs.html.twig',
             array(
                 'user_account' => $userAccount,
                 'logged_in_user' => $loggedInUser,
-                'subscriptions' => $subscriptions
+                'subscriptions' => $sortedSubs
             ));
     }
 }
