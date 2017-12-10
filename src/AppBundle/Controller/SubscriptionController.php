@@ -57,7 +57,7 @@ class SubscriptionController extends Controller
         $activeSubs = new ArrayCollection();
 
 
-        /** ArrayCollection $activeSubs */
+        /** ArrayCollection $nonActiveSubs */
         $nonActiveSubs = new ArrayCollection();
 
 
