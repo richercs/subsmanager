@@ -30,6 +30,14 @@
         {{ form_row(form.contact_email, {'label': 'Email'}) }}
         {{ form_row(form.password, {'label': 'Jelszó'}) }}
         {{ form_row(form.captcha) }}
+        <!--
+            
+            GDPR checkbox html - commented out
+
+        <div class="checkbox" id="confirmDataStoreRuleLabel">
+            <label><input type="checkbox" id="confirmDataStoreRule" value="">Elfogadom hogy a megadott adatokat a rendszer eltárolja.</label>
+        </div>
+        -->
         {{ form_row(form.save) }}
         {{ form_end(form, {'render_rest': true}) }}
     </div>
@@ -45,6 +53,35 @@
 
     });
 </script>
+
+<!--    
+
+    GDPR checkbox javascript - commented out
+
+<script type="text/javascript">
+
+    var confirmDataStoreRule = $('#confirmDataStoreRule');
+
+    if (confirmDataStoreRule.is(":checked")) {
+        // let it submit
+        $('#appbundle_usercontact_save').attr("disabled", false);
+    } else {
+        // don't let it submit
+        $('#appbundle_usercontact_save').attr("disabled", true);
+    }
+
+    confirmDataStoreRule.click( function () {
+        if ($('#confirmDataStoreRule').is(":checked")) {
+            // let it submit
+            $('#appbundle_usercontact_save').attr("disabled", false);
+        } else {
+            // don't let it submit
+            $('#appbundle_usercontact_save').attr("disabled", true);
+        }
+    });
+
+</script>
+-->
 
 </body>
 </html>
