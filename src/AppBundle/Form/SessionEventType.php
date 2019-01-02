@@ -81,7 +81,7 @@ class SessionEventType extends AbstractType
                 ))
                 ->add('delete','submit', array(
                     'attr'      => array('class' => 'button-link delete'),
-                    'label'     => 'Törlés'
+                    'label'     => 'Űrlap Törlése'
                 ));
             ;
         } else {
@@ -121,7 +121,7 @@ class SessionEventType extends AbstractType
                 ))
                 ->add('delete','submit', array(
                     'attr'      => array('class' => 'button-link delete'),
-                    'label'     => 'Törlés'
+                    'label'     => 'Űrlap Törlése'
                 ));
             ;
         }
