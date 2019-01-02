@@ -331,7 +331,7 @@ class SubscriptionController extends Controller
         /** @var AttendanceHistoryRepository $attendanceHistoryRepo */
         $attendanceHistoryRepo =$em->getRepository('AppBundle\Entity\AttendanceHistory');
 
-        $attendancRecords = $attendanceHistoryRepo->findBy(array('subscription' => $subscription->getId()));
+        $attendancRecords = $attendanceHistoryRepo->getAttendancesOfSubscriptionOrderedBySessionEventDate($subscription);
 
 
         return $this->render('subscription/viewSubscriptionAttendances.html.twig',
