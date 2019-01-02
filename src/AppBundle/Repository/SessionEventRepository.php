@@ -19,6 +19,7 @@ class SessionEventRepository extends EntityRepository
                 FROM AppBundle\Entity\SessionEvent sessionevent 
                 WHERE sessionevent.sessionEventDate >= :stats_start
                 AND sessionevent.sessionEventDate <= :stats_due
+                ORDER BY sessionevent.sessionEventDate DESC
            ');
 
         $query->setParameters(array(
@@ -36,7 +37,7 @@ class SessionEventRepository extends EntityRepository
         $query = $this->_em->createQuery('
                 SELECT sessionevent
                 FROM AppBundle\Entity\SessionEvent sessionevent 
-                ORDER BY sessionevent.id DESC
+                ORDER BY sessionevent.sessionEventDate DESC
            ');
 
         $query->setMaxResults(30);
