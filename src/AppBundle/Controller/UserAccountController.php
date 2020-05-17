@@ -44,6 +44,13 @@ class UserAccountController extends Controller
 
         $users = $userRepo->findLikeUserName($searchLikeUserName);
 
+        // Issue #66 - Remove deleted users from the result
+        foreach ($users as $key => $user) {
+            if($user->isDeleted()) {
+                unset($users[$key]);
+            }
+        }
+
         return $this->render('users/searchUserAccounts.html.twig',
             array(
                 'base_dir' => realpath($this->container->getParameter('kernel.root_dir') . '/..') . DIRECTORY_SEPARATOR,
