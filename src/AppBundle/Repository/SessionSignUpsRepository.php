@@ -4,7 +4,9 @@
 namespace AppBundle\Repository;
 
 
-class SessionSignUpsRepository extends \Doctrine\ORM\EntityRepository
+use Doctrine\ORM\EntityRepository;
+
+class SessionSignUpsRepository extends EntityRepository
 {
 
 }

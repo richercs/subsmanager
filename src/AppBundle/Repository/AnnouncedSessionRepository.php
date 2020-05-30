@@ -4,7 +4,9 @@
 namespace AppBundle\Repository;
 
 
-class AnnouncedSessionRepository
+use Doctrine\ORM\EntityRepository;
+
+class AnnouncedSessionRepository extends EntityRepository
 {
 
 }
