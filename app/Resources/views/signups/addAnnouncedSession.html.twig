@@ -11,17 +11,18 @@
     {{ parent() }}
     <h3>Új Bejelentkezéses Óra</h3>
     <div id="yellow-wrapper">
-{#        {{ form_start(form) }}#}
-{#        {{ form_errors(form) }}#}
-{#        {{ form_row(form._token) }}#}
-{#        {{ form_row(form.sessionEventDate, {'label': 'Időpont'}) }}#}
-{#        {{ form_row(form.scheduleItem, {'label': 'Órarendi Elem'}) }}#}
-{#        {{ form_row(form.attendees, {'label': 'Bérletesek'}) }}#}
-{#        {{ form_row(form.sessionFeeNumbersSold, {'label': 'Eladott Napidíjak'}) }}#}
-{#        {{ form_row(form.sessionFeeRevenueSold, {'label': 'Napidíj Bevétel'}) }}#}
-{#        {{ form_row(form.saveAndContinue) }}#}
-{#        {{ form_row(form.save) }}#}
-{#        {{ form_end(form, {'render_rest': false}) }}#}
+        {{ form_start(form) }}
+        {{ form_errors(form) }}
+        {{ form_row(form._token) }}
+        {{ form_row(form.scheduleItem, {'label': 'Órarendi Elem'}) }}
+        {{ form_row(form.timeOfEvent, {'label': 'Időpont'}) }}
+        {{ form_row(form.timeFromFinalized, {'label': 'Véglegesítés időpontja'}) }}
+        {{ form_row(form.maxNumberOfSignUps, {'label': 'Maximális bejelentkezések száma'}) }}
+        {{ form_row(form.signups, {'label': 'Bejelentkezők'}) }}
+        {{ form_row(form.signupsOnWaitList, {'label': 'Várólistások'}) }}
+        {{ form_row(form.saveAndContinue) }}
+        {{ form_row(form.save) }}
+        {{ form_end(form, {'render_rest': false}) }}
     </div>
 {% endblock %}
 

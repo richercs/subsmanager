@@ -1,0 +1,27 @@
+{% block SessionSignUpsType_label %}{% endblock %}
+{% block SessionSignUpsType_errors %}{% endblock %}
+
+{% block SessionSignUpsType_widget %}
+    <div class="row">
+        <div class="col-md-9">
+
+            <div class="attendee-input-wrap">
+                {{ form_widget(form.attendee) }}
+            </div>
+
+{#            <div class="subscriptions-input-wrap">#}
+{#                {{ form_widget(form.subscription) }}#}
+{#            </div>#}
+{#            <div class="subscription-info-wrap">#}
+{#                {{ form_widget(form.subscription_info) }}#}
+{#            </div>#}
+        </div>
+        <div class="col-md-2">
+            <a href="#" class="collection-remove btn btn-default">Törlés</a>
+            <a href="#" class="collection-add btn btn-default">Hozzáadás</a>
+        </div>
+        <div class="col-md-1">
+            <a href="#" class="collection-duplicate btn btn-default">Duplázás</a>
+        </div>
+    </div>
+{% endblock %}
