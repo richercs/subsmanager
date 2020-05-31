@@ -292,7 +292,8 @@ class SessionEventController extends Controller
      * @param Request $request
      * @return array
      */
-    public function editSessionEventAction($id, $subscriptionId = null, Request $request) {
+    public function editSessionEventAction($id, $subscriptionId = null, Request $request)
+    {
 
         // This is for the back URL
         if (!is_null($request->query->get('subscription_id'))) {
