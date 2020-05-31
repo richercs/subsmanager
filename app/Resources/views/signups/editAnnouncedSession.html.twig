@@ -1,0 +1,78 @@
+{% extends 'signups/layout.html.twig' %}
+
+{#{% form_theme form with#}
+{#    [#}
+{#        '@ninsuo/jquery.collection.html.twig',#}
+{#        '/event/recordsFormTheme.html.twig'#}
+{#    ]#}
+{#%}#}
+
+{% block body %}
+    {{ parent() }}
+    <h3>Bejelentkezéses Óra Szerkesztése</h3>
+    <div id="yellow-wrapper">
+{#        {{ form_start(form) }}#}
+{#        {{ form_errors(form) }}#}
+{#        {{ form_row(form._token) }}#}
+{#        {{ form_row(form.sessionEventDate, {'label': 'Időpont'}) }}#}
+{#        {{ form_row(form.scheduleItem, {'label': 'Órarendi Elem'}) }}#}
+{#        {{ form_row(form.attendees, {'label': 'Bérletesek'}) }}#}
+{#        {{ form_row(form.sessionFeeNumbersSold, {'label': 'Eladott Napidíjak'}) }}#}
+{#        {{ form_row(form.sessionFeeRevenueSold, {'label': 'Napidíj Bevétel'}) }}#}
+{#        {{ form_row(form.save) }}#}
+{#        {{ form_row(form.delete) }}#}
+{#        {{ form_end(form, {'render_rest': false}) }}#}
+        <div class="checkbox">
+            <label><input type="checkbox" id="confirmDeleteCheckBox" value="">Törlés engedélyezve</label>
+        </div>
+    </div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('assets/vendor/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css') }}" />
+{% endblock %}
+
+
+{% block javascript %}
+<script src="{{ asset('assets/vendor/symfony-collection/jquery.collection.js') }}"></script>
+    <script src="{{ asset('assets/vendor/moment/min/moment.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/jquery-ui/jquery-ui.min.js') }}"></script>
+    <script src="{{ asset('bundles/pugxautocompleter/js/autocompleter-jqueryui.js') }}"></script>
+    <script src="{{ asset('js/auto-suggest-users.js') }}"></script>
+{% endblock %}
+
+
+{% block body_end_javascripts %}
+    <script>
+        $(function () {
+            $('.datetimepicker').datetimepicker({
+                format: 'YYYY-MM-DD HH:mm'
+            });
+        });
+    </script>
+    <script type="text/javascript">
+
+        var confirmDeleteCheckbox = $('#confirmDeleteCheckBox');
+
+        if (confirmDeleteCheckbox.is(":checked")) {
+            // let it submit
+            $('#appbundle_sessionevent_delete').attr("disabled", false);
+        } else {
+            // don't let it submit
+            $('#appbundle_sessionevent_delete').attr("disabled", true);
+        }
+
+        confirmDeleteCheckbox.click( function () {
+            if ($('#confirmDeleteCheckBox').is(":checked")) {
+                // let it submit
+                $('#appbundle_sessionevent_delete').attr("disabled", false);
+            } else {
+                // don't let it submit
+                $('#appbundle_sessionevent_delete').attr("disabled", true);
+            }
+        });
+
+    </script>
+{% endblock %}
