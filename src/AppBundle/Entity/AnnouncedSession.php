@@ -56,6 +56,12 @@ class AnnouncedSession
     protected $signups;
 
     /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\SessionSignUps", mappedBy="announcedSession", cascade={"remove","persist"})
+     */
+    protected $signupsOnWaitList;
+
+    /**
      * @ORM\Column(name="updated_at", type="datetime", nullable = true)
      */
     protected $updatedAt;
@@ -159,6 +165,22 @@ class AnnouncedSession
     public function setSignups($signups)
     {
         $this->signups = $signups;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getSignupsOnWaitList()
+    {
+        return $this->signupsOnWaitList;
+    }
+
+    /**
+     * @param ArrayCollection $signupsOnWaitList
+     */
+    public function setSignupsOnWaitList($signupsOnWaitList)
+    {
+        $this->signupsOnWaitList = $signupsOnWaitList;
     }
 
     /**
