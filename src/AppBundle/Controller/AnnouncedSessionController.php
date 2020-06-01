@@ -4,6 +4,10 @@
 namespace AppBundle\Controller;
 
 
+use AppBundle\Entity\AnnouncedSession;
+use AppBundle\Entity\ScheduleItem;
+use AppBundle\Form\AnnouncedSessionType;
+use AppBundle\Repository\ScheduleItemRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use AppBundle\Entity\Subscription;
 use AppBundle\Entity\UserAccount;
@@ -39,7 +43,43 @@ class AnnouncedSessionController extends Controller
      */
     public function addAnnouncedSessionAction(Request $request)
     {
+        /** @var UserAccount $loggedInUser */
+        $loggedInUser = $this->getUser();
 
+        /** @var EntityManager $em */
+        $em = $this->get('doctrine.orm.default_entity_manager');
+
+        /** @var ScheduleItemRepository $scheduleItemRepository */
+        $scheduleItemRepository = $em->getRepository(ScheduleItem::class);
+
+        $scheduleItemCollection = $scheduleItemRepository->findAll();
+
+        $scheduleItemCollection = array_combine(range(1, count($scheduleItemCollection)), array_values($scheduleItemCollection));
+
+        /** @var ScheduleItem $scheduleItem */
+        foreach ($scheduleItemCollection as $key => $scheduleItem) {
+            if($scheduleItem->isDeleted()) {
+                unset($scheduleItemCollection[$key]);
+            }
+        }
+
+        $newAnnouncedSession = new AnnouncedSession();
+
+        $form = $this->createForm(new AnnouncedSessionType($scheduleItemCollection, true), $newAnnouncedSession);
+        $form->handleRequest($request);
+
+        if ($form->isValid())
+        {
+            echo "faaaaaiiiiinnnn!";
+            die();
+        }
+
+        return $this->render('signups/addAnnouncedSession.html.twig',
+            array(
+                'new_announced_session' => $newAnnouncedSession,
+                'form' => $form->createView(),
+                'logged_in_user' => $loggedInUser
+            ));
     }
 
     /**
