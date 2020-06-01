@@ -62,7 +62,7 @@ class AnnouncedSessionType extends AbstractType
                 ))
                 ->add('maxNumberOfSignUps')
                 ->add(
-                    'signups', 'collection', array(
+                    'signees', 'collection', array(
                         'entry_type' => SessionSignUpsType::class,
                         'label' => 'Bejelentkezések',
                         'allow_add' => true,
@@ -76,15 +76,15 @@ class AnnouncedSessionType extends AbstractType
                     )
                 )
                 ->add(
-                    'signupsOnWaitList', 'collection', array(
-                        'entry_type' => SessionSignUpsType::class,
+                    'signeesOnWaitList', 'collection', array(
+                        'entry_type' => SessionSignUpsOnWaitListType::class,
                         'label' => 'Várólistás bejelentkezések',
                         'allow_add' => true,
                         'allow_delete' => true,
                         'prototype' => true,
                         'required'     => false,
                         'attr' => array(
-                            'class' => 'session-signup-record',
+                            'class' => 'session-waitlist-record',
                         ),
                         'by_reference' => false,
                     )
@@ -118,7 +118,7 @@ class AnnouncedSessionType extends AbstractType
                 ))
                 ->add('maxNumberOfSignUps')
                 ->add(
-                    'signups', 'collection', array(
+                    'signees', 'collection', array(
                         'entry_type' => SessionSignUpsType::class,
                         'label' => 'Bejelentkezések',
                         'allow_add' => true,
@@ -132,15 +132,15 @@ class AnnouncedSessionType extends AbstractType
                     )
                 )
                 ->add(
-                    'signupsOnWaitList', 'collection', array(
-                        'entry_type' => SessionSignUpsType::class,
+                    'signeesOnWaitList', 'collection', array(
+                        'entry_type' => SessionSignUpsOnWaitListType::class,
                         'label' => 'Várólistás bejelentkezések',
                         'allow_add' => true,
                         'allow_delete' => true,
                         'prototype' => true,
                         'required'     => false,
                         'attr' => array(
-                            'class' => 'session-signup-record',
+                            'class' => 'session-waitlist-record',
                         ),
                         'by_reference' => false,
                     )

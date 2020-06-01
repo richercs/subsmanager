@@ -6,6 +6,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\AnnouncedSession;
 use AppBundle\Entity\ScheduleItem;
+use AppBundle\Entity\SessionSignUps;
 use AppBundle\Form\AnnouncedSessionType;
 use AppBundle\Repository\ScheduleItemRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -70,8 +71,29 @@ class AnnouncedSessionController extends Controller
 
         if ($form->isValid())
         {
-            echo "faaaaaiiiiinnnn!";
-            die();
+            $scheduleItemId = $request->get('appbundle_announced_session')['scheduleItem'];
+
+            $scheduleItem = $scheduleItemRepository->find($scheduleItemId);
+
+            $newAnnouncedSession->setScheduleItem($scheduleItem);
+
+            /** @var SessionSignUps $waitListedSignee */
+            foreach ($newAnnouncedSession->getSigneesOnWaitList() as $waitListedSignee) {
+                $newAnnouncedSession->addSigneeToWaitList($waitListedSignee);
+            }
+
+            // TODO: Validate by business rules if need be
+
+            // The OneToMany association and the symfony-collection bundle manages the signups ArrayCollection
+            $em->persist($newAnnouncedSession);
+            $em->flush();
+            $this->addFlash(
+                'notice',
+                'Változtatások Elmentve!'
+            );
+
+
+            return $this->redirectToRoute('add_announced_session');
         }
 
         return $this->render('signups/addAnnouncedSession.html.twig',

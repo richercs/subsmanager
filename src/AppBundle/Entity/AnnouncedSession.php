@@ -16,6 +16,12 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class AnnouncedSession
 {
+
+    public function __construct() {
+        $this->signees = new ArrayCollection();
+        $this->signeesOnWaitList = new ArrayCollection();
+    }
+
     /**
      * @var int
      *
@@ -53,13 +59,12 @@ class AnnouncedSession
      * @var ArrayCollection
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\SessionSignUps", mappedBy="announcedSession", cascade={"remove","persist"})
      */
-    protected $signups;
+    protected $signees;
 
     /**
-     * @var ArrayCollection
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\SessionSignUps", mappedBy="announcedSession", cascade={"remove","persist"})
+     * @var ArrayCollection $signeesOnWaitList
      */
-    protected $signupsOnWaitList;
+    protected $signeesOnWaitList;
 
     /**
      * @ORM\Column(name="updated_at", type="datetime", nullable = true)
@@ -70,6 +75,31 @@ class AnnouncedSession
      * @ORM\Column(name="created_at", type="datetime")
      */
     protected $createdAt;
+
+    public function addSignee(SessionSignUps $signee)
+    {
+        $signee->setAnnouncedSession($this);
+
+        $this->signees->add($signee);
+    }
+
+    public function removeSignee(SessionSignUps $signee)
+    {
+        $this->$signee->removeElement($signee);
+    }
+
+    public function addSigneeToWaitList(SessionSignUps $signeeToWaitList) {
+        $signeeToWaitList->setIsWaitListed(true);
+        $this->addSignee($signeeToWaitList);
+    }
+
+    public function removeSigneeFromWaitList(SessionSignUps $signeeToRemove) {
+        if ($signeeToRemove->isWaitListed()) {
+            $this->removeSignee($signeeToRemove);
+        } else {
+            return null;
+        }
+    }
 
     /**
      * @return int
@@ -154,33 +184,33 @@ class AnnouncedSession
     /**
      * @return ArrayCollection
      */
-    public function getSignups()
+    public function getSignees()
     {
-        return $this->signups;
+        return $this->signees;
     }
 
     /**
-     * @param ArrayCollection $signups
+     * @param ArrayCollection $signees
      */
-    public function setSignups($signups)
+    public function setSignees($signees)
     {
-        $this->signups = $signups;
+        $this->signees = $signees;
     }
 
     /**
      * @return ArrayCollection
      */
-    public function getSignupsOnWaitList()
+    public function getSigneesOnWaitList()
     {
-        return $this->signupsOnWaitList;
+        return $this->signeesOnWaitList;
     }
 
     /**
-     * @param ArrayCollection $signupsOnWaitList
+     * @param ArrayCollection $signeesOnWaitList
      */
-    public function setSignupsOnWaitList($signupsOnWaitList)
+    public function setSigneesOnWaitList($signeesOnWaitList)
     {
-        $this->signupsOnWaitList = $signupsOnWaitList;
+        $this->signeesOnWaitList = $signeesOnWaitList;
     }
 
     /**

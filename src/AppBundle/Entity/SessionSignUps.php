@@ -27,7 +27,7 @@ class SessionSignUps
     /**
      * @var AnnouncedSession
      *
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\AnnouncedSession", inversedBy="signups")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\AnnouncedSession", inversedBy="signees")
      * @ORM\JoinColumn(name="announced_session_id", referencedColumnName="id")
      */
     protected $announcedSession;
@@ -36,9 +36,9 @@ class SessionSignUps
      * @var UserAccount
      *
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\UserAccount")
-     * @ORM\JoinColumn(name="user_account_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="signee_id", referencedColumnName="id")
      */
-    protected $userAccount;
+    protected $signee;
 
     /**
      * @var boolean
@@ -93,17 +93,17 @@ class SessionSignUps
     /**
      * @return UserAccount
      */
-    public function getUserAccount()
+    public function getSignee()
     {
-        return $this->userAccount;
+        return $this->signee;
     }
 
     /**
-     * @param UserAccount $userAccount
+     * @param UserAccount $signee
      */
-    public function setUserAccount($userAccount)
+    public function setSignee($signee)
     {
-        $this->userAccount = $userAccount;
+        $this->signee = $signee;
     }
 
     /**
