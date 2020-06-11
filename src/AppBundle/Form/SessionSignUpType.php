@@ -10,7 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class SessionSignUpsType extends AbstractType
+class SessionSignUpType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -40,7 +40,7 @@ class SessionSignUpsType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'SessionSignUpsType';
+        return 'SessionSignUpType';
     }
 
 }

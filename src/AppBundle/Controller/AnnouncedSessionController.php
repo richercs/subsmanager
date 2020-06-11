@@ -77,10 +77,10 @@ class AnnouncedSessionController extends Controller
 
             $newAnnouncedSession->setScheduleItem($scheduleItem);
 
-            /** @var SessionSignUp $waitListedSignee */
-            foreach ($newAnnouncedSession->getSigneesOnWaitList() as $waitListedSignee) {
-                $newAnnouncedSession->addSigneeToWaitList($waitListedSignee);
-            }
+//            /** @var SessionSignUp $waitListedSignee */
+//            foreach ($newAnnouncedSession->getSigneesOnWaitList() as $waitListedSignee) {
+//                $newAnnouncedSession->addSigneeToWaitList($waitListedSignee);
+//            }
 
             // TODO: Validate by business rules if need be
 

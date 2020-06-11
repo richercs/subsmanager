@@ -13,32 +13,7 @@ $(document).ready(function () {
             //     loadSubscriptionInfo(this.value, recordNumber);
             // });
             // after adding a new record the form the new input field gets the autocompleter functionality
-            element.find('input').autocompleter({
-                url_list: '/useraccount_search',
-                url_get: '/useraccount_get/',
-                // on_select_callback: function (item) {
-                //     var recordNumber = parseInt(item.attr('id').replace(/[^0-9\.]/g, ''), 10);
-                //     if (!isNaN(recordNumber)) {  // Only load subscriptions on session event handling
-                //         loadSubscriptionRecord(item.val(), recordNumber);
-                //     }
-                // }
-            });
-        }
-    });
-    $('.session-waitlist-record').collection({
-        prefix: 'waitlist-collection',
-        add: '<a href="#" class="btn btn-warning">Új Várólistás</a>',
-        allow_up: false,
-        allow_down: false,
-        add_at_the_end: true,
-        after_add: function (collection, element) {
-            // $('.subscription-info-wrap').find('textarea').attr('disabled', true);
-            // element.find('select').on('change', function () {
-            //     var recordNumber = parseInt(this.id.replace(/[^0-9\.]/g, ''), 10);
-            //     loadSubscriptionInfo(this.value, recordNumber);
-            // });
-            // after adding a new record the form the new input field gets the autocompleter functionality
-            element.find('input').autocompleter({
+            element.find('input[type=text]').autocompleter({
                 url_list: '/useraccount_search',
                 url_get: '/useraccount_get/',
                 // on_select_callback: function (item) {

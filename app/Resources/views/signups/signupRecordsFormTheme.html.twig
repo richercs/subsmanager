@@ -1,7 +1,7 @@
-{% block SessionSignUpsType_label %}{% endblock %}
-{% block SessionSignUpsType_errors %}{% endblock %}
+{% block SessionSignUpType_label %}{% endblock %}
+{% block SessionSignUpType_errors %}{% endblock %}
 
-{% block SessionSignUpsType_widget %}
+{% block SessionSignUpType_widget %}
     <div class="row">
         <div class="col-md-6">
 
@@ -23,34 +23,6 @@
         </div>
         <div class="col-md-1">
             <a href="#" class="signup-collection-duplicate btn btn-default">Duplázás</a>
-        </div>
-    </div>
-{% endblock %}
-
-{% block SessionSignUpsOnWaitListType_label %}{% endblock %}
-{% block SessionSignUpsOnWaitListType_errors %}{% endblock %}
-
-{% block SessionSignUpsOnWaitListType_widget %}
-    <div class="row">
-        <div class="col-md-9">
-
-            <div class="attendee-input-wrap">
-                {{ form_widget(form.signee) }}
-            </div>
-
-{#            <div class="subscriptions-input-wrap">#}
-{#                {{ form_widget(form.subscription) }}#}
-{#            </div>#}
-{#            <div class="subscription-info-wrap">#}
-{#                {{ form_widget(form.subscription_info) }}#}
-{#            </div>#}
-        </div>
-        <div class="col-md-2">
-            <a href="#" class="waitlist-collection-remove btn btn-default">Törlés</a>
-            <a href="#" class="waitlist-collection-add btn btn-default">Hozzáadás</a>
-        </div>
-        <div class="col-md-1">
-            <a href="#" class="waitlist-collection-duplicate btn btn-default">Duplázás</a>
         </div>
     </div>
 {% endblock %}

@@ -88,19 +88,6 @@ class AnnouncedSession
         $this->$signee->removeElement($signee);
     }
 
-    public function addSigneeToWaitList(SessionSignUp $signeeToWaitList) {
-        $signeeToWaitList->setWaitListed(true);
-        $this->addSignee($signeeToWaitList);
-    }
-
-    public function removeSigneeFromWaitList(SessionSignUp $signeeToRemove) {
-        if ($signeeToRemove->waitListed()) {
-            $this->removeSignee($signeeToRemove);
-        } else {
-            return null;
-        }
-    }
-
     /**
      * @return int
      */
