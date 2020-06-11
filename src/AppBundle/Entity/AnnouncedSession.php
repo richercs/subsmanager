@@ -57,7 +57,7 @@ class AnnouncedSession
 
     /**
      * @var ArrayCollection
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\SessionSignUps", mappedBy="announcedSession", cascade={"remove","persist"})
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\SessionSignUp", mappedBy="announcedSession", cascade={"remove","persist"})
      */
     protected $signees;
 
@@ -76,25 +76,25 @@ class AnnouncedSession
      */
     protected $createdAt;
 
-    public function addSignee(SessionSignUps $signee)
+    public function addSignee(SessionSignUp $signee)
     {
         $signee->setAnnouncedSession($this);
 
         $this->signees->add($signee);
     }
 
-    public function removeSignee(SessionSignUps $signee)
+    public function removeSignee(SessionSignUp $signee)
     {
         $this->$signee->removeElement($signee);
     }
 
-    public function addSigneeToWaitList(SessionSignUps $signeeToWaitList) {
-        $signeeToWaitList->setIsWaitListed(true);
+    public function addSigneeToWaitList(SessionSignUp $signeeToWaitList) {
+        $signeeToWaitList->setWaitListed(true);
         $this->addSignee($signeeToWaitList);
     }
 
-    public function removeSigneeFromWaitList(SessionSignUps $signeeToRemove) {
-        if ($signeeToRemove->isWaitListed()) {
+    public function removeSigneeFromWaitList(SessionSignUp $signeeToRemove) {
+        if ($signeeToRemove->waitListed()) {
             $this->removeSignee($signeeToRemove);
         } else {
             return null;

@@ -6,7 +6,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\AnnouncedSession;
 use AppBundle\Entity\ScheduleItem;
-use AppBundle\Entity\SessionSignUps;
+use AppBundle\Entity\SessionSignUp;
 use AppBundle\Form\AnnouncedSessionType;
 use AppBundle\Repository\ScheduleItemRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -77,7 +77,7 @@ class AnnouncedSessionController extends Controller
 
             $newAnnouncedSession->setScheduleItem($scheduleItem);
 
-            /** @var SessionSignUps $waitListedSignee */
+            /** @var SessionSignUp $waitListedSignee */
             foreach ($newAnnouncedSession->getSigneesOnWaitList() as $waitListedSignee) {
                 $newAnnouncedSession->addSigneeToWaitList($waitListedSignee);
             }

@@ -21,8 +21,7 @@ class SessionSignUpsType extends AbstractType
             ->add('signee', AutocompleteType::class, array(
                 'class' => 'AppBundle:UserAccount'
             ))
-//            ->add('subscription')
-//            ->add('subscription_info', TextareaType::class)
+            ->add('waitListed')
         ;
     }
 
@@ -32,7 +31,7 @@ class SessionSignUpsType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'AppBundle\Entity\SessionSignUps'
+            'data_class' => 'AppBundle\Entity\SessionSignUp'
         ));
     }
 

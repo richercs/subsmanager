@@ -7,13 +7,13 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * SessionSignUps
+ * SessionSignUp
  *
  * @ORM\Table(name="session_signups")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\SessionSignUpsRepository")
  * @ORM\HasLifecycleCallbacks
  */
-class SessionSignUps
+class SessionSignUp
 {
     /**
      * @var int
@@ -46,7 +46,7 @@ class SessionSignUps
      * @ORM\Column(name="is_waitlisted", type="boolean")
      *
      */
-    protected $isWaitListed = 0;
+    protected $waitListed = 0;
 
     /**
      * @ORM\Column(name="updated_at", type="datetime", nullable = true)
@@ -111,15 +111,15 @@ class SessionSignUps
      */
     public function isWaitListed()
     {
-        return $this->isWaitListed;
+        return $this->waitListed;
     }
 
     /**
-     * @param bool $isWaitListed
+     * @param bool $waitListed
      */
-    public function setIsWaitListed($isWaitListed)
+    public function setWaitListed($waitListed)
     {
-        $this->isWaitListed = $isWaitListed;
+        $this->waitListed = $waitListed;
     }
 
     /**
@@ -132,7 +132,7 @@ class SessionSignUps
 
     /**
      * @param mixed $createdAt
-     * @return SessionSignUps
+     * @return SessionSignUp
      */
     public function setCreatedAt($createdAt)
     {
@@ -150,7 +150,7 @@ class SessionSignUps
 
     /**
      * @param mixed $updatedAt
-     * @return SessionSignUps
+     * @return SessionSignUp
      */
     public function setUpdatedAt($updatedAt)
     {

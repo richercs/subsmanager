@@ -3,18 +3,19 @@
 
 {% block SessionSignUpsType_widget %}
     <div class="row">
-        <div class="col-md-9">
+        <div class="col-md-6">
 
             <div class="attendee-input-wrap">
                 {{ form_widget(form.signee) }}
             </div>
-
-{#            <div class="subscriptions-input-wrap">#}
-{#                {{ form_widget(form.subscription) }}#}
-{#            </div>#}
 {#            <div class="subscription-info-wrap">#}
 {#                {{ form_widget(form.subscription_info) }}#}
 {#            </div>#}
+        </div>
+        <div class="col-md-3">
+            <div class="waitlisted-input-wrap">
+                {{ form_widget(form.waitListed, {'label': 'Várólistás'}) }}
+            </div>
         </div>
         <div class="col-md-2">
             <a href="#" class="signup-collection-remove btn btn-default">Törlés</a>
