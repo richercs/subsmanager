@@ -41,6 +41,12 @@ class SessionSignUp
     protected $signee;
 
     /**
+     * @var int
+     * @ORM\Column(name="number_of_extras", type="integer", nullable = true)
+     */
+    protected $extras;
+
+    /**
      * @var boolean
      *
      * @ORM\Column(name="is_waitlisted", type="boolean")
@@ -104,6 +110,22 @@ class SessionSignUp
     public function setSignee($signee)
     {
         $this->signee = $signee;
+    }
+
+    /**
+     * @return int
+     */
+    public function getExtras()
+    {
+        return $this->extras;
+    }
+
+    /**
+     * @param int $extras
+     */
+    public function setExtras($extras)
+    {
+        $this->extras = $extras;
     }
 
     /**

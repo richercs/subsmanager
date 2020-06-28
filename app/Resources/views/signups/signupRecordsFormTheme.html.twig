@@ -12,7 +12,12 @@
 {#                {{ form_widget(form.subscription_info) }}#}
 {#            </div>#}
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
+            <div class="extras-input-wrap">
+                {{ form_widget(form.extras) }}
+            </div>
+        </div>
+        <div class="col-md-2">
             <div class="waitlisted-input-wrap">
                 {{ form_widget(form.waitListed, {'label': 'Várólistás'}) }}
             </div>
@@ -20,9 +25,6 @@
         <div class="col-md-2">
             <a href="#" class="signup-collection-remove btn btn-default">Törlés</a>
             <a href="#" class="signup-collection-add btn btn-default">Hozzáadás</a>
-        </div>
-        <div class="col-md-1">
-            <a href="#" class="signup-collection-duplicate btn btn-default">Duplázás</a>
         </div>
     </div>
 {% endblock %}
