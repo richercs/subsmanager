@@ -67,6 +67,11 @@ class AnnouncedSession
     protected $signeesOnWaitList;
 
     /**
+     * @var int $numberOfSignees
+     */
+    protected $numberOfSignees;
+
+    /**
      * @ORM\Column(name="updated_at", type="datetime", nullable = true)
      */
     protected $updatedAt;
@@ -182,6 +187,22 @@ class AnnouncedSession
     public function setSignees($signees)
     {
         $this->signees = $signees;
+    }
+
+    /**
+     * @return int
+     */
+    public function getNumberOfSignees()
+    {
+        return $this->numberOfSignees;
+    }
+
+    /**
+     * @param int $numberOfSignees
+     */
+    public function setNumberOfSignees($numberOfSignees)
+    {
+        $this->numberOfSignees = $numberOfSignees;
     }
 
     /**

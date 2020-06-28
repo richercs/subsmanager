@@ -8,6 +8,7 @@ use AppBundle\Entity\AnnouncedSession;
 use AppBundle\Entity\ScheduleItem;
 use AppBundle\Entity\SessionSignUp;
 use AppBundle\Form\AnnouncedSessionType;
+use AppBundle\Repository\AnnouncedSessionRepository;
 use AppBundle\Repository\ScheduleItemRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use AppBundle\Entity\Subscription;
@@ -31,6 +32,72 @@ class AnnouncedSessionController extends Controller
      */
     public function searchAnnouncedSessionForEditAction(Request $request)
     {
+        /** UserAccount $loggedInUser */
+        $loggedInUser = $this->getUser();
+
+        /** @var EntityManager $em */
+        $em = $this->get('doctrine.orm.default_entity_manager');
+
+        /** @var AnnouncedSessionRepository $announcedSessionRepository */
+        $announcedSessionRepository = $em->getRepository('AppBundle\Entity\AnnouncedSession');
+
+        $searchStartDate = $request->get('searchStart');
+
+        $searchDueDate = $request->get('searchDue');
+
+        $searchScheduleItemId = $request->get('searchScheduleItemId');
+
+        if(is_null($searchScheduleItemId) || $searchScheduleItemId == "") {
+
+            if(is_null($searchStartDate) && is_null($searchDueDate) || $searchStartDate == "" && $searchDueDate == "") {
+                $announcedSessions = $announcedSessionRepository->getLastThirty();
+            } else {
+                $announcedSessions = $announcedSessionRepository->getBetweenDates();
+            }
+        } else {
+            /** @var ScheduleItemRepository $scheduleItemRepository */
+            $scheduleItemRepository = $em->getRepository('AppBundle\Entity\ScheduleItem');
+
+            $filteredScheduleItem = $scheduleItemRepository->find($searchScheduleItemId);
+
+            if (!$filteredScheduleItem) {
+                $this->addFlash(
+                    'error',
+                    'Nincs ilyen azonosítójú órarendi elem: ' . $filteredScheduleItem . '!'
+                );
+            }
+            if(is_null($searchStartDate) && is_null($searchDueDate) || $searchStartDate == "" && $searchDueDate == "") {
+                $announcedSessions = $announcedSessionRepository->getLastThirtyFilteredScheduleItem();
+            } else {
+                $announcedSessions = $announcedSessionRepository->getBetweenDatesFilteredScheduleItem();
+            }
+        }
+
+        $announcedSessions = new ArrayCollection();
+
+        // Set extra info needed to list entities
+        /** @var AnnouncedSession $announcedSession */
+        foreach ($announcedSessions as $announcedSession) {
+
+            $numberOfSignees =  $this->calculateNumberOfSignees($announcedSession);
+
+            $announcedSession->setNumberOfSignees($numberOfSignees);
+        }
+
+        // Get every schedule item for rendering the select on search form
+        /** @var ScheduleItemRepository $scheduleItemRepository */
+        $scheduleItemRepository = $em->getRepository('AppBundle\Entity\ScheduleItem');
+
+        $scheduleItems = $scheduleItemRepository->findAll();
+
+        return $this->render('signups\listAnnouncedSessionsEdit.html.twig', array(
+            'announcedSessions' => $announcedSessions,
+            'searchStart' => $searchStartDate,
+            'searchDue' =>$searchDueDate,
+            'searchScheduleItemId' => $searchScheduleItemId,
+            'schedule_items' => $scheduleItems,
+            'logged_in_user' => $loggedInUser
+        ));
 
     }
 
@@ -116,5 +183,16 @@ class AnnouncedSessionController extends Controller
     public function editAnnouncedSessionAction($id, Request $request)
     {
 
+    }
+
+    /**
+     * Calculates the number of signees of one announced session.
+     *
+     * @param AnnouncedSession $announcedSession
+     * @return int
+     */
+    private function calculateNumberOfSignees(AnnouncedSession $announcedSession)
+    {
+        return 0;
     }
 }
