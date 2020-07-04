@@ -76,11 +76,7 @@ class AnnouncedSessionController extends Controller
         // Set extra info needed to list entities
         /** @var AnnouncedSession $announcedSession */
         foreach ($announcedSessions as $announcedSession) {
-
-            // TODO: implement function
-            $numberOfSignees =  $this->calculateNumberOfSignees($announcedSession);
-
-            $announcedSession->setNumberOfSignees($numberOfSignees);
+            $announcedSession->calculateNumberOfSignees();
         }
 
         // Get every schedule item for rendering the select on search form
@@ -180,14 +176,4 @@ class AnnouncedSessionController extends Controller
 
     }
 
-    /**
-     * Calculates the number of signees of one announced session.
-     *
-     * @param AnnouncedSession $announcedSession
-     * @return int
-     */
-    private function calculateNumberOfSignees(AnnouncedSession $announcedSession)
-    {
-        return 0;
-    }
 }
