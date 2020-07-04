@@ -35,8 +35,9 @@
                     <th>ID</th>
                     <th>Órarendi Elem</th>
                     <th>Időpont</th>
-                    <th>Lezárás időpontja</th>
-                    <th>Bejelentkezések Száma</th>
+                    <th>Lezárás</th>
+                    <th>Bejelentkezések</th>
+                    <th>Létrehozás</th>
                     <th>Szerkesztés</th>
                 </tr>
                 </thead>
@@ -57,6 +58,9 @@
                         </td>
                         <td>
                             {{ announcedSession.getNumberOfSignees }} / {{ announcedSession.getMaxNumberOfSignUps }}
+                        </td>
+                        <td>
+                            {{ announcedSession.createdAt|date('Y-m-d H:i:s') }}
                         </td>
                         <td>
                             <a href="{{ path('edit_announced_session', {'id': announcedSession.getId, 'searchStart': searchStart, 'searchDue': searchDue, 'searchScheduleItemId': searchScheduleItemId }) }}" class="btn btn-link"><span style="font-size:16px; padding-left: 8px;" class="pull-right showopacity glyphicon glyphicon-list-alt"></span></a>

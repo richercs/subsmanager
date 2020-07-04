@@ -52,7 +52,7 @@ class AnnouncedSessionController extends Controller
             if(is_null($searchStartDate) && is_null($searchDueDate) || $searchStartDate == "" && $searchDueDate == "") {
                 $announcedSessions = $announcedSessionRepository->getLastThirty();
             } else {
-                $announcedSessions = $announcedSessionRepository->getBetweenDates();
+                $announcedSessions = $announcedSessionRepository->getBetweenDates($searchStartDate, $searchDueDate);
             }
         } else {
             /** @var ScheduleItemRepository $scheduleItemRepository */
@@ -67,14 +67,11 @@ class AnnouncedSessionController extends Controller
                 );
             }
             if(is_null($searchStartDate) && is_null($searchDueDate) || $searchStartDate == "" && $searchDueDate == "") {
-                $announcedSessions = $announcedSessionRepository->getLastThirtyFilteredScheduleItem();
+                $announcedSessions = $announcedSessionRepository->getLastThirtyFilteredScheduleItem($filteredScheduleItem);
             } else {
-                $announcedSessions = $announcedSessionRepository->getBetweenDatesFilteredScheduleItem();
+                $announcedSessions = $announcedSessionRepository->getBetweenDatesFilteredScheduleItem($searchStartDate, $searchDueDate, $filteredScheduleItem);
             }
         }
-
-        // TODO: remove this line when repository class functions are in place
-        $announcedSessions = new ArrayCollection();
 
         // Set extra info needed to list entities
         /** @var AnnouncedSession $announcedSession */
