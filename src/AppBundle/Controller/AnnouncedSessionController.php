@@ -150,6 +150,11 @@ class AnnouncedSessionController extends Controller
                 'Változtatások Elmentve!'
             );
 
+            if($form->get('saveAndContinue')->isClicked()) {
+                return $this->redirectToRoute('edit_announced_session', array(
+                    'id' => $newAnnouncedSession->getId()
+                ));
+            }
 
             return $this->redirectToRoute('add_announced_session');
         }
@@ -173,6 +178,7 @@ class AnnouncedSessionController extends Controller
      */
     public function editAnnouncedSessionAction($id, Request $request)
     {
+
 
     }
 
