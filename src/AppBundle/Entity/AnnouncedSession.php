@@ -61,6 +61,7 @@ class AnnouncedSession
      */
     protected $signees;
 
+    // TODO: Decide if this will every be needed, if not remove it
     /**
      * @var ArrayCollection $signeesOnWaitList
      */

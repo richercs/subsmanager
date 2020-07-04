@@ -73,12 +73,14 @@ class AnnouncedSessionController extends Controller
             }
         }
 
+        // TODO: remove this line when repository class functions are in place
         $announcedSessions = new ArrayCollection();
 
         // Set extra info needed to list entities
         /** @var AnnouncedSession $announcedSession */
         foreach ($announcedSessions as $announcedSession) {
 
+            // TODO: implement function
             $numberOfSignees =  $this->calculateNumberOfSignees($announcedSession);
 
             $announcedSession->setNumberOfSignees($numberOfSignees);
@@ -144,10 +146,6 @@ class AnnouncedSessionController extends Controller
 
             $newAnnouncedSession->setScheduleItem($scheduleItem);
 
-//            /** @var SessionSignUp $waitListedSignee */
-//            foreach ($newAnnouncedSession->getSigneesOnWaitList() as $waitListedSignee) {
-//                $newAnnouncedSession->addSigneeToWaitList($waitListedSignee);
-//            }
 
             // TODO: Validate by business rules if need be
 
