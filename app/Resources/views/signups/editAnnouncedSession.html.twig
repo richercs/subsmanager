@@ -1,30 +1,31 @@
 {% extends 'signups/layout.html.twig' %}
 
-{#{% form_theme form with#}
-{#    [#}
-{#        '@ninsuo/jquery.collection.html.twig',#}
-{#        '/event/recordsFormTheme.html.twig'#}
-{#    ]#}
-{#%}#}
+{% form_theme form with
+    [
+        '@ninsuo/jquery.collection.html.twig',
+        '/signups/signupRecordsFormTheme.html.twig'
+    ]
+%}
 
 {% block body %}
     {{ parent() }}
     <h3>Bejelentkezéses Óra Szerkesztése</h3>
     <div id="yellow-wrapper">
-{#        {{ form_start(form) }}#}
-{#        {{ form_errors(form) }}#}
-{#        {{ form_row(form._token) }}#}
-{#        {{ form_row(form.sessionEventDate, {'label': 'Időpont'}) }}#}
-{#        {{ form_row(form.scheduleItem, {'label': 'Órarendi Elem'}) }}#}
-{#        {{ form_row(form.attendees, {'label': 'Bérletesek'}) }}#}
-{#        {{ form_row(form.sessionFeeNumbersSold, {'label': 'Eladott Napidíjak'}) }}#}
-{#        {{ form_row(form.sessionFeeRevenueSold, {'label': 'Napidíj Bevétel'}) }}#}
-{#        {{ form_row(form.save) }}#}
-{#        {{ form_row(form.delete) }}#}
-{#        {{ form_end(form, {'render_rest': false}) }}#}
+        {{ form_start(form) }}
+        {{ form_errors(form) }}
+        {{ form_row(form._token) }}
+        {{ form_row(form.scheduleItem, {'label': 'Órarendi Elem'}) }}
+        {{ form_row(form.timeOfEvent, {'label': 'Időpont'}) }}
+        {{ form_row(form.timeFromFinalized, {'label': 'Véglegesítés időpontja'}) }}
+        {{ form_row(form.maxNumberOfSignUps, {'label': 'Max bejelentkezések száma'}) }}
+        {{ form_row(form.signees, {'label': 'Bejelentkezők'}) }}
+        {{ form_row(form.save) }}
+        {{ form_row(form.delete) }}
+        {{ form_end(form, {'render_rest': false}) }}
         <div class="checkbox">
             <label><input type="checkbox" id="confirmDeleteCheckBox" value="">Törlés engedélyezve</label>
         </div>
+        <a href="{{ path('announced_session_search_edit', {'searchStart': searchStart, 'searchDue': searchDue, 'searchScheduleItemId': searchScheduleItemId}) }}" class="btn btn-primary">Vissza</a>
     </div>
 {% endblock %}
 
@@ -35,7 +36,7 @@
 
 
 {% block javascript %}
-<script src="{{ asset('assets/vendor/symfony-collection/jquery.collection.js') }}"></script>
+    <script src="{{ asset('assets/vendor/symfony-collection/jquery.collection.js') }}"></script>
     <script src="{{ asset('assets/vendor/moment/min/moment.min.js') }}"></script>
     <script src="{{ asset('assets/vendor/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js') }}"></script>
     <script src="{{ asset('assets/vendor/jquery-ui/jquery-ui.min.js') }}"></script>
@@ -58,19 +59,19 @@
 
         if (confirmDeleteCheckbox.is(":checked")) {
             // let it submit
-            $('#appbundle_sessionevent_delete').attr("disabled", false);
+            $('#appbundle_announced_session_delete').attr("disabled", false);
         } else {
             // don't let it submit
-            $('#appbundle_sessionevent_delete').attr("disabled", true);
+            $('#appbundle_announced_session_delete').attr("disabled", true);
         }
 
         confirmDeleteCheckbox.click( function () {
             if ($('#confirmDeleteCheckBox').is(":checked")) {
                 // let it submit
-                $('#appbundle_sessionevent_delete').attr("disabled", false);
+                $('#appbundle_announced_session_delete').attr("disabled", false);
             } else {
                 // don't let it submit
-                $('#appbundle_sessionevent_delete').attr("disabled", true);
+                $('#appbundle_announced_session_delete').attr("disabled", true);
             }
         });
 

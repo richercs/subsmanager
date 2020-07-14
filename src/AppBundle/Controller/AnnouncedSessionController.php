@@ -178,8 +178,88 @@ class AnnouncedSessionController extends Controller
      */
     public function editAnnouncedSessionAction($id, Request $request)
     {
+        /** @var UserAccount $loggedInUser */
+        $loggedInUser = $this->getUser();
 
+        /** @var EntityManager $em */
+        $em = $this->get('doctrine.orm.default_entity_manager');
 
+        /** @var AnnouncedSessionRepository $announcedSessionRepository */
+        $announcedSessionRepository = $em->getRepository('AppBundle\Entity\AnnouncedSession');
+
+        // This is for the back URL
+        $searchStartDate = $request->get('searchStart');
+        $searchDueDate = $request->get('searchDue');
+        $searchScheduleItemId = $request->get('searchScheduleItemId');
+
+        /** @var AnnouncedSession $announcedSession */
+        $announcedSession = $announcedSessionRepository->find($id);
+
+        if(!$announcedSession) {
+            $this->addFlash(
+                'error',
+                'Nincs ilyen azonosítójú bejelentkezéses óra: ' . $id . '!'
+            );
+            return $this->redirectToRoute('announced_session_search_edit');
+        }
+
+        // this is for later on hard deletion from database instead of setting null parent id on child records
+        $originalSignees = new ArrayCollection();
+
+        foreach ($announcedSession->getSignees() as $signee) {
+            $originalSignees->add($signee);
+        }
+
+        $form = $this->createForm(new AnnouncedSessionType(),$announcedSession);
+        $form->handleRequest($request);
+
+        if ($form->isValid()) {
+            // hard delete the sign up records from database
+            foreach ($originalSignees as $signee) {
+                if (!$announcedSession->getSignees()->contains($signee)) {
+                    $em->remove($signee);
+                }
+            }
+            if ($form->get('delete')->isClicked()) {
+                $em->remove($announcedSession);
+                $em->flush();
+
+                // message
+                $this->addFlash(
+                    'notice',
+                    '"'. $id . '" azonosítójú bejelentkezéses óra sikeresen törölve!'
+                );
+
+                // show list
+                return $this->redirectToRoute('announced_session_search_edit', array(
+                    'searchStart' => $searchStartDate,
+                    'searchDue' =>$searchDueDate,
+                    'searchScheduleItemId' => $searchScheduleItemId,
+                ));
+            }
+
+            // TODO: Business rules validation
+
+            $em->persist($announcedSession);
+            $em->flush();
+            $this->addFlash(
+                'notice',
+                'Változtatások Elmentve!'
+            );
+
+            // this is where if there were calculated values, it would be necessary to query the object from the db again
+            // and recreate the form to refresh the calculated values
+        }
+
+        return $this->render('signups/editAnnouncedSession.html.twig',
+            array(
+                'announcedSession' => $announcedSession,
+                'searchStart' => $searchStartDate,
+                'searchDue' =>$searchDueDate,
+                'searchScheduleItemId' => $searchScheduleItemId,
+                'form' => $form->createView(),
+                'logged_in_user' => $loggedInUser
+            ));
     }
 
 }

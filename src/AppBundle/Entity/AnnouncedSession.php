@@ -91,7 +91,7 @@ class AnnouncedSession
 
     public function removeSignee(SessionSignUp $signee)
     {
-        $this->$signee->removeElement($signee);
+        $this->signees->removeElement($signee);
     }
 
     /**

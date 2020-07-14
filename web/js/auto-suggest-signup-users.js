@@ -66,7 +66,7 @@ $(document).ready(function () {
     // $('.subscriptions-input-wrap').find('select').attr('disabled', true);
     // $('.subscription-info-wrap').find('textarea').attr('disabled', true);
 
-    // var form = $('.form-horizontal');
+    var form = $('.form-horizontal');
     //
     // form.submit(function () {
     //     $('.subscriptions-input-wrap').find('select').prop("disabled", false);
