@@ -23,6 +23,11 @@ class SessionSignUpApiController extends \Symfony\Bundle\FrameworkBundle\Control
      */
     public function getAnnouncedSessionDataAction (Request $request)
     {
+        $loggedInUser = $this->getUser();
+
+        if (!$loggedInUser) {
+            return new Response(null);
+        }
 
         $response = new JsonResponse();
 
@@ -62,7 +67,18 @@ class SessionSignUpApiController extends \Symfony\Bundle\FrameworkBundle\Control
      */
     public function doSignUpAction ($id, Request $request)
     {
-        return null;
+        $loggedInUser = $this->getUser();
+
+        if (!$loggedInUser) {
+            return new Response(null);
+        }
+
+        $response = new JsonResponse();
+
+        return $response->setData(array(
+            "status" => "successful",
+            "error" => null,
+        ));
     }
 
     /**
@@ -74,7 +90,18 @@ class SessionSignUpApiController extends \Symfony\Bundle\FrameworkBundle\Control
      */
     public function doSignUpOnWaitListAction ($id, Request $request)
     {
-        return null;
+        $loggedInUser = $this->getUser();
+
+        if (!$loggedInUser) {
+            return new Response(null);
+        }
+
+        $response = new JsonResponse();
+
+        return $response->setData(array(
+            "status" => "successful",
+            "error" => null,
+        ));
     }
 
     /**
@@ -86,7 +113,18 @@ class SessionSignUpApiController extends \Symfony\Bundle\FrameworkBundle\Control
      */
     public function doSignOffAction ($id, Request $request)
     {
-        return null;
+        $loggedInUser = $this->getUser();
+
+        if (!$loggedInUser) {
+            return new Response(null);
+        }
+
+        $response = new JsonResponse();
+
+        return $response->setData(array(
+            "status" => "successful",
+            "error" => null,
+        ));
     }
 
 }
