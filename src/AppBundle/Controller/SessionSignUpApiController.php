@@ -4,6 +4,8 @@
 namespace AppBundle\Controller;
 
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -21,8 +23,34 @@ class SessionSignUpApiController extends \Symfony\Bundle\FrameworkBundle\Control
      */
     public function getAnnouncedSessionDataAction (Request $request)
     {
-        
-        return null;
+
+        $response = new JsonResponse();
+
+        return $response->setData(array(
+            'announcedSessionsData' => array(
+                array(
+                    'id' => 1,
+                    'sessionName' => "Szerda este kondi",
+                    'timeOfEvent' => "2020-05-30 16:00",
+                    'alreadySignedUp' => false,
+                    'alreadyOnWaitList' => false,
+                    'canSignUp' => true,
+                    'canSignUpOnWaitList' => false,
+                    'isListFinalized' => false,
+                ),
+                array(
+                    'id' => 2,
+                    'sessionName' => "Szerda este pilates",
+                    'timeOfEvent' => "2020-05-30 18:00",
+                    'alreadySignedUp' => false,
+                    'alreadyOnWaitList' => false,
+                    'canSignUp' => true,
+                    'canSignUpOnWaitList' => false,
+                    'isListFinalized' => false,
+                ),
+            ),
+            'error' => null
+        ));
     }
 
     /**
