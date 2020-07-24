@@ -4,6 +4,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -281,4 +282,33 @@ class AnnouncedSession
             $this->setCreatedAt(new \DateTime('now'));
         }
     }
+
+    /**
+     * @return boolean
+     */
+    public function isFinalized()
+    {
+        return $this->timeFromFinalized >= new \DateTime('now');
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isFull()
+    {
+        return $this->signees->count() >= $this->maxNumberOfSignUps;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function hasWaitlistedSignee()
+    {
+        $criteria = Criteria::create()
+            ->andWhere(Criteria::expr()->eq('waitListed', true));
+
+        return $this->signees->matching($criteria)->count() > 0;
+    }
+
+
 }
