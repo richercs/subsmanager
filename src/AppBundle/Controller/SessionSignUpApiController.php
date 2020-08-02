@@ -26,6 +26,8 @@ class SessionSignUpApiController extends \Symfony\Bundle\FrameworkBundle\Control
      */
     public function getAnnouncedSessionDataAction (Request $request)
     {
+        // TODO: work in progress function
+
         $loggedInUser = $this->getUser();
 
         if (!$loggedInUser) {
@@ -47,13 +49,13 @@ class SessionSignUpApiController extends \Symfony\Bundle\FrameworkBundle\Control
                     'isListFinalized' => false,
                 ),
                 array(
-                    'id' => 2,
+                    'id' => 3,
                     'sessionName' => "Szerda este pilates",
                     'timeOfEvent' => "2020-05-30 18:00",
                     'alreadySignedUp' => false,
                     'alreadyOnWaitList' => false,
-                    'canSignUp' => true,
-                    'canSignUpOnWaitList' => false,
+                    'canSignUp' => false,
+                    'canSignUpOnWaitList' => true,
                     'isListFinalized' => false,
                 ),
             ),
@@ -115,18 +117,40 @@ class SessionSignUpApiController extends \Symfony\Bundle\FrameworkBundle\Control
      */
     public function doSignUpOnWaitListAction ($id, Request $request)
     {
+        /** @var UserAccount $loggedInUser */
         $loggedInUser = $this->getUser();
 
         if (!$loggedInUser) {
             return new Response(null);
         }
 
-        $response = new JsonResponse();
+        if (empty((int) $id)) {
+            return new Response(null);
+        }
 
-        return $response->setData(array(
-            "status" => "successful",
-            "error" => null,
-        ));
+        try {
+            // TODO: extras POST paraméter kéne legyen
+            $this->get('sign_up_manager')->waitListUserToSession(
+                $loggedInUser,
+                $id
+            );
+
+            // Successful wait listed session signup for logged in User
+            $response = new JsonResponse();
+
+            return $response->setData(array(
+                "status" => "successful",
+                "message" => null,
+            ));
+
+        } catch (\Exception $e) {
+            $response = new JsonResponse();
+
+            return $response->setData(array(
+                "status" => "error",
+                "message" => $e->getMessage(),
+            ));
+        }
     }
 
     /**
@@ -156,7 +180,7 @@ class SessionSignUpApiController extends \Symfony\Bundle\FrameworkBundle\Control
                 $id
             );
 
-            // Successful session signup for logged in User
+            // Successful session sign off for logged in User
             $response = new JsonResponse();
 
             return $response->setData(array(
