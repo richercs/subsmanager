@@ -4,6 +4,7 @@
 namespace AppBundle\Repository;
 
 
+use AppBundle\Entity\AnnouncedSession;
 use Doctrine\ORM\EntityRepository;
 
 class AnnouncedSessionRepository extends EntityRepository
@@ -83,5 +84,16 @@ class AnnouncedSessionRepository extends EntityRepository
         $result = $query->getResult();
 
         return $result;
+    }
+
+    /**
+     * Save the announced session to the database
+     *
+     * @param AnnouncedSession $announcedSession
+     */
+    public function save(AnnouncedSession $announcedSession)
+    {
+        $this->_em->persist($announcedSession);
+        $this->_em->flush();
     }
 }

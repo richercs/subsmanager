@@ -6,8 +6,10 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\AnnouncedSession;
 use AppBundle\Entity\SessionSignUp;
+use AppBundle\Entity\UserAccount;
 use AppBundle\Repository\AnnouncedSessionRepository;
 use Doctrine\ORM\EntityManager;
+use http\Client\Curl\User;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -69,65 +71,40 @@ class SessionSignUpApiController extends \Symfony\Bundle\FrameworkBundle\Control
      */
     public function doSignUpAction ($id, Request $request)
     {
+        /** @var UserAccount $loggedInUser */
         $loggedInUser = $this->getUser();
 
         if (!$loggedInUser) {
             return new Response(null);
         }
 
-        /** @var EntityManager $em */
-        $em = $this->get('doctrine.orm.default_entity_manager');
+        if (empty((int) $id)) {
+            return new Response(null);
+        }
 
-        /** @var AnnouncedSessionRepository  $announcedSessionRepo */
-        $announcedSessionRepo = $em->getRepository('AppBundle\Entity\AnnouncedSession');
+        try {
+            // TODO: extras POST paraméter kéne legyen
+            $this->get('sign_up_manager')->signUpUserToSession(
+                $loggedInUser,
+                $id
+            );
 
-        /** @var AnnouncedSession $announcedSession */
-        $announcedSession = $announcedSessionRepo->find($id);
-
-        if(!$announcedSession) {
+            // Successful session signup for logged in User
             $response = new JsonResponse();
 
             return $response->setData(array(
-                'status' => 'error',
-                'message' => 'Nincs ilyen azonosítójú bejelentkezéses óra: ' . $id . '!'
+                "status" => "successful",
+                "message" => null,
             ));
-        }
 
-        // TODO: ez egy try catch kéne legyen
-
-        /**
-         * Check for Business logic on Announced Session
-         * - Not finalized
-         * - Not full
-         * - Has no waitlisted signee
-         * - Not Already Signed up
-         */
-        if ($announcedSession->isFinalized() || $announcedSession->isFull() || $announcedSession->hasWaitlistedSignee()) {
-
+        } catch (\Exception $e) {
             $response = new JsonResponse();
 
             return $response->setData(array(
-                'status' => 'error',
-                'message' => 'Sikertelen bejelentkezés validációs hiba miatt!'
+                "status" => "error",
+                "message" => $e->getMessage(),
             ));
         }
-
-        // TODO: extras POST paraméter kéne legyen
-
-        /** @var SessionSignUp $sessionSignUp */
-        $sessionSignUp = new SessionSignUp($announcedSession, $loggedInUser, 0, 0);
-
-        $announcedSession->addSignee($sessionSignUp);
-
-        $em->persist($announcedSession);
-        $em->flush();
-
-        $response = new JsonResponse();
-
-        return $response->setData(array(
-            "status" => "successful",
-            "message" => null,
-        ));
     }
 
     /**
