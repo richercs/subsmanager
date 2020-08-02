@@ -88,8 +88,8 @@ class SessionSignUpApiController extends \Symfony\Bundle\FrameworkBundle\Control
             $response = new JsonResponse();
 
             return $response->setData(array(
-                'id' => null,
-                'error' => 'Nincs ilyen azonosítójú bejelentkezéses óra: ' . $id . '!'
+                'status' => 'error',
+                'message' => 'Nincs ilyen azonosítójú bejelentkezéses óra: ' . $id . '!'
             ));
         }
 
@@ -107,8 +107,8 @@ class SessionSignUpApiController extends \Symfony\Bundle\FrameworkBundle\Control
             $response = new JsonResponse();
 
             return $response->setData(array(
-                'id' => null,
-                'error' => 'Sikertelen bejelentkezés validációs hiba miatt!'
+                'status' => 'error',
+                'message' => 'Sikertelen bejelentkezés validációs hiba miatt!'
             ));
         }
 
@@ -126,7 +126,7 @@ class SessionSignUpApiController extends \Symfony\Bundle\FrameworkBundle\Control
 
         return $response->setData(array(
             "status" => "successful",
-            "error" => null,
+            "message" => null,
         ));
     }
 

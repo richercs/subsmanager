@@ -288,7 +288,7 @@ class AnnouncedSession
      */
     public function isFinalized()
     {
-        return $this->timeFromFinalized >= new \DateTime('now');
+        return $this->timeFromFinalized <= new \DateTime('now');
     }
 
     /**
@@ -296,7 +296,9 @@ class AnnouncedSession
      */
     public function isFull()
     {
-        return $this->signees->count() >= $this->maxNumberOfSignUps;
+        $this->calculateNumberOfSignees();
+
+        return $this->numberOfSignees >= $this->maxNumberOfSignUps;
     }
 
     /**
