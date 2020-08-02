@@ -9,7 +9,6 @@ use AppBundle\Entity\SessionSignUp;
 use AppBundle\Entity\UserAccount;
 use AppBundle\Repository\AnnouncedSessionRepository;
 use Doctrine\ORM\EntityManager;
-use http\Client\Curl\User;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -139,18 +138,40 @@ class SessionSignUpApiController extends \Symfony\Bundle\FrameworkBundle\Control
      */
     public function doSignOffAction ($id, Request $request)
     {
+        /** @var UserAccount $loggedInUser */
         $loggedInUser = $this->getUser();
 
         if (!$loggedInUser) {
             return new Response(null);
         }
 
-        $response = new JsonResponse();
+        if (empty((int) $id)) {
+            return new Response(null);
+        }
 
-        return $response->setData(array(
-            "status" => "successful",
-            "error" => null,
-        ));
+        try {
+
+            $this->get('sign_up_manager')->signOffUserFromSession(
+                $loggedInUser,
+                $id
+            );
+
+            // Successful session signup for logged in User
+            $response = new JsonResponse();
+
+            return $response->setData(array(
+                "status" => "successful",
+                "message" => null,
+            ));
+
+        } catch (\Exception $e) {
+            $response = new JsonResponse();
+
+            return $response->setData(array(
+                "status" => "error",
+                "message" => $e->getMessage(),
+            ));
+        }
     }
 
 }
