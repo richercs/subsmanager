@@ -41,6 +41,56 @@ class SignUpManager
     }
 
     /**
+     * Check if user is already signed up to a session
+     * @param UserAccount $loggedInUser
+     * @param int $id
+     * @throws Exception
+     */
+    public function isUserSignedUpToSession(UserAccount $loggedInUser, $id)
+    {
+        /** @var AnnouncedSession $announcedSession */
+        $announcedSession = $this->announcedSessionRepository->find($id);
+
+        if (!$announcedSession) {
+            throw new Exception('Nincs ilyen azonosítójú bejelentkezéses óra: ' . $id . '!');
+        }
+
+        /** @var SessionSignUp $signee */
+        foreach ($announcedSession->getSignees() as $signee) {
+            if ($signee->getSignee() === $loggedInUser && !$signee->isWaitListed()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if user is already wait listed to a session
+     * @param UserAccount $loggedInUser
+     * @param int $id
+     * @throws Exception
+     */
+    public function isUserWaitListedToSession(UserAccount $loggedInUser, $id)
+    {
+        /** @var AnnouncedSession $announcedSession */
+        $announcedSession = $this->announcedSessionRepository->find($id);
+
+        if (!$announcedSession) {
+            throw new Exception('Nincs ilyen azonosítójú bejelentkezéses óra: ' . $id . '!');
+        }
+
+        /** @var SessionSignUp $signee */
+        foreach ($announcedSession->getSignees() as $signee) {
+            if ($signee->getSignee() === $loggedInUser && $signee->isWaitListed()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * @param UserAccount $loggedInUser
      * @param int $id
      * @param int $numberOfExtras

@@ -45,31 +45,30 @@ class SessionSignUpApiController extends \Symfony\Bundle\FrameworkBundle\Control
             return new Response(null);
         }
 
+        $announcedSessionDataCollection = new ArrayCollection();
+
+        /** @var AnnouncedSession $availableSession */
+        foreach ($availableSessions as $availableSession) {
+            try {
+                $announcedSessionDataCollection->add(array(
+                    'id' => $availableSession->getId(),
+                    'sessionName' => $availableSession->getScheduleItem()->getSessionName(),
+                    'timeOfEvent' => $availableSession->getTimeOfEvent()->format('Y.m.d. H:i:s'),
+                    'alreadySignedUp' => $this->get('sign_up_manager')->isUserSignedUpToSession($loggedInUser, $availableSession->getId()),
+                    'alreadyOnWaitList' => $this->get('sign_up_manager')->isUserWaitListedToSession($loggedInUser, $availableSession->getId()),
+                    'canSignUp' => false,
+                    'canSignUpOnWaitList' => false,
+                    'isListFinalized' => $availableSession->isFinalized()
+                ));
+            } catch (\Exception $e) {
+                continue;
+            }
+        }
+
         $response = new JsonResponse();
 
         return $response->setData(array(
-            'announcedSessionsData' => array(
-                array(
-                    'id' => 3,
-                    'sessionName' => "Szerda este kondi",
-                    'timeOfEvent' => "2020-05-30 16:00",
-                    'alreadySignedUp' => true,
-                    'alreadyOnWaitList' => false,
-                    'canSignUp' => false,
-                    'canSignUpOnWaitList' => false,
-                    'isListFinalized' => false,
-                ),
-                array(
-                    'id' => 3,
-                    'sessionName' => "Szerda este pilates",
-                    'timeOfEvent' => "2020-05-30 18:00",
-                    'alreadySignedUp' => false,
-                    'alreadyOnWaitList' => false,
-                    'canSignUp' => false,
-                    'canSignUpOnWaitList' => true,
-                    'isListFinalized' => false,
-                ),
-            ),
+            'announcedSessionsData' => $announcedSessionDataCollection->toArray(),
             'error' => null
         ));
     }
