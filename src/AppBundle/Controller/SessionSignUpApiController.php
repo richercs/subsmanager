@@ -56,7 +56,7 @@ class SessionSignUpApiController extends \Symfony\Bundle\FrameworkBundle\Control
                     'timeOfEvent' => $availableSession->getTimeOfEvent()->format('Y.m.d. H:i:s'),
                     'alreadySignedUp' => $this->get('sign_up_manager')->isUserSignedUpToSession($loggedInUser, $availableSession->getId()),
                     'alreadyOnWaitList' => $this->get('sign_up_manager')->isUserWaitListedToSession($loggedInUser, $availableSession->getId()),
-                    'canSignUp' => false,
+                    'canSignUp' => $this->get('sign_up_manager')->userCanSignUpToSession($loggedInUser, $availableSession->getId()),
                     'canSignUpOnWaitList' => false,
                     'isListFinalized' => $availableSession->isFinalized()
                 ));

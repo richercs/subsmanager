@@ -18,6 +18,11 @@ services:
       factory: ['@doctrine.orm.entity_manager', 'getRepository']
       arguments: [AppBundle\Entity\SessionSignUp]
 
+    subscription_repository:
+      class: AppBundle\Repository\SubscriptionRepository
+      factory: ['@doctrine.orm.entity_manager', 'getRepository']
+      arguments: [AppBundle\Entity\Subscription]
+
     sign_up_manager:
       class: AppBundle\Service\SessionSignUp\SignUpManager
-      arguments: ['@announced_session_repository', '@session_sign_up_repository']
+      arguments: ['@announced_session_repository', '@session_sign_up_repository', '@subscription_repository']

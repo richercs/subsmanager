@@ -8,6 +8,7 @@ use AppBundle\Entity\AnnouncedSession;
 use AppBundle\Entity\UserAccount;
 use AppBundle\Repository\SessionSignUpsRepository;
 use AppBundle\Repository\AnnouncedSessionRepository;
+use AppBundle\Repository\SubscriptionRepository;
 use Exception;
 
 /**
@@ -20,14 +21,20 @@ class SignUpManager
 
     private $sessionSignUpsRepository;
 
+    private $subscriptionRepository;
+
     /**
      * @param AnnouncedSessionRepository $announcedSessionRepository
      * @param SessionSignUpsRepository $sessionSignUpsRepository
+     * @param SubscriptionRepository $subscriptionRepository
      */
-    public function __construct(AnnouncedSessionRepository $announcedSessionRepository, SessionSignUpsRepository $sessionSignUpsRepository)
+    public function __construct(AnnouncedSessionRepository $announcedSessionRepository,
+                                SessionSignUpsRepository $sessionSignUpsRepository,
+                                SubscriptionRepository $subscriptionRepository)
     {
         $this->announcedSessionRepository = $announcedSessionRepository;
         $this->sessionSignUpsRepository = $sessionSignUpsRepository;
+        $this->subscriptionRepository = $subscriptionRepository;
     }
 
     /**
@@ -88,6 +95,37 @@ class SignUpManager
         }
 
         return false;
+    }
+
+    /**
+     * Check if the user has can sign up to a session
+     * @param UserAccount $loggedInUser
+     * @param int $id
+     * @throws Exception
+     */
+    public function userCanSignUpToSession(UserAccount $loggedInUser,  $id) {
+
+        /** @var AnnouncedSession $announcedSession */
+        $announcedSession = $this->announcedSessionRepository->find($id);
+
+        if (!$announcedSession) {
+            throw new Exception('Nincs ilyen azonosítójú bejelentkezéses óra: ' . $id . '!');
+        }
+
+        // Check if user is already signed up to the session
+        if ($this->isUserSignedUpToSession($loggedInUser, $id)) {
+            return false;
+        }
+
+        // Check if user is already wait listed to the session
+        if ($this->isUserWaitListedToSession($loggedInUser, $id)) {
+            return false;
+        }
+
+//        A bejelentkezéses óra CSAK akkor jelenik meg, ha nincs tiltva ÉS a van a bérletén üres alkalom és a
+//        dátum nagyobb, mint az óra előtti nap 00:00 vagy ha nincs bérlete vagy üres bérlet helye akkor 16:00
+//        és a dátum kisebb, mint az óra kezdőidőpontja
+
     }
 
     /**
