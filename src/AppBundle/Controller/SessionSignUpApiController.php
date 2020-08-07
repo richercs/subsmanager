@@ -34,17 +34,22 @@ class SessionSignUpApiController extends \Symfony\Bundle\FrameworkBundle\Control
             return new Response(null);
         }
 
+
+
+
+
+
         $response = new JsonResponse();
 
         return $response->setData(array(
             'announcedSessionsData' => array(
                 array(
-                    'id' => 8,
+                    'id' => 3,
                     'sessionName' => "Szerda este kondi",
                     'timeOfEvent' => "2020-05-30 16:00",
-                    'alreadySignedUp' => false,
+                    'alreadySignedUp' => true,
                     'alreadyOnWaitList' => false,
-                    'canSignUp' => true,
+                    'canSignUp' => false,
                     'canSignUpOnWaitList' => false,
                     'isListFinalized' => false,
                 ),
@@ -62,6 +67,8 @@ class SessionSignUpApiController extends \Symfony\Bundle\FrameworkBundle\Control
             'error' => null
         ));
     }
+
+
 
     /**
      * @Route("/api/do_signup/{id}", name="do_signup")
