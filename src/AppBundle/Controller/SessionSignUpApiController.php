@@ -8,6 +8,7 @@ use AppBundle\Entity\AnnouncedSession;
 use AppBundle\Entity\SessionSignUp;
 use AppBundle\Entity\UserAccount;
 use AppBundle\Repository\AnnouncedSessionRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -34,10 +35,15 @@ class SessionSignUpApiController extends \Symfony\Bundle\FrameworkBundle\Control
             return new Response(null);
         }
 
+        /**
+         * If there is no available session then return null
+         * Available session: Announced session where session event id is null
+         */
+        $availableSessions = $this->get('sign_up_manager')->getAvailableSessions();
 
-
-
-
+        if (empty($availableSessions)) {
+            return new Response(null);
+        }
 
         $response = new JsonResponse();
 

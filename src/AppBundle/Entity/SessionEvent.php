@@ -40,10 +40,10 @@ class SessionEvent
     /**
      * @var AnnouncedSession
      *
-     * @ORM\OneToOne(targetEntity="AppBundle\Entity\AnnouncedSession")
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\AnnouncedSession", mappedBy="sessionEvent")
      * @ORM\JoinColumn(name="announced_session_id", referencedColumnName="id", nullable=true)
      */
-    protected $announcedSessionId;
+    protected $announcedSession;
 
     /**
      * @ORM\Column(name="session_event_date", type="datetime", nullable = false)

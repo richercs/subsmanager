@@ -31,6 +31,16 @@ class SignUpManager
     }
 
     /**
+     * Get all available Announced Sessions
+     *
+     * @return array
+     */
+    public function getAvailableSessions()
+    {
+        return $this->announcedSessionRepository->findBy(['sessionEvent' => null]);
+    }
+
+    /**
      * @param UserAccount $loggedInUser
      * @param int $id
      * @param int $numberOfExtras
