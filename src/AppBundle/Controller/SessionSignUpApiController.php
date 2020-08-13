@@ -27,7 +27,6 @@ class SessionSignUpApiController extends \Symfony\Bundle\FrameworkBundle\Control
      */
     public function getAnnouncedSessionDataAction (Request $request)
     {
-        // TODO: work in progress function
 
         $loggedInUser = $this->getUser();
 
@@ -59,6 +58,7 @@ class SessionSignUpApiController extends \Symfony\Bundle\FrameworkBundle\Control
                     'canSignUp' => $this->get('sign_up_manager')->userCanSignUpToSession($loggedInUser, $availableSession->getId()),
                     'canSignUpOnWaitList' => $this->get('sign_up_manager')->userCanSignUpToWaitList($loggedInUser, $availableSession->getId()),
                     'isListFinalized' => $availableSession->isFinalized()
+                    // TODO: Extras utazik a frontendre és POST paraméterként jön vissza
                 ));
             } catch (\Exception $e) {
                 continue;
@@ -72,8 +72,6 @@ class SessionSignUpApiController extends \Symfony\Bundle\FrameworkBundle\Control
             'error' => null
         ));
     }
-
-
 
     /**
      * @Route("/api/do_signup/{id}", name="do_signup")
