@@ -129,6 +129,11 @@ class SignUpManager
             return false;
         }
 
+        // Check if the announced session already has at least one wait listed signee
+        if ($announcedSession->hasWaitlistedSignee()) {
+            return false;
+        }
+
         /**
          * Based on if the user has an active subscription with available usages
          * the time the user can start signing up is earlier at -1 day 0 hours 0 minutes
@@ -160,6 +165,62 @@ class SignUpManager
     }
 
     /**
+     * Check if the user can sign up to a wait list of a session
+     * @param UserAccount $loggedInUser
+     * @param int $id
+     * @throws Exception
+     */
+    public function userCanSignUpToWaitList(UserAccount $loggedInUser,  $id) {
+
+        /** @var AnnouncedSession $announcedSession */
+        $announcedSession = $this->announcedSessionRepository->find($id);
+
+        if (!$announcedSession) {
+            throw new Exception('Nincs ilyen azonosítójú bejelentkezéses óra: ' . $id . '!');
+        }
+
+        // Check if user is already signed up to the session
+        if ($this->isUserSignedUpToSession($loggedInUser, $id)) {
+            return false;
+        }
+
+        // Check if user is already wait listed to the session
+        if ($this->isUserWaitListedToSession($loggedInUser, $id)) {
+            return false;
+        }
+
+        // Check if user can sign ut to a session
+        if ($this->userCanSignUpToSession($loggedInUser, $id)) {
+            return false;
+        }
+
+        $timeOfFinalization = $announcedSession->getTimeFromFinalized()->format('D M d Y H:i:s e');
+
+        $timeOfAvailabilityByUserSubs = new DateTime($timeOfFinalization);
+
+        $timeOfAvailabilityByUserSubs->sub(new DateInterval('P1D'));
+
+        if(!empty($this->subscriptionRepository->findUsableSubscriptionsForUser($loggedInUser))) {
+            $timeOfAvailabilityByUserSubs->setTime(0,0,0);
+        } else {
+            $timeOfAvailabilityByUserSubs->setTime(16,0,0);
+        }
+
+        $now = new DateTime('now');
+
+        // Check if the current time is between the time of availability adjusted by user subscriptions status
+        // and the time the announces session is finalized
+        if (($timeOfAvailabilityByUserSubs->getTimestamp() <= $now->getTimestamp())
+            && ($announcedSession->getTimeFromFinalized()->getTimestamp() >= $now->getTimestamp())) {
+
+            return true;
+        }
+        return false;
+    }
+
+
+
+    /**
      * @param UserAccount $loggedInUser
      * @param int $id
      * @param int $numberOfExtras
@@ -184,7 +245,12 @@ class SignUpManager
             }
         }
 
-        $sessionSignUp = new SessionSignUp($announcedSession, $loggedInUser, $numberOfExtras, 0);
+        $sessionSignUp = new SessionSignUp();
+
+        $sessionSignUp->setAnnouncedSession($announcedSession);
+        $sessionSignUp->setSignee($loggedInUser);
+        $sessionSignUp->setExtras($numberOfExtras);
+        $sessionSignUp->setWaitListed(false);
 
         $announcedSession->addSignee($sessionSignUp);
 
@@ -216,7 +282,12 @@ class SignUpManager
             }
         }
 
-        $sessionSignUpOnWaitList = new SessionSignUp($announcedSession, $loggedInUser, $numberOfExtras, 1);
+        $sessionSignUpOnWaitList = new SessionSignUp();
+
+        $sessionSignUpOnWaitList->setAnnouncedSession($announcedSession);
+        $sessionSignUpOnWaitList->setSignee($loggedInUser);
+        $sessionSignUpOnWaitList->setExtras($numberOfExtras);
+        $sessionSignUpOnWaitList->setWaitListed(true);
 
         $announcedSession->addSignee($sessionSignUpOnWaitList);
 

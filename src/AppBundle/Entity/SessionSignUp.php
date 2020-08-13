@@ -3,7 +3,6 @@
 
 namespace AppBundle\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 
@@ -16,14 +15,6 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class SessionSignUp
 {
-
-    public function __construct($announcedSession, $signee, $extras, $waitListed) {
-        $this->announcedSession = $announcedSession;
-        $this->signee = $signee;
-        $this->extras = $extras;
-        $this->waitListed = $waitListed;
-    }
-
     /**
      * @var int
      *
