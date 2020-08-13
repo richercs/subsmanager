@@ -9,6 +9,8 @@ use AppBundle\Entity\UserAccount;
 use AppBundle\Repository\SessionSignUpsRepository;
 use AppBundle\Repository\AnnouncedSessionRepository;
 use AppBundle\Repository\SubscriptionRepository;
+use DateInterval;
+use DateTime;
 use Exception;
 
 /**
@@ -98,7 +100,7 @@ class SignUpManager
     }
 
     /**
-     * Check if the user has can sign up to a session
+     * Check if the user can sign up to a session
      * @param UserAccount $loggedInUser
      * @param int $id
      * @throws Exception
@@ -122,10 +124,39 @@ class SignUpManager
             return false;
         }
 
-//        A bejelentkezéses óra CSAK akkor jelenik meg, ha nincs tiltva ÉS a van a bérletén üres alkalom és a
-//        dátum nagyobb, mint az óra előtti nap 00:00 vagy ha nincs bérlete vagy üres bérlet helye akkor 16:00
-//        és a dátum kisebb, mint az óra kezdőidőpontja
+        // Check if the announced session is already full - this means user can only be wait listed
+        if ($announcedSession->isFull()) {
+            return false;
+        }
 
+        /**
+         * Based on if the user has an active subscription with available usages
+         * the time the user can start signing up is earlier at -1 day 0 hours 0 minutes
+         * if the user has no active subscription or any available usages left
+         * the time the user can start signing up is later at -1 day 16 hours 0 minutes
+         */
+        $timeOfFinalization = $announcedSession->getTimeFromFinalized()->format('D M d Y H:i:s e');
+
+        $timeOfAvailabilityByUserSubs = new DateTime($timeOfFinalization);
+
+        $timeOfAvailabilityByUserSubs->sub(new DateInterval('P1D'));
+
+        if(!empty($this->subscriptionRepository->findUsableSubscriptionsForUser($loggedInUser))) {
+            $timeOfAvailabilityByUserSubs->setTime(0,0,0);
+        } else {
+            $timeOfAvailabilityByUserSubs->setTime(16,0,0);
+        }
+
+        $now = new DateTime('now');
+
+        // Check if the current time is between the time of availability adjusted by user subscriptions status
+        // and the time the announces session is finalized
+        if (($timeOfAvailabilityByUserSubs->getTimestamp() <= $now->getTimestamp())
+            && ($announcedSession->getTimeFromFinalized()->getTimestamp() >= $now->getTimestamp())) {
+
+            return true;
+        }
+        return false;
     }
 
     /**

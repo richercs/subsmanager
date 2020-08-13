@@ -238,7 +238,7 @@ class AnnouncedSession
         /** @var SessionSignUp $signee*/
         foreach ($this->getSignees() as $signee) {
             $numberOfExtras = $signee->getExtras() ? : 0;
-            $this->numberOfSignees = $this->numberOfSignees + 1 +$numberOfExtras;
+            $this->numberOfSignees = $this->numberOfSignees + 1 + $numberOfExtras;
         }
     }
 
