@@ -38,6 +38,14 @@ class SessionEvent
     protected $scheduleItem;
 
     /**
+     * @var AnnouncedSession
+     *
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\AnnouncedSession", mappedBy="sessionEvent")
+     * @ORM\JoinColumn(name="announced_session_id", referencedColumnName="id", nullable=true)
+     */
+    protected $announcedSession;
+
+    /**
      * @ORM\Column(name="session_event_date", type="datetime", nullable = false)
      */
     protected $sessionEventDate;
@@ -125,6 +133,22 @@ class SessionEvent
     public function setScheduleItem($scheduleItem)
     {
         $this->scheduleItem = $scheduleItem;
+    }
+
+    /**
+     * @return AnnouncedSession
+     */
+    public function getAnnouncedSessionId()
+    {
+        return $this->announcedSessionId;
+    }
+
+    /**
+     * @param AnnouncedSession $announcedSessionId
+     */
+    public function setAnnouncedSessionId($announcedSessionId)
+    {
+        $this->announcedSessionId = $announcedSessionId;
     }
 
     /**

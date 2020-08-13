@@ -4,6 +4,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -38,6 +39,14 @@ class AnnouncedSession
      * @ORM\JoinColumn(name="schedule_item_id", referencedColumnName="id", nullable=false)
      */
     protected $scheduleItem;
+
+    /**
+     * @var SessionEvent
+     *
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\SessionEvent", inversedBy="announcedSession")
+     * @ORM\JoinColumn(name="session_event_id", referencedColumnName="id", nullable=true)
+     */
+    protected $sessionEvent;
 
     /**
      * @ORM\Column(name="time_of_event", type="datetime", nullable = false)
@@ -127,6 +136,22 @@ class AnnouncedSession
     }
 
     /**
+     * @return SessionEvent
+     */
+    public function getSessionEvent()
+    {
+        return $this->sessionEvent;
+    }
+
+    /**
+     * @param SessionEvent $sessionEvent
+     */
+    public function setSessionEvent($sessionEvent)
+    {
+        $this->sessionEvent = $sessionEvent;
+    }
+
+    /**
      * @return mixed
      */
     public function getTimeOfEvent()
@@ -213,7 +238,7 @@ class AnnouncedSession
         /** @var SessionSignUp $signee*/
         foreach ($this->getSignees() as $signee) {
             $numberOfExtras = $signee->getExtras() ? : 0;
-            $this->numberOfSignees = $this->numberOfSignees + 1 +$numberOfExtras;
+            $this->numberOfSignees = $this->numberOfSignees + 1 + $numberOfExtras;
         }
     }
 
@@ -281,4 +306,35 @@ class AnnouncedSession
             $this->setCreatedAt(new \DateTime('now'));
         }
     }
+
+    /**
+     * @return boolean
+     */
+    public function isFinalized()
+    {
+        return $this->timeFromFinalized <= new \DateTime('now');
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isFull()
+    {
+        $this->calculateNumberOfSignees();
+
+        return $this->numberOfSignees >= $this->maxNumberOfSignUps;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function hasWaitlistedSignee()
+    {
+        $criteria = Criteria::create()
+            ->andWhere(Criteria::expr()->eq('waitListed', true));
+
+        return $this->signees->matching($criteria)->count() > 0;
+    }
+
+
 }
