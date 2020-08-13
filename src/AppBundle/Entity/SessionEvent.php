@@ -138,17 +138,17 @@ class SessionEvent
     /**
      * @return AnnouncedSession
      */
-    public function getAnnouncedSessionId()
+    public function getAnnouncedSession()
     {
-        return $this->announcedSessionId;
+        return $this->announcedSession;
     }
 
     /**
-     * @param AnnouncedSession $announcedSessionId
+     * @param AnnouncedSession $announcedSession
      */
-    public function setAnnouncedSessionId($announcedSessionId)
+    public function setAnnouncedSession($announcedSession)
     {
-        $this->announcedSessionId = $announcedSessionId;
+        $this->announcedSession = $announcedSession;
     }
 
     /**

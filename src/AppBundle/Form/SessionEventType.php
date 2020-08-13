@@ -14,6 +14,11 @@ class SessionEventType extends AbstractType
     /**
      * @var array
      */
+    protected $announcedSessionCollection;
+
+    /**
+     * @var array
+     */
     protected $scheduleItemCollection;
 
     /**
@@ -24,9 +29,13 @@ class SessionEventType extends AbstractType
     /**
      * Constructor.
      *
+     ** @param array $announcedSessionCollection
+     ** @param array $scheduleItemCollection
+     ** @param boolean $onAddPage
      */
-    public function __construct(array $scheduleItemCollection = array(), $onAddPage = false)
+    public function __construct($announcedSessionCollection = array(), $scheduleItemCollection = array(), $onAddPage = false)
     {
+        $this->announcedSessionCollection = $announcedSessionCollection;
         $this->scheduleItemCollection = $scheduleItemCollection;
         $this->onAddPage = $onAddPage;
     }
@@ -52,6 +61,14 @@ class SessionEventType extends AbstractType
                     'data' => null,
                     'placeholder' => 'Válasz egy órát',
                     'required' => true,
+                ))
+                ->add('announcedSession', ChoiceType::class, array(
+                    'label' => 'Bejelentkezéses óra',
+                    'mapped' => false,
+                    'choices' => $this->announcedSessionCollection,
+                    'data' => null,
+                    'placeholder' => 'Nem bejelentkezéses óra',
+                    'required' => false,
                 ))
                 ->add(
                     'attendees', 'collection', array(
@@ -93,6 +110,7 @@ class SessionEventType extends AbstractType
                     'html5' => false,
                 ))
                 ->add('scheduleItem')
+                ->add('announcedSession')
                 ->add(
                     'attendees', 'collection', array(
                         'entry_type' => AttendanceHistoryType::class,

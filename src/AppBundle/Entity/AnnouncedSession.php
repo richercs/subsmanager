@@ -336,5 +336,13 @@ class AnnouncedSession
         return $this->signees->matching($criteria)->count() > 0;
     }
 
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return '[' . $this->getId() . ']' . ' ' . $this->getScheduleItem() . ' ' . $this->getTimeOfEvent()->format('Y.m.d H:i:s');
+    }
+
 
 }

@@ -9,12 +9,14 @@
 namespace AppBundle\Controller;
 
 
+use AppBundle\Entity\AnnouncedSession;
 use AppBundle\Entity\AttendanceHistory;
 use AppBundle\Entity\ScheduleItem;
 use AppBundle\Entity\SessionEvent;
 use AppBundle\Entity\Subscription;
 use AppBundle\Entity\UserAccount;
 use AppBundle\Form\SessionEventType;
+use AppBundle\Repository\AnnouncedSessionRepository;
 use AppBundle\Repository\AttendanceHistoryRepository;
 use AppBundle\Repository\ScheduleItemRepository;
 use AppBundle\Repository\SessionEventRepository;
@@ -168,9 +170,16 @@ class SessionEventController extends Controller
             }
         }
 
+        /** @var AnnouncedSessionRepository $announcedSessionRepository */
+        $announcedSessionRepository = $em->getRepository(AnnouncedSession::class);
+
+        $availableSessions = $announcedSessionRepository->findBy(['sessionEvent' => null]);
+
+        $availableSessions = array_combine(range(1, count($availableSessions)), array_values($availableSessions));
+
         $newEvent = new SessionEvent();
 
-        $form = $this->createForm(new SessionEventType($scheduleItemCollection, true), $newEvent);
+        $form = $this->createForm(new SessionEventType($availableSessions, $scheduleItemCollection, true), $newEvent);
         $form->handleRequest($request);
 
         if ($form->isValid())
