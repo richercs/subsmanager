@@ -159,6 +159,9 @@ class SessionEventController extends Controller
         /** @var ScheduleItemRepository $scheduleItemRepository */
         $scheduleItemRepository = $em->getRepository(ScheduleItem::class);
 
+        /** @var AnnouncedSessionRepository $announcedSessionRepository */
+        $announcedSessionRepository = $em->getRepository(AnnouncedSession::class);
+
         $scheduleItemCollection = $scheduleItemRepository->findAll();
 
         $scheduleItemCollection = array_combine(range(1, count($scheduleItemCollection)), array_values($scheduleItemCollection));
@@ -170,16 +173,9 @@ class SessionEventController extends Controller
             }
         }
 
-        /** @var AnnouncedSessionRepository $announcedSessionRepository */
-        $announcedSessionRepository = $em->getRepository(AnnouncedSession::class);
-
-        $availableSessions = $announcedSessionRepository->findBy(['sessionEvent' => null]);
-
-        $availableSessions = array_combine(range(1, count($availableSessions)), array_values($availableSessions));
-
         $newEvent = new SessionEvent();
 
-        $form = $this->createForm(new SessionEventType($availableSessions, $scheduleItemCollection, true), $newEvent);
+        $form = $this->createForm(new SessionEventType($scheduleItemCollection, true), $newEvent);
         $form->handleRequest($request);
 
         if ($form->isValid())
@@ -190,6 +186,17 @@ class SessionEventController extends Controller
             $scheduleItem = $scheduleItemRepository->find($scheduleItemId);
 
             $newEvent->setScheduleItem($scheduleItem);
+
+            $announcedSessionId = $request->get('appbundle_sessionevent')['announcedSession'];
+
+            $announcedSession = $announcedSessionRepository->find($announcedSessionId);
+
+            if (!empty($announcedSession)) {
+
+                $newEvent->setAnnouncedSession($announcedSession);
+
+                $announcedSession->setSessionEvent($newEvent);
+            }
 
             // save and continue button that redirects to the edit page
             if($form->get('saveAndContinue')->isClicked()) {

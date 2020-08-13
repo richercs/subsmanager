@@ -2,6 +2,8 @@
 
 namespace AppBundle\Form;
 
+use AppBundle\Repository\AnnouncedSessionRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -29,13 +31,11 @@ class SessionEventType extends AbstractType
     /**
      * Constructor.
      *
-     ** @param array $announcedSessionCollection
      ** @param array $scheduleItemCollection
      ** @param boolean $onAddPage
      */
-    public function __construct($announcedSessionCollection = array(), $scheduleItemCollection = array(), $onAddPage = false)
+    public function __construct($scheduleItemCollection = array(), $onAddPage = false)
     {
-        $this->announcedSessionCollection = $announcedSessionCollection;
         $this->scheduleItemCollection = $scheduleItemCollection;
         $this->onAddPage = $onAddPage;
     }
@@ -62,11 +62,15 @@ class SessionEventType extends AbstractType
                     'placeholder' => 'Válasz egy órát',
                     'required' => true,
                 ))
-                ->add('announcedSession', ChoiceType::class, array(
-                    'label' => 'Bejelentkezéses óra',
-                    'mapped' => false,
-                    'choices' => $this->announcedSessionCollection,
-                    'data' => null,
+                ->add('announcedSession', EntityType::class, array(
+                    'class' => 'AppBundle\Entity\AnnouncedSession',
+                    'choice_label' => function ($announcedSession) {
+                        return $announcedSession->__toString();
+                    },
+                    'query_builder' => function (AnnouncedSessionRepository $announcedSessionRepository) {
+                        return $announcedSessionRepository->createQueryBuilder('announced_session')
+                            ->where('announced_session.sessionEvent is null');
+                    },
                     'placeholder' => 'Nem bejelentkezéses óra',
                     'required' => false,
                 ))
