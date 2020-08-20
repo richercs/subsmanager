@@ -23,6 +23,7 @@ code { background: #F5F5F5; max-width: 100px; padding: 2px 6px; word-wrap: break
     margin: 2em 2em;
     max-width: 800px;
     width: 90%;
+    display: none;
 }
 
 #row-wrapper{ background: whitesmoke; min-height: 200em; }

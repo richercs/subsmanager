@@ -4,12 +4,7 @@ $(document).ready(function () {
 
         let selectedAnnouncedSession = $('#appbundle_sessionevent_announcedSession').val();
 
-        if(!selectedAnnouncedSession) {
-            $('#signee-table-wrapper').css("display", "none");
-
-            $("#signee-table").find('tbody')
-                .text("");
-        } else {
+        if(selectedAnnouncedSession) {
             // if there is a selected value in the announcedSession field
             // the ajax request is sent to receive signees
             $.ajax({
@@ -51,6 +46,11 @@ $(document).ready(function () {
                     });
                 }
             });
+        } else {
+            $('#signee-table-wrapper').css("display", "none");
+
+            $("#signee-table").find('tbody')
+                .text("");
         }
     };
 
