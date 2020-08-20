@@ -4,8 +4,6 @@ $(document).ready(function () {
 
         let selectedAnnouncedSession = $('#appbundle_sessionevent_announcedSession').val();
 
-        console.log(selectedAnnouncedSession);
-
         if(!selectedAnnouncedSession) {
             $('#signee-table-wrapper').css("display", "none");
 
@@ -22,11 +20,16 @@ $(document).ready(function () {
                 success: function (data) {
                     $('#signee-table-wrapper').css("display", "block");
 
+                    if(data['signees'] !== 'undefined' && data['signees'].length <= 0) {
+                        $("#signee-table").find('tbody')
+                            .text("");
+                    }
+
                     $.each(data['signees'], function (key, value) {
 
                         let waitListedText = 'Nem';
 
-                        if (value['is_wait_listed'] === 1) {
+                        if (value['is_wait_listed'] === true) {
                             waitListedText = 'Igen'
                         }
 

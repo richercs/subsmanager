@@ -217,28 +217,43 @@ class SessionSignUpApiController extends \Symfony\Bundle\FrameworkBundle\Control
      * @param Request $request
      * @return Response
      */
-    public function loadSubscriptionInfo(Request $request)
+    public function loadAnnouncedSessionInfo(Request $request)
     {
         $announcedSessionId = $request->get('announced_session_id');
 
+        if(empty($announcedSessionId)) {
+            return new Response(null);
+        }
+
+        /** @var AnnouncedSessionRepository $announcedSessionRepository */
+        $announcedSessionRepository = $this->get('announced_session_repository');
+
+        /** @var AnnouncedSession $announcedSession */
+        $announcedSession = $announcedSessionRepository->find($announcedSessionId);
+
+        if(empty($announcedSession)) {
+            return new Response(null);
+        }
+
+        /** @var ArrayCollection $activeSubscriptions */
+        $sessionSignees = new ArrayCollection();
+
+        /** @var SessionSignUp $signee */
+        foreach ($announcedSession->getSignees() as $signee) {
+
+            $sessionSignees->add(array(
+                'announced_session_id' => $signee->getAnnouncedSession()->getId(),
+                'signee_name' => $signee->getSignee()->getUsername(),
+                'extras' => $signee->getExtras(),
+                'is_wait_listed' => $signee->isWaitListed()
+            ));
+        }
 
         $response = new JsonResponse();
 
         return $response->setData(array(
-            'id' => $announcedSessionId,
-            'signees' => array(
-                array(
-                    'announced_session_id' => $announcedSessionId,
-                    'signee_name' => 'Géza',
-                    'extras' => 0,
-                    'is_wait_listed' => 0
-                ),array(
-                    'announced_session_id' => $announcedSessionId,
-                    'signee_name' => 'Sanyi',
-                    'extras' => 0,
-                    'is_wait_listed' => 1
-                )
-            )
+            'id' => $announcedSession->getId(),
+            'signees' => $sessionSignees->toArray(),
         ));
     }
 
