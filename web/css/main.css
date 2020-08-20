@@ -12,10 +12,18 @@ code { background: #F5F5F5; max-width: 100px; padding: 2px 6px; word-wrap: break
 @media (min-width: 992px) {
     #stats-wrapper { background: whitesmoke; padding: 2em; margin: 2em 2em; max-width: 800px; width: 90%; }
 }
-#welcome, #status { margin-bottom: 2em; }
+#welcome, #status { margin-bottom: 2em; }sudo chmod 777 -R .
 #welcome h1 span { display: block; font-size: 75%; }
 #icon-status, #icon-book { float: left; height: 64px; margin-right: 1em; margin-top: -4px; width: 64px; }
 #icon-book { display: none; }
+
+#signee-table-wrapper {
+    background: whitesmoke;
+    padding: 2em;
+    margin: 2em 2em;
+    max-width: 800px;
+    width: 90%;
+}
 
 #row-wrapper{ background: whitesmoke; min-height: 200em; }
 .grid-menu {}
