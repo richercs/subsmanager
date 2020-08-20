@@ -235,7 +235,6 @@ class SessionSignUpApiController extends \Symfony\Bundle\FrameworkBundle\Control
             return new Response(null);
         }
 
-        /** @var ArrayCollection $activeSubscriptions */
         $sessionSignees = new ArrayCollection();
 
         /** @var SessionSignUp $signee */
