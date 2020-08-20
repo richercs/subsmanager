@@ -18,17 +18,16 @@
 {% block body %}
     {{ parent() }}
     <div id="signee-table-wrapper">
-        <h4>Bejelentkezők listája</h4>
-        <table class="table colored-table">
+        <table class="table colored-table" id="signee-table">
             <thead>
             <tr>
-                <th>Lista ID</th>
+                <th>#</th>
                 <th>Bejelentkező</th>
-                <th>Hozott extrák</th>
+                <th>Extrák</th>
                 <th>Várólistás</th>
             </tr>
             </thead>
-            <tbody id="signee-table-body">
+            <tbody>
             </tbody>
         </table>
     </div>

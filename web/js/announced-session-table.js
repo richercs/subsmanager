@@ -8,6 +8,9 @@ $(document).ready(function () {
 
         if(!selectedAnnouncedSession) {
             $('#signee-table-wrapper').css("display", "none");
+
+            $("#signee-table").find('tbody')
+                .text("");
         } else {
             // if there is a selected value in the announcedSession field
             // the ajax request is sent to receive signees
@@ -19,18 +22,30 @@ $(document).ready(function () {
                 success: function (data) {
                     $('#signee-table-wrapper').css("display", "block");
 
+                    $.each(data['signees'], function (key, value) {
 
-                    // var subscriptionInfo = "#appbundle_sessionevent_attendees_".concat(recordNumber, '_subscription_info');
-                    //
-                    // if (data['id'] != null) {
-                    //     if (data['attendance_limit'] == null) {
-                    //         $(subscriptionInfo).val("Havi bérlet (használatok száma: " + data['attendance_count'] + ")");
-                    //     } else {
-                    //         $(subscriptionInfo).val("Alkalmak Száma: " + data['attendance_limit']
-                    //             + "\n"
-                    //             + "Fennmaradó: " + data['attendance_left']);
-                    //     }
-                    // }
+                        let waitListedText = 'Nem';
+
+                        if (value['is_wait_listed'] === 1) {
+                            waitListedText = 'Igen'
+                        }
+
+                        $("#signee-table").find('tbody')
+                            .append($('<tr>')
+                                .append($('<td>')
+                                    .text(value['announced_session_id'])
+                                )
+                                .append($('<td>')
+                                    .text(value['signee_name'])
+                                )
+                                .append($('<td>')
+                                    .text(value['extras'])
+                                )
+                                .append($('<td>')
+                                    .text(waitListedText)
+                                )
+                            );
+                    });
                 }
             });
         }

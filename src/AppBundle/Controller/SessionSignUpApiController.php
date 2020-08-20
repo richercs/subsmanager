@@ -10,6 +10,7 @@ use AppBundle\Entity\UserAccount;
 use AppBundle\Repository\AnnouncedSessionRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -206,6 +207,39 @@ class SessionSignUpApiController extends \Symfony\Bundle\FrameworkBundle\Control
                 "message" => $e->getMessage(),
             ));
         }
+    }
+
+    /**
+     * @Route("/loadAnnouncedSessionInfo", name="load_announced_session_info")
+     *
+     * @Security("has_role('ROLE_ADMIN')")
+     *
+     * @param Request request
+     * @return Response
+     */
+    public function loadSubscriptionInfo(Request $request)
+    {
+        $announcedSessionId = $request->get('announced_session_id');
+
+
+        $response = new JsonResponse();
+
+        return $response->setData(array(
+            'id' => $announcedSessionId,
+            'signees' => array(
+                array(
+                    'announced_session_id' => $announcedSessionId,
+                    'signee_name' => 'Géza',
+                    'extras' => 0,
+                    'is_wait_listed' => 0
+                ),array(
+                    'announced_session_id' => $announcedSessionId,
+                    'signee_name' => 'Sanyi',
+                    'extras' => 0,
+                    'is_wait_listed' => 1
+                )
+            )
+        ));
     }
 
 }
