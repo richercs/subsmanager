@@ -39,7 +39,7 @@ class ApiController extends Controller
      * @Route("/api/userdata", name="userdata_get")
      *
      *
-     * @param Request request
+     * @param Request $request
      * @return Response
      */
     public function getUserDataAction(Request $request)
@@ -139,9 +139,8 @@ class ApiController extends Controller
     /**
      * @Route("/api/subscriptiondata/{id}", name="subscriptiondata_get")
      *
-     *
-     * @param Request request
-     * @param id
+     * @param integer $id
+     * @param Request $request
      * @return Response
      */
     public function getSubscriptionDataAction($id, Request $request)
@@ -223,7 +222,7 @@ class ApiController extends Controller
      * @Route("/api/add_usercontact", name="api_add_usercontact")
      *
      *
-     * @param Request request
+     * @param Request $request
      * @return Response
      */
     public function addApiUserContactAction(Request $request)
@@ -270,7 +269,7 @@ class ApiController extends Controller
      * @Route("/api/add_usercontact_success", name="api_add_usercontact_success")
      *
      *
-     * @param Request request
+     * @param Request $request
      * @return Response
      */
     public function addApiUserContactSuccessAction(Request $request)

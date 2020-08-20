@@ -23,7 +23,7 @@ class SessionSignUpApiController extends \Symfony\Bundle\FrameworkBundle\Control
      * @Route("/api/sessiondata", name="sessiondata_get")
      *
      *
-     * @param Request request
+     * @param Request $request
      * @return Response
      */
     public function getAnnouncedSessionDataAction (Request $request)
@@ -77,8 +77,8 @@ class SessionSignUpApiController extends \Symfony\Bundle\FrameworkBundle\Control
     /**
      * @Route("/api/do_signup/{id}", name="do_signup")
      *
-     *
-     * @param Request request
+     * @param integer $id
+     * @param Request $request
      * @return Response
      */
     public function doSignUpAction ($id, Request $request)
@@ -122,8 +122,8 @@ class SessionSignUpApiController extends \Symfony\Bundle\FrameworkBundle\Control
     /**
      * @Route("/api/do_signup_on_waitlist/{id}", name="do_signup_on_waitlist")
      *
-     *
-     * @param Request request
+     * @param integer $id
+     * @param Request $request
      * @return Response
      */
     public function doSignUpOnWaitListAction ($id, Request $request)
@@ -167,8 +167,8 @@ class SessionSignUpApiController extends \Symfony\Bundle\FrameworkBundle\Control
     /**
      * @Route("/api/do_signoff/{id}", name="do_signoff")
      *
-     *
-     * @param Request request
+     * @param integer $id
+     * @param Request $request
      * @return Response
      */
     public function doSignOffAction ($id, Request $request)
@@ -214,7 +214,7 @@ class SessionSignUpApiController extends \Symfony\Bundle\FrameworkBundle\Control
      *
      * @Security("has_role('ROLE_ADMIN')")
      *
-     * @param Request request
+     * @param Request $request
      * @return Response
      */
     public function loadSubscriptionInfo(Request $request)
