@@ -399,6 +399,12 @@ class SessionEventController extends Controller
             }
             // DELETE Session event
             if ($form->get('delete')->isClicked()) {
+
+                if (!empty($sessionEvent->getAnnouncedSession())) {
+
+                    $sessionEvent->getAnnouncedSession()->setSessionEvent(null);
+                }
+
                 $em->remove($sessionEvent);
                 $em->flush();
 
