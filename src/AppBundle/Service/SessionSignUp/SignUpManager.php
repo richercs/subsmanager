@@ -330,6 +330,38 @@ class SignUpManager
     }
 
     /**
+     * Get the current number of extras set in database for user
+     * @param UserAccount $loggedInUser
+     * @param int $id
+     * @return int
+     * @throws Exception
+     */
+    public function getExtrasSetByUser(UserAccount $loggedInUser, $id)
+    {
+        /** @var AnnouncedSession $announcedSession */
+        $announcedSession = $this->announcedSessionRepository->find($id);
+
+        if (!$announcedSession) {
+            throw new Exception('Nincs ilyen azonosítójú bejelentkezéses óra: ' . $id . '!');
+        }
+
+        $arrayOfsignee =  $this->sessionSignUpsRepository->findBy(['announcedSession' => $announcedSession, 'signee' => $loggedInUser]);
+
+        if (!isset($arrayOfsignee[0])) {
+            throw new Exception('Validációs hiba: Nincs ilyen bejelentkezés: '
+                . 'felhasználó: ' . $loggedInUser->getUsername()
+                . ' bejelentkezéses óra azonosító: ' .$announcedSession->getId());
+        }
+
+        /** @var SessionSignUp $signee */
+        $signee = $arrayOfsignee[0];
+
+        return $signee->getExtras();
+    }
+
+
+
+    /**
      * @param UserAccount $loggedInUser
      * @param integer $extras
      * @param integer $announcedSessionId

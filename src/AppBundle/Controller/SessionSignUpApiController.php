@@ -59,7 +59,7 @@ class SessionSignUpApiController extends \Symfony\Bundle\FrameworkBundle\Control
                     'canSignUp' => $this->get('sign_up_manager')->userCanSignUpToSession($loggedInUser, $availableSession->getId()),
                     'canSignUpOnWaitList' => $this->get('sign_up_manager')->userCanSignUpToWaitList($loggedInUser, $availableSession->getId()),
                     'isListFinalized' => $availableSession->isFinalized(),
-                    // 'extras' => $this->get('sign_up_manager')->getExtrasSetByUser($loggedInUser, $availableSession->getId())
+                    'extras' => $this->get('sign_up_manager')->getExtrasSetByUser($loggedInUser, $availableSession->getId())
                 ));
             } catch (\Exception $e) {
                 continue;
