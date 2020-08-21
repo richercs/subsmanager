@@ -387,6 +387,9 @@ class SignUpManager
                 . ' bejelentkezéses óra azonosító: ' .$announcedSession->getId());
         }
 
+        /** @var SessionSignUp $signee */
+        $signee = $arrayOfsignee[0];
+
         // Validate for business rules
 
         $maxNumberOfSignees = $announcedSession->getMaxNumberOfSignUps();
@@ -395,17 +398,15 @@ class SignUpManager
 
         $countOfSignees = $announcedSession->getNumberOfSignees();
 
+        $incrementOfSigneesByNewExtras = ($signee->getExtras() > $extras) ? 0 : $extras - $signee->getExtras();
+
         if ($extras > 0 && $announcedSession->isFull()) {
             throw new Exception('Az óra megtelt, így ezt az értéket nem tudod elmenteni!');
-        } elseif ($countOfSignees + $extras > $maxNumberOfSignees) {
+        } elseif ($countOfSignees + $incrementOfSigneesByNewExtras > $maxNumberOfSignees) {
             throw new Exception('Ezt az értéket nem tudod elmenteni, mert az óra túllépné a maximális résztvevők számát!');
         }
 
         // save changes to database
-
-        /** @var SessionSignUp $signee */
-        $signee = $arrayOfsignee[0];
-
         $signee->setExtras($extras);
 
         $this->sessionSignUpsRepository->save($signee);
