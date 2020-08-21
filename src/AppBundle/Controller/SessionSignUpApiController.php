@@ -294,7 +294,7 @@ class SessionSignUpApiController extends \Symfony\Bundle\FrameworkBundle\Control
 
             return $response->setData(array(
                 "status" => "successful",
-                "message" => null,
+                "message" => "Sikeresen elmentve!",
                 "session_id" => $announcedSessionId
             ));
 

@@ -400,7 +400,7 @@ class SignUpManager
 
         $incrementOfSigneesByNewExtras = ($signee->getExtras() > $extras) ? 0 : $extras - $signee->getExtras();
 
-        if ($extras > 0 && $announcedSession->isFull()) {
+        if ($incrementOfSigneesByNewExtras > 0 && $announcedSession->isFull()) {
             throw new Exception('Az óra megtelt, így ezt az értéket nem tudod elmenteni!');
         } elseif ($countOfSignees + $incrementOfSigneesByNewExtras > $maxNumberOfSignees) {
             throw new Exception('Ezt az értéket nem tudod elmenteni, mert az óra túllépné a maximális résztvevők számát!');
