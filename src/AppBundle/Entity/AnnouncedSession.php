@@ -70,12 +70,6 @@ class AnnouncedSession
      */
     protected $signees;
 
-    // TODO: Decide if this will every be needed, if not remove it
-    /**
-     * @var ArrayCollection $signeesOnWaitList
-     */
-    protected $signeesOnWaitList;
-
     /**
      * @var int $numberOfSignees
      */
@@ -240,22 +234,6 @@ class AnnouncedSession
             $numberOfExtras = $signee->getExtras() ? : 0;
             $this->numberOfSignees = $this->numberOfSignees + 1 + $numberOfExtras;
         }
-    }
-
-    /**
-     * @return ArrayCollection
-     */
-    public function getSigneesOnWaitList()
-    {
-        return $this->signeesOnWaitList;
-    }
-
-    /**
-     * @param ArrayCollection $signeesOnWaitList
-     */
-    public function setSigneesOnWaitList($signeesOnWaitList)
-    {
-        $this->signeesOnWaitList = $signeesOnWaitList;
     }
 
     /**

@@ -95,7 +95,6 @@ class SessionSignUpApiController extends \Symfony\Bundle\FrameworkBundle\Control
         }
 
         try {
-            // TODO: extras POST paraméter kéne legyen
             $this->get('sign_up_manager')->signUpUserToSession(
                 $loggedInUser,
                 $id
@@ -140,7 +139,6 @@ class SessionSignUpApiController extends \Symfony\Bundle\FrameworkBundle\Control
         }
 
         try {
-            // TODO: extras POST paraméter kéne legyen
             $this->get('sign_up_manager')->waitListUserToSession(
                 $loggedInUser,
                 $id
