@@ -337,9 +337,46 @@ class SignUpManager
      */
     public function setExtrasForSignee(UserAccount $loggedInUser, $extras, $announcedSessionId)
     {
-        // TODO: Implement
+        $announcedSession = $this->announcedSessionRepository->find($announcedSessionId);
 
-        throw new Exception('Az óra megtelt, így ezt az értéket nem tudod elmenteni!');
+        if(!$announcedSession) {
+            throw new Exception('Nincs ilyen azonosítójú bejelentkezéses óra: ' . $announcedSessionId . '!');
+        }
+
+        if ($announcedSession->isFinalized()) {
+            throw new Exception('Validációs hiba: Az óra véglegesítve van!');
+        }
+
+        $arrayOfsignee =  $this->sessionSignUpsRepository->findBy(['announcedSession' => $announcedSession, 'signee' => $loggedInUser]);
+
+        if (!isset($arrayOfsignee[0])) {
+            throw new Exception('Validációs hiba: Nincs ilyen bejelentkezés: '
+                . 'felhasználó: ' . $loggedInUser->getLastName() . ' ' .$loggedInUser->getFirstName()
+                . ' bejelentkezéses óra azonosító: ' .$announcedSession->getId());
+        }
+
+        // Validate for business rules
+
+        $maxNumberOfSignees = $announcedSession->getMaxNumberOfSignUps();
+
+        $announcedSession->calculateNumberOfSignees();
+
+        $countOfSignees = $announcedSession->getNumberOfSignees();
+
+        if ($extras > 0 && $announcedSession->isFull()) {
+            throw new Exception('Az óra megtelt, így ezt az értéket nem tudod elmenteni!');
+        } elseif ($countOfSignees + $extras > $maxNumberOfSignees) {
+            throw new Exception('Ezt az értéket nem tudod elmenteni, mert az óra túllépné a maximális résztvevők számát!');
+        }
+
+        // save changes to database
+
+        /** @var SessionSignUp $signee */
+        $signee = $arrayOfsignee[0];
+
+        $signee->setExtras($extras);
+
+        $this->sessionSignUpsRepository->save($signee);
     }
 
 }
