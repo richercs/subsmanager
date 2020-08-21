@@ -50,6 +50,11 @@ class SessionSignUpApiController extends \Symfony\Bundle\FrameworkBundle\Control
         /** @var AnnouncedSession $availableSession */
         foreach ($availableSessions as $availableSession) {
             try {
+
+                // This is necessary to check because if user is not signed up then we can't check for any
+                // property of session sign up by user like extras
+                $alreadySignedUp = $this->get('sign_up_manager')->isUserSignedUpToSession($loggedInUser, $availableSession->getId());
+
                 $announcedSessionDataCollection->add(array(
                     'id' => $availableSession->getId(),
                     'sessionName' => $availableSession->getScheduleItem()->getSessionName(),
@@ -59,7 +64,7 @@ class SessionSignUpApiController extends \Symfony\Bundle\FrameworkBundle\Control
                     'canSignUp' => $this->get('sign_up_manager')->userCanSignUpToSession($loggedInUser, $availableSession->getId()),
                     'canSignUpOnWaitList' => $this->get('sign_up_manager')->userCanSignUpToWaitList($loggedInUser, $availableSession->getId()),
                     'isListFinalized' => $availableSession->isFinalized(),
-                    'extras' => $this->get('sign_up_manager')->getExtrasSetByUser($loggedInUser, $availableSession->getId())
+                    'extras' => $alreadySignedUp ? $this->get('sign_up_manager')->getExtrasSetByUser($loggedInUser, $availableSession->getId()) : null
                 ));
             } catch (\Exception $e) {
                 continue;
