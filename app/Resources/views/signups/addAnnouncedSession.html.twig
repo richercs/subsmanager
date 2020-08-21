@@ -48,4 +48,22 @@
             });
         });
     </script>
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            let setTimeFromFinalizedBasedOnTimeOfEvent = function () {
+
+                let timeOfEvent = $('#appbundle_announced_session_timeOfEvent').val();
+
+                let calculatedTimeOfFinalzed = moment(timeOfEvent,  "YYYY-MM-DD HH:mm").subtract(0.5, 'hour').format('YYYY-MM-DD HH:mm');
+
+                $('#appbundle_announced_session_timeFromFinalized').val(calculatedTimeOfFinalzed);
+
+            };
+
+            $('#appbundle_announced_session_timeOfEvent').on('dp.change', setTimeFromFinalizedBasedOnTimeOfEvent);
+        });
+    </script>
 {% endblock %}
