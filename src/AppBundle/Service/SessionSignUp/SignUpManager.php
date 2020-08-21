@@ -329,4 +329,17 @@ class SignUpManager
         $this->sessionSignUpsRepository->delete($signee);
     }
 
+    /**
+     * @param UserAccount $loggedInUser
+     * @param integer $extras
+     * @param integer $announcedSessionId
+     * @throws Exception
+     */
+    public function setExtrasForSignee(UserAccount $loggedInUser, $extras, $announcedSessionId)
+    {
+        // TODO: Implement
+
+        throw new Exception('Az óra megtelt, így ezt az értéket nem tudod elmenteni!');
+    }
+
 }

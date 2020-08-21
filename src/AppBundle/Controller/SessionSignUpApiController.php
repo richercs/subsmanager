@@ -58,8 +58,8 @@ class SessionSignUpApiController extends \Symfony\Bundle\FrameworkBundle\Control
                     'alreadyOnWaitList' => $this->get('sign_up_manager')->isUserWaitListedToSession($loggedInUser, $availableSession->getId()),
                     'canSignUp' => $this->get('sign_up_manager')->userCanSignUpToSession($loggedInUser, $availableSession->getId()),
                     'canSignUpOnWaitList' => $this->get('sign_up_manager')->userCanSignUpToWaitList($loggedInUser, $availableSession->getId()),
-                    'isListFinalized' => $availableSession->isFinalized()
-                    // TODO: Extras utazik a frontendre és POST paraméterként jön vissza
+                    'isListFinalized' => $availableSession->isFinalized(),
+                    // 'extras' => $this->get('sign_up_manager')->getExtrasSetByUser($loggedInUser, $availableSession->getId())
                 ));
             } catch (\Exception $e) {
                 continue;
@@ -254,6 +254,60 @@ class SessionSignUpApiController extends \Symfony\Bundle\FrameworkBundle\Control
             'id' => $announcedSession->getId(),
             'signees' => $sessionSignees->toArray(),
         ));
+    }
+
+    /**
+     * @Route("/setExtrasForSignedUpUser", name="set_extras_to_session_signee")
+     *
+     *
+     * @param Request $request
+     * @return Response
+     */
+    public function setExtrasForSignedUpUser(Request $request)
+    {
+
+        /** @var UserAccount $loggedInUser */
+        $loggedInUser = $this->getUser();
+
+        if (!$loggedInUser) {
+            return new Response(null);
+        }
+
+        $extrasValue = $request->get('extras_value');
+
+        $announcedSessionId = $request->get('announced_session_id');
+
+        if($announcedSessionId === null || $extrasValue === null) {
+            return new Response(null);
+        }
+
+        try {
+
+            $this->get('sign_up_manager')->setExtrasForSignee(
+                $loggedInUser,
+                $extrasValue,
+                $announcedSessionId
+            );
+
+            // Successful session sign off for logged in User
+            $response = new JsonResponse();
+
+            return $response->setData(array(
+                "status" => "successful",
+                "message" => null,
+                "session_id" => $announcedSessionId
+            ));
+
+        } catch (\Exception $e) {
+            $response = new JsonResponse();
+
+            return $response->setData(array(
+                "status" => "error",
+                "message" => $e->getMessage(),
+                "session_id" => $announcedSessionId
+            ));
+        }
+
     }
 
 }
