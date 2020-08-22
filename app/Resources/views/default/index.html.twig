@@ -1,6 +1,56 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+
+    {% if available_sessions is not empty %}
+        <div id="stats-wrapper">
+            <div id="view-user-account-wrapper">
+                <h4><b>Elérhető bejelentkezéses órák</b></h4>
+                <br>
+                <table class="table colored-table">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Órarendi Elem</th>
+                        <th>Időpont</th>
+                        <th>Lezárás</th>
+                        <th>Bejelentkezések</th>
+                        <th>Létrehozás</th>
+                        <th>Szerkesztés</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for available_session in available_sessions %}
+                        <tr>
+                            <td>
+                                {{ available_session.getId }}
+                            </td>
+                            <td>
+                                {{ available_session.getScheduleItem }}
+                            </td>
+                            <td>
+                                {{ available_session.getTimeOfEvent|date('Y-m-d H:i:s') }}
+                            </td>
+                            <td>
+                                {{ available_session.getTimeFromFinalized|date('Y-m-d H:i:s') }}
+                            </td>
+                            <td>
+                                {{ available_session.getNumberOfSignees }} / {{ available_session.getMaxNumberOfSignUps }}
+                            </td>
+                            <td>
+                                {{ available_session.createdAt|date('Y-m-d H:i:s') }}
+                            </td>
+                            <td>
+                                <a href="{{ path('edit_announced_session', {'id': available_session.getId }) }}" class="btn btn-link"><span style="font-size:16px; padding-left: 8px;" class="pull-right showopacity glyphicon glyphicon-list-alt"></span></a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    {% endif %}
     {% if logged_in_user is not null %}
         {% if logged_in_user.getIsAdmin %}
             <br>
