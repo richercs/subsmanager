@@ -401,6 +401,11 @@ class SessionEventController extends Controller
                 $sessionEvent->setAnnouncedSession($announcedSession);
 
                 $announcedSession->setSessionEvent($sessionEvent);
+
+                if (!empty($originalAnnouncedSession) && $announcedSession !== $originalAnnouncedSession) {
+
+                    $originalAnnouncedSession->setSessionEvent(null);
+                }
             } else {
 
                 if (!empty($originalAnnouncedSession)) {
