@@ -75,11 +75,9 @@ $(document).ready(function () {
     if (pathname != '/sessionevent/add_session_event') {
 
         $('#appbundle_sessionevent_scheduleItem').attr('disabled', true);
-        $('#appbundle_sessionevent_announcedSession').attr('disabled', true);
 
         form.submit(function () {
             $("#appbundle_sessionevent_scheduleItem").prop("disabled", false);
-            $("#appbundle_sessionevent_announcedSession").prop("disabled", false);
         });
     }
 

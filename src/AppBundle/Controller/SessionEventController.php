@@ -325,6 +325,9 @@ class SessionEventController extends Controller
         /** @var SessionEventRepository $sessionEventRepository */
         $sessionEventRepository = $em->getRepository('AppBundle\Entity\SessionEvent');
 
+        /** @var AnnouncedSessionRepository $announcedSessionRepository */
+        $announcedSessionRepository = $em->getRepository(AnnouncedSession::class);
+
         // This is for the back URL
         $searchStartDate = $request->get('searchStart');
 
@@ -374,6 +377,8 @@ class SessionEventController extends Controller
             }
         }
 
+        $originalAnnouncedSession = $sessionEvent->getAnnouncedSession();
+
         $originalAttendees = new ArrayCollection();
 
         // Create an ArrayCollection of the current Attendance objects in the database
@@ -382,10 +387,29 @@ class SessionEventController extends Controller
         }
 
 
-        $form = $this->createForm(new SessionEventType(), $sessionEvent);
+        $form = $this->createForm(new SessionEventType(array(), false, $id), $sessionEvent);
         $form->handleRequest($request);
 
         if ($form->isValid()) {
+
+            $announcedSessionId = $request->get('appbundle_sessionevent')['announcedSession'];
+
+            $announcedSession = $announcedSessionRepository->find($announcedSessionId);
+
+            if (!empty($announcedSession)) {
+
+                $sessionEvent->setAnnouncedSession($announcedSession);
+
+                $announcedSession->setSessionEvent($sessionEvent);
+            } else {
+
+                if (!empty($originalAnnouncedSession)) {
+                    $originalAnnouncedSession->setSessionEvent(null);
+                }
+
+                $sessionEvent->setAnnouncedSession(null);
+            }
+
             // remove the relationship between the attendee and the Session event
             foreach ($originalAttendees as $attendee) {
                 if (false === $sessionEvent->getAttendees()->contains($attendee)) {
@@ -505,7 +529,7 @@ class SessionEventController extends Controller
 
             // TODO: Validate this code pls. Is it ok to recreate the form and what happens at next submit?
 
-            $form = $this->createForm(new SessionEventType(), $sessionEvent);
+            $form = $this->createForm(new SessionEventType(array(), false, $id), $sessionEvent);
 
             return $this->render('event/editSessionEvent.html.twig',
                 array(

@@ -16,11 +16,6 @@ class SessionEventType extends AbstractType
     /**
      * @var array
      */
-    protected $announcedSessionCollection;
-
-    /**
-     * @var array
-     */
     protected $scheduleItemCollection;
 
     /**
@@ -29,15 +24,22 @@ class SessionEventType extends AbstractType
     protected $onAddPage;
 
     /**
+     * @var integer
+     */
+    private $announcedSessionOwnId;
+
+    /**
      * Constructor.
      *
      ** @param array $scheduleItemCollection
      ** @param boolean $onAddPage
+     ** @param integer $announcedSessionOwnId
      */
-    public function __construct($scheduleItemCollection = array(), $onAddPage = false)
+    public function __construct($scheduleItemCollection = array(), $onAddPage = false, $announcedSessionOwnId = null)
     {
         $this->scheduleItemCollection = $scheduleItemCollection;
         $this->onAddPage = $onAddPage;
+        $this->announcedSessionOwnId = $announcedSessionOwnId;
     }
 
     /**
@@ -114,7 +116,20 @@ class SessionEventType extends AbstractType
                     'html5' => false,
                 ))
                 ->add('scheduleItem')
-                ->add('announcedSession')
+                ->add('announcedSession', EntityType::class, array(
+                    'class' => 'AppBundle\Entity\AnnouncedSession',
+                    'choice_label' => function ($announcedSession) {
+                        return $announcedSession->__toString();
+                    },
+                    'query_builder' => function (AnnouncedSessionRepository $announcedSessionRepository) {
+                        return $announcedSessionRepository->createQueryBuilder('announced_session')
+                            ->where('announced_session.sessionEvent is null')
+                            ->orWhere('announced_session.sessionEvent = :ownId')
+                            ->setParameter('ownId', $this->announcedSessionOwnId);
+                    },
+                    'placeholder' => 'Nem bejelentkezéses óra',
+                    'required' => false,
+                ))
                 ->add(
                     'attendees', 'collection', array(
                         'entry_type' => AttendanceHistoryType::class,

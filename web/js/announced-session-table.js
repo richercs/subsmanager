@@ -13,12 +13,10 @@ $(document).ready(function () {
                     announced_session_id: selectedAnnouncedSession
                 },
                 success: function (data) {
-                    $('#signee-table-wrapper').css("display", "block");
 
-                    if(data['signees'] !== 'undefined' && data['signees'].length <= 0) {
-                        $("#signee-table").find('tbody')
-                            .text("");
-                    }
+                    $("#signee-table").find('tbody').text("");
+
+                    $('#signee-table-wrapper').css("display", "block");
 
                     $.each(data['signees'], function (key, value) {
 
