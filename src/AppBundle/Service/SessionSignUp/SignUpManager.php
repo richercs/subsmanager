@@ -134,23 +134,7 @@ class SignUpManager
             return false;
         }
 
-        /**
-         * Based on if the user has an active subscription with available usages
-         * the time the user can start signing up is earlier at -1 day 0 hours 0 minutes
-         * if the user has no active subscription or any available usages left
-         * the time the user can start signing up is later at -1 day 16 hours 0 minutes
-         */
-        $timeOfFinalization = $announcedSession->getTimeFromFinalized()->format('D M d Y H:i:s e');
-
-        $timeOfAvailabilityByUserSubs = new DateTime($timeOfFinalization);
-
-        $timeOfAvailabilityByUserSubs->sub(new DateInterval('P1D'));
-
-        if(!empty($this->subscriptionRepository->findUsableSubscriptionsForUser($loggedInUser))) {
-            $timeOfAvailabilityByUserSubs->setTime(0,0,0);
-        } else {
-            $timeOfAvailabilityByUserSubs->setTime(16,0,0);
-        }
+        $timeOfAvailabilityByUserSubs = $this->getTimeOfAvailabilityOfUserBySubs($loggedInUser, $announcedSession);
 
         $now = new DateTime('now');
 
@@ -194,17 +178,7 @@ class SignUpManager
             return false;
         }
 
-        $timeOfFinalization = $announcedSession->getTimeFromFinalized()->format('D M d Y H:i:s e');
-
-        $timeOfAvailabilityByUserSubs = new DateTime($timeOfFinalization);
-
-        $timeOfAvailabilityByUserSubs->sub(new DateInterval('P1D'));
-
-        if(!empty($this->subscriptionRepository->findUsableSubscriptionsForUser($loggedInUser))) {
-            $timeOfAvailabilityByUserSubs->setTime(0,0,0);
-        } else {
-            $timeOfAvailabilityByUserSubs->setTime(16,0,0);
-        }
+        $timeOfAvailabilityByUserSubs = $this->getTimeOfAvailabilityOfUserBySubs($loggedInUser, $announcedSession);
 
         $now = new DateTime('now');
 
@@ -218,7 +192,34 @@ class SignUpManager
         return false;
     }
 
+    /**
+     * Based on if the user has an active subscription with available usages
+     * the time the user can start signing up is earlier at -1 day 0 hours 0 minutes
+     * if the user has no active subscription or any available usages left
+     * the time the user can start signing up is later at -1 day 16 hours 0 minutes
+     *
+     * @param UserAccount $loggedInUser
+     * @param AnnouncedSession $announcedSession
+     *
+     * @return DateTime
+     */
+    public function getTimeOfAvailabilityOfUserBySubs(UserAccount $loggedInUser, AnnouncedSession $announcedSession)
+    {
+        $timeOfFinalization = $announcedSession->getTimeFromFinalized()->format('D M d Y H:i:s e');
 
+        $timeOfAvailabilityByUserSubs = new DateTime($timeOfFinalization);
+
+        $timeOfAvailabilityByUserSubs->sub(new DateInterval('P1D'));
+
+        if(!empty($this->subscriptionRepository->findUsableSubscriptionsForUser($loggedInUser))) {
+            $timeOfAvailabilityByUserSubs->setTime(0,0,0);
+        } else {
+            $timeOfAvailabilityByUserSubs->setTime(16,0,0);
+        }
+
+        return $timeOfAvailabilityByUserSubs;
+
+    }
 
     /**
      * @param UserAccount $loggedInUser

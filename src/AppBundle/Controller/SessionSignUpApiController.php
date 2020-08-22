@@ -55,6 +55,9 @@ class SessionSignUpApiController extends \Symfony\Bundle\FrameworkBundle\Control
                 // property of session sign up by user like extras
                 $alreadySignedUp = $this->get('sign_up_manager')->isUserSignedUpToSession($loggedInUser, $availableSession->getId());
 
+                // This is to calculate the time the user can start signing up to the session
+                $timeOfAvailabilityByUserSubs = $this->get('sign_up_manager')->getTimeOfAvailabilityOfUserBySubs($loggedInUser, $availableSession);
+
                 $announcedSessionDataCollection->add(array(
                     'id' => $availableSession->getId(),
                     'sessionName' => $availableSession->getScheduleItem()->getSessionName(),
@@ -64,7 +67,8 @@ class SessionSignUpApiController extends \Symfony\Bundle\FrameworkBundle\Control
                     'canSignUp' => $this->get('sign_up_manager')->userCanSignUpToSession($loggedInUser, $availableSession->getId()),
                     'canSignUpOnWaitList' => $this->get('sign_up_manager')->userCanSignUpToWaitList($loggedInUser, $availableSession->getId()),
                     'isListFinalized' => $availableSession->isFinalized(),
-                    'extras' => $alreadySignedUp ? $this->get('sign_up_manager')->getExtrasSetByUser($loggedInUser, $availableSession->getId()) : null
+                    'extras' => $alreadySignedUp ? $this->get('sign_up_manager')->getExtrasSetByUser($loggedInUser, $availableSession->getId()) : null,
+                    'timeOfAvailabilityByUser' => !empty($timeOfAvailabilityByUserSubs) ? $timeOfAvailabilityByUserSubs->format('Y.m.d. H:i:s') : null
                 ));
             } catch (\Exception $e) {
                 continue;
