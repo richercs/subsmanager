@@ -86,7 +86,7 @@
 
                 let timeOfEvent = $('#appbundle_announced_session_timeOfEvent').val();
 
-                let calculatedTimeOfFinalzed = moment(timeOfEvent,  "YYYY-MM-DD HH:mm").subtract(0.5, 'hour').format('YYYY-MM-DD HH:mm');
+                let calculatedTimeOfFinalzed = moment(timeOfEvent,  "YYYY-MM-DD HH:mm").subtract(3, 'hour').format('YYYY-MM-DD HH:mm');
 
                 $('#appbundle_announced_session_timeFromFinalized').val(calculatedTimeOfFinalzed);
 
