@@ -221,6 +221,11 @@ class AnnouncedSessionController extends Controller
                 }
             }
             if ($form->get('delete')->isClicked()) {
+
+                if (!empty($announcedSession->getSessionEvent())) {
+                    $announcedSession->getSessionEvent()->setAnnouncedSession(null);
+                }
+
                 $em->remove($announcedSession);
                 $em->flush();
 
