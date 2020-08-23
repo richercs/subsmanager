@@ -7,3 +7,22 @@ services:
     logout_handler:
       class: AppBundle\Controller\LogoutHandler
       arguments: ['%frontend_host%']
+
+    announced_session_repository:
+      class: AppBundle\Repository\AnnouncedSessionRepository
+      factory: ['@doctrine.orm.entity_manager', 'getRepository']
+      arguments: [AppBundle\Entity\AnnouncedSession]
+
+    session_sign_up_repository:
+      class: AppBundle\Repository\SessionSignUpsRepository
+      factory: ['@doctrine.orm.entity_manager', 'getRepository']
+      arguments: [AppBundle\Entity\SessionSignUp]
+
+    subscription_repository:
+      class: AppBundle\Repository\SubscriptionRepository
+      factory: ['@doctrine.orm.entity_manager', 'getRepository']
+      arguments: [AppBundle\Entity\Subscription]
+
+    sign_up_manager:
+      class: AppBundle\Service\SessionSignUp\SignUpManager
+      arguments: ['@announced_session_repository', '@session_sign_up_repository', '@subscription_repository']

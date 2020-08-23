@@ -17,6 +17,15 @@ code { background: #F5F5F5; max-width: 100px; padding: 2px 6px; word-wrap: break
 #icon-status, #icon-book { float: left; height: 64px; margin-right: 1em; margin-top: -4px; width: 64px; }
 #icon-book { display: none; }
 
+#signee-table-wrapper {
+    background: whitesmoke;
+    padding: 2em;
+    margin: 2em 2em;
+    max-width: 800px;
+    width: 90%;
+    display: none;
+}
+
 #row-wrapper{ background: whitesmoke; min-height: 200em; }
 .grid-menu {}
 .grid-content { background: #DEE3E5; min-height: 190em !important; color: #1B2024}
@@ -53,6 +62,10 @@ code { background: #F5F5F5; max-width: 100px; padding: 2px 6px; word-wrap: break
 
 #contacts_count_badge {
     float: right;
+}
+
+#waitlisted_signees_count_badge {
+    background-color: #f0ad4e;
 }
 
 .bottom-padded-list {

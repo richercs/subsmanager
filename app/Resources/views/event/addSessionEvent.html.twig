@@ -17,6 +17,20 @@
 
 {% block body %}
     {{ parent() }}
+    <div id="signee-table-wrapper">
+        <table class="table colored-table" id="signee-table">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Bejelentkező</th>
+                <th>Extrák</th>
+                <th>Várólistás</th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
     <h3>Új Óra Esemény</h3>
     <div id="yellow-wrapper">
         {{ form_start(form) }}
@@ -24,6 +38,7 @@
         {{ form_row(form._token) }}
         {{ form_row(form.sessionEventDate, {'label': 'Időpont'}) }}
         {{ form_row(form.scheduleItem, {'label': 'Órarendi Elem'}) }}
+        {{ form_row(form.announcedSession, {'label': 'Bejelentkezéses óra'}) }}
         {{ form_row(form.attendees, {'label': 'Bérletesek'}) }}
         {{ form_row(form.sessionFeeNumbersSold, {'label': 'Eladott Napidíjak'}) }}
         {{ form_row(form.sessionFeeRevenueSold, {'label': 'Napidíj Bevétel'}) }}
@@ -46,6 +61,7 @@
     <script src="{{ asset('assets/vendor/jquery-ui/jquery-ui.min.js') }}"></script>
     <script src="{{ asset('bundles/pugxautocompleter/js/autocompleter-jqueryui.js') }}"></script>
     <script src="{{ asset('js/auto-suggest-users.js') }}"></script>
+    <script src="{{ asset('js/announced-session-table.js') }}"></script>
 {% endblock %}
 
 

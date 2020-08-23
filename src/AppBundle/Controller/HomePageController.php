@@ -3,9 +3,11 @@
 namespace AppBundle\Controller;
 
 
+use AppBundle\Entity\AnnouncedSession;
 use AppBundle\Entity\ScheduleItem;
 use AppBundle\Entity\UserAccount;
 use AppBundle\Entity\UserContact;
+use AppBundle\Repository\AnnouncedSessionRepository;
 use AppBundle\Repository\ScheduleItemRepository;
 use AppBundle\Repository\SessionEventRepository;
 use AppBundle\Repository\SubscriptionRepository;
@@ -59,6 +61,17 @@ class HomePageController extends Controller
 
         $scheduleItemsOrdered = $scheduleItem_repo->getOrderedScheduleItems();
 
+        /** @var AnnouncedSessionRepository $announcedSessionRepository */
+        $announcedSessionRepository = $em->getRepository('AppBundle\Entity\AnnouncedSession');
+
+        $availableSessions = $announcedSessionRepository->findBy(array("sessionEvent" => null));
+
+        // Set extra info needed to list entities
+        /** @var AnnouncedSession $announcedSession */
+        foreach ($availableSessions as $announcedSession) {
+            $announcedSession->calculateNumberOfSignees();
+        }
+
         /** @var ScheduleItem $scheduleItem */
         foreach ($scheduleItemsOrdered as $key => $scheduleItem) {
             if($scheduleItem->isDeleted()) {
@@ -75,7 +88,8 @@ class HomePageController extends Controller
                 'count_sessionEvents' => $count_sessionEvents,
                 'logged_in_user' => $loggedInUser,
                 'ordered_schedule_items' => $scheduleItemsOrdered,
-                'count_scheduleItems_active' => count($scheduleItemsOrdered)
+                'count_scheduleItems_active' => count($scheduleItemsOrdered),
+                'available_sessions' => $availableSessions ? $availableSessions : null
             ));
     }
 

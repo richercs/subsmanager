@@ -2,6 +2,8 @@
 
 namespace AppBundle\Form;
 
+use AppBundle\Repository\AnnouncedSessionRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -22,13 +24,22 @@ class SessionEventType extends AbstractType
     protected $onAddPage;
 
     /**
+     * @var integer
+     */
+    private $announcedSessionOwnId;
+
+    /**
      * Constructor.
      *
+     ** @param array $scheduleItemCollection
+     ** @param boolean $onAddPage
+     ** @param integer $announcedSessionOwnId
      */
-    public function __construct(array $scheduleItemCollection = array(), $onAddPage = false)
+    public function __construct($scheduleItemCollection = array(), $onAddPage = false, $announcedSessionOwnId = null)
     {
         $this->scheduleItemCollection = $scheduleItemCollection;
         $this->onAddPage = $onAddPage;
+        $this->announcedSessionOwnId = $announcedSessionOwnId;
     }
 
     /**
@@ -52,6 +63,18 @@ class SessionEventType extends AbstractType
                     'data' => null,
                     'placeholder' => 'Válasz egy órát',
                     'required' => true,
+                ))
+                ->add('announcedSession', EntityType::class, array(
+                    'class' => 'AppBundle\Entity\AnnouncedSession',
+                    'choice_label' => function ($announcedSession) {
+                        return $announcedSession->__toString();
+                    },
+                    'query_builder' => function (AnnouncedSessionRepository $announcedSessionRepository) {
+                        return $announcedSessionRepository->createQueryBuilder('announced_session')
+                            ->where('announced_session.sessionEvent is null');
+                    },
+                    'placeholder' => 'Nem bejelentkezéses óra',
+                    'required' => false,
                 ))
                 ->add(
                     'attendees', 'collection', array(
@@ -93,6 +116,20 @@ class SessionEventType extends AbstractType
                     'html5' => false,
                 ))
                 ->add('scheduleItem')
+                ->add('announcedSession', EntityType::class, array(
+                    'class' => 'AppBundle\Entity\AnnouncedSession',
+                    'choice_label' => function ($announcedSession) {
+                        return $announcedSession->__toString();
+                    },
+                    'query_builder' => function (AnnouncedSessionRepository $announcedSessionRepository) {
+                        return $announcedSessionRepository->createQueryBuilder('announced_session')
+                            ->where('announced_session.sessionEvent is null')
+                            ->orWhere('announced_session.sessionEvent = :ownId')
+                            ->setParameter('ownId', $this->announcedSessionOwnId);
+                    },
+                    'placeholder' => 'Nem bejelentkezéses óra',
+                    'required' => false,
+                ))
                 ->add(
                     'attendees', 'collection', array(
                         'entry_type' => AttendanceHistoryType::class,

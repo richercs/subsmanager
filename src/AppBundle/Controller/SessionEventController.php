@@ -9,12 +9,14 @@
 namespace AppBundle\Controller;
 
 
+use AppBundle\Entity\AnnouncedSession;
 use AppBundle\Entity\AttendanceHistory;
 use AppBundle\Entity\ScheduleItem;
 use AppBundle\Entity\SessionEvent;
 use AppBundle\Entity\Subscription;
 use AppBundle\Entity\UserAccount;
 use AppBundle\Form\SessionEventType;
+use AppBundle\Repository\AnnouncedSessionRepository;
 use AppBundle\Repository\AttendanceHistoryRepository;
 use AppBundle\Repository\ScheduleItemRepository;
 use AppBundle\Repository\SessionEventRepository;
@@ -157,6 +159,9 @@ class SessionEventController extends Controller
         /** @var ScheduleItemRepository $scheduleItemRepository */
         $scheduleItemRepository = $em->getRepository(ScheduleItem::class);
 
+        /** @var AnnouncedSessionRepository $announcedSessionRepository */
+        $announcedSessionRepository = $em->getRepository(AnnouncedSession::class);
+
         $scheduleItemCollection = $scheduleItemRepository->findAll();
 
         $scheduleItemCollection = array_combine(range(1, count($scheduleItemCollection)), array_values($scheduleItemCollection));
@@ -181,6 +186,17 @@ class SessionEventController extends Controller
             $scheduleItem = $scheduleItemRepository->find($scheduleItemId);
 
             $newEvent->setScheduleItem($scheduleItem);
+
+            $announcedSessionId = $request->get('appbundle_sessionevent')['announcedSession'];
+
+            $announcedSession = $announcedSessionRepository->find($announcedSessionId);
+
+            if (!empty($announcedSession)) {
+
+                $newEvent->setAnnouncedSession($announcedSession);
+
+                $announcedSession->setSessionEvent($newEvent);
+            }
 
             // save and continue button that redirects to the edit page
             if($form->get('saveAndContinue')->isClicked()) {
@@ -292,7 +308,8 @@ class SessionEventController extends Controller
      * @param Request $request
      * @return array
      */
-    public function editSessionEventAction($id, $subscriptionId = null, Request $request) {
+    public function editSessionEventAction($id, $subscriptionId = null, Request $request)
+    {
 
         // This is for the back URL
         if (!is_null($request->query->get('subscription_id'))) {
@@ -307,6 +324,9 @@ class SessionEventController extends Controller
 
         /** @var SessionEventRepository $sessionEventRepository */
         $sessionEventRepository = $em->getRepository('AppBundle\Entity\SessionEvent');
+
+        /** @var AnnouncedSessionRepository $announcedSessionRepository */
+        $announcedSessionRepository = $em->getRepository(AnnouncedSession::class);
 
         // This is for the back URL
         $searchStartDate = $request->get('searchStart');
@@ -357,6 +377,8 @@ class SessionEventController extends Controller
             }
         }
 
+        $originalAnnouncedSession = $sessionEvent->getAnnouncedSession();
+
         $originalAttendees = new ArrayCollection();
 
         // Create an ArrayCollection of the current Attendance objects in the database
@@ -365,10 +387,34 @@ class SessionEventController extends Controller
         }
 
 
-        $form = $this->createForm(new SessionEventType(), $sessionEvent);
+        $form = $this->createForm(new SessionEventType(array(), false, $id), $sessionEvent);
         $form->handleRequest($request);
 
         if ($form->isValid()) {
+
+            $announcedSessionId = $request->get('appbundle_sessionevent')['announcedSession'];
+
+            $announcedSession = $announcedSessionRepository->find($announcedSessionId);
+
+            if (!empty($announcedSession)) {
+
+                $sessionEvent->setAnnouncedSession($announcedSession);
+
+                $announcedSession->setSessionEvent($sessionEvent);
+
+                if (!empty($originalAnnouncedSession) && $announcedSession !== $originalAnnouncedSession) {
+
+                    $originalAnnouncedSession->setSessionEvent(null);
+                }
+            } else {
+
+                if (!empty($originalAnnouncedSession)) {
+                    $originalAnnouncedSession->setSessionEvent(null);
+                }
+
+                $sessionEvent->setAnnouncedSession(null);
+            }
+
             // remove the relationship between the attendee and the Session event
             foreach ($originalAttendees as $attendee) {
                 if (false === $sessionEvent->getAttendees()->contains($attendee)) {
@@ -382,6 +428,12 @@ class SessionEventController extends Controller
             }
             // DELETE Session event
             if ($form->get('delete')->isClicked()) {
+
+                if (!empty($sessionEvent->getAnnouncedSession())) {
+
+                    $sessionEvent->getAnnouncedSession()->setSessionEvent(null);
+                }
+
                 $em->remove($sessionEvent);
                 $em->flush();
 
@@ -482,7 +534,7 @@ class SessionEventController extends Controller
 
             // TODO: Validate this code pls. Is it ok to recreate the form and what happens at next submit?
 
-            $form = $this->createForm(new SessionEventType(), $sessionEvent);
+            $form = $this->createForm(new SessionEventType(array(), false, $id), $sessionEvent);
 
             return $this->render('event/editSessionEvent.html.twig',
                 array(
