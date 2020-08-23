@@ -15,8 +15,7 @@
                         <th>Időpont</th>
                         <th>Lezárás</th>
                         <th>Bejelentkezések</th>
-                        <th>Létrehozás</th>
-                        <th>Szerkesztés</th>
+                        <th>Szerk.</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -28,17 +27,15 @@
                             <td>
                                 {{ available_session.getScheduleItem }}
                             </td>
-                            <td>
+                            <td style="min-width: 90px">
                                 {{ available_session.getTimeOfEvent|date('Y-m-d H:i:s') }}
                             </td>
-                            <td>
+                            <td style="min-width: 90px">
                                 {{ available_session.getTimeFromFinalized|date('Y-m-d H:i:s') }}
                             </td>
                             <td>
                                 {{ available_session.getNumberOfSignees }} / {{ available_session.getMaxNumberOfSignUps }}
-                            </td>
-                            <td>
-                                {{ available_session.createdAt|date('Y-m-d H:i:s') }}
+                                <br>Várólistás: <span id="waitlisted_signees_count_badge" class="badge">{{ available_session.getNumberOfWaitlistedSignees() }}</span>
                             </td>
                             <td>
                                 <a href="{{ path('edit_announced_session', {'id': available_session.getId }) }}" class="btn btn-link"><span style="font-size:16px; padding-left: 8px;" class="pull-right showopacity glyphicon glyphicon-list-alt"></span></a>

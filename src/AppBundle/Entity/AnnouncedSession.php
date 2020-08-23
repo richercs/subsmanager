@@ -315,6 +315,17 @@ class AnnouncedSession
     }
 
     /**
+     * @return integer
+     */
+    public function getNumberOfWaitlistedSignees()
+    {
+        $criteria = Criteria::create()
+            ->andWhere(Criteria::expr()->eq('waitListed', true));
+
+        return $this->signees->matching($criteria)->count();
+    }
+
+    /**
      * @return string
      */
     public function __toString()
