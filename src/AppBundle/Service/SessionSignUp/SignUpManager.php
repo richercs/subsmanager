@@ -129,11 +129,6 @@ class SignUpManager
             return false;
         }
 
-        // Check if the announced session already has at least one wait listed signee
-        if ($announcedSession->hasWaitlistedSignee()) {
-            return false;
-        }
-
         $timeOfAvailabilityByUserSubs = $this->getTimeOfAvailabilityOfUserBySubs($loggedInUser, $announcedSession);
 
         $now = new DateTime('now');
@@ -235,7 +230,7 @@ class SignUpManager
             throw new Exception('Nincs ilyen azonosítójú bejelentkezéses óra: ' . $id . '!');
         }
 
-        if ($announcedSession->isFinalized() || $announcedSession->isFull() || $announcedSession->hasWaitlistedSignee()) {
+        if ($announcedSession->isFinalized() || $announcedSession->isFull()) {
             throw new Exception('Validációs hiba miatt nem sikerült a bejelentkezés!');
         }
 
