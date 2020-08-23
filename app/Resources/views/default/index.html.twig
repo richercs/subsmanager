@@ -2,7 +2,7 @@
 
 {% block body %}
 
-    {% if available_sessions is not empty %}
+    {% if available_sessions is not empty and logged_in_user is not null %}
         <div id="stats-wrapper">
             <div id="view-user-account-wrapper">
                 <h4><b>Elérhető bejelentkezéses órák</b></h4>
