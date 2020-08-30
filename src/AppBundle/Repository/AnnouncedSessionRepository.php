@@ -10,6 +10,15 @@ use Doctrine\ORM\EntityRepository;
 class AnnouncedSessionRepository extends EntityRepository
 {
 
+    public function getAvailableSessionsOrderedByTimeOfEvent()
+    {
+        return $this->createQueryBuilder('announced_session')
+            ->where('announced_session.sessionEvent is null')
+            ->orderBy('announced_session.timeOfEvent', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function getLastThirty()
     {
         $query = $this->_em->createQuery('

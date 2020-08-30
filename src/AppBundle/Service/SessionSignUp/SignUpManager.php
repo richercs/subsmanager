@@ -46,7 +46,7 @@ class SignUpManager
      */
     public function getAvailableSessions()
     {
-        return $this->announcedSessionRepository->findBy(['sessionEvent' => null]);
+        return $this->announcedSessionRepository->getAvailableSessionsOrderedByTimeOfEvent();
     }
 
     /**
