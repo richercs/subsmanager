@@ -68,7 +68,8 @@ class SessionSignUpApiController extends \Symfony\Bundle\FrameworkBundle\Control
                     'canSignUpOnWaitList' => $this->get('sign_up_manager')->userCanSignUpToWaitList($loggedInUser, $availableSession->getId()),
                     'isListFinalized' => $availableSession->isFinalized(),
                     'extras' => $alreadySignedUp ? $this->get('sign_up_manager')->getExtrasSetByUser($loggedInUser, $availableSession->getId()) : null,
-                    'timeOfAvailabilityByUser' => !empty($timeOfAvailabilityByUserSubs) ? $timeOfAvailabilityByUserSubs->format('Y.m.d. H:i') : null
+                    'timeOfAvailabilityByUser' => !empty($timeOfAvailabilityByUserSubs) ? $timeOfAvailabilityByUserSubs->format('Y.m.d. H:i') : null,
+                    'locationOfEvent' => $availableSession->getScheduleItem()->getLocation()
                 ));
             } catch (\Exception $e) {
                 continue;
