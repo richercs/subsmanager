@@ -22,7 +22,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 class HomePageController extends Controller
 {
     /**
-     * @Route("/", name="homepage")
+     * @Route("/", name="homepage", schemes={"https"})
      *
      * @param Request request
      * @return array
@@ -105,7 +105,7 @@ class HomePageController extends Controller
     }
 
     /**
-     * @Route("/login_faliure", name="login_faliure")
+     * @Route("/login_faliure", name="login_faliure", schemes={"https"})
      *
      * @param Request request
      *
