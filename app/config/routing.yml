@@ -1,5 +1,7 @@
 app:
     resource: "@AppBundle/Controller/"
     type:     annotation
+    defaults:
+        schemes: [ https ]
 fos_user:
     resource: "@FOSUserBundle/Resources/config/routing/all.xml"
