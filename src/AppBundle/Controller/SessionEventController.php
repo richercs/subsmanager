@@ -203,20 +203,20 @@ class SessionEventController extends Controller
 
                 // Attendance Records Validation
                 // Rule #1 - Every attendee is unique
-
-                $duplicateAttendees = $this->validateAttendeesCount($newEvent);
-
-                if (!empty($duplicateAttendees)) {
-                    // message
-                    $this->addFlash(
-                        'error',
-                        'Név többször szerpel az űrlapon: ' . PHP_EOL . implode(', ', $duplicateAttendees)
-                    );
-
-                    // show list
-                    return $this->redirectToRoute('session_add_session_event');
-
-                }
+//
+//                $duplicateAttendees = $this->validateAttendeesCount($newEvent);
+//
+//                if (!empty($duplicateAttendees)) {
+//                    // message
+//                    $this->addFlash(
+//                        'error',
+//                        'Név többször szerpel az űrlapon: ' . PHP_EOL . implode(', ', $duplicateAttendees)
+//                    );
+//
+//                    // show list
+//                    return $this->redirectToRoute('session_add_session_event');
+//
+//                }
 
                 // Rule #2 - One subscription can only be present on a session event twice
 
@@ -248,19 +248,19 @@ class SessionEventController extends Controller
             // Attendance Records Validation
             // Rule #1 - Every attendee is unique
 
-            $duplicateAttendees = $this->validateAttendeesCount($newEvent);
-
-            if (!empty($duplicateAttendees)) {
-                // message
-                $this->addFlash(
-                    'error',
-                    'Név többször szerpel az űrlapon: ' . PHP_EOL . implode(', ', $duplicateAttendees)
-                );
-
-                // show list
-                return $this->redirectToRoute('session_add_session_event');
-
-            }
+//            $duplicateAttendees = $this->validateAttendeesCount($newEvent);
+//
+//            if (!empty($duplicateAttendees)) {
+//                // message
+//                $this->addFlash(
+//                    'error',
+//                    'Név többször szerpel az űrlapon: ' . PHP_EOL . implode(', ', $duplicateAttendees)
+//                );
+//
+//                // show list
+//                return $this->redirectToRoute('session_add_session_event');
+//
+//            }
 
             // Rule #2 - One subscription can only be present on a session event twice
 
@@ -454,21 +454,21 @@ class SessionEventController extends Controller
             // Attendance Records Validation
             // Rule #1 - Every attendee is unique
 
-            $duplicateAttendees = $this->validateAttendeesCount($sessionEvent);
-
-            if (!empty($duplicateAttendees)) {
-                // message
-                $this->addFlash(
-                    'error',
-                    'Név többször szerpel az űrlapon: ' . PHP_EOL . implode(', ', $duplicateAttendees)
-                );
-
-                // show list
-                return $this->redirectToRoute('session_edit_session_event', array(
-                    'id' => $sessionEvent->getId()
-                ));
-
-            }
+//            $duplicateAttendees = $this->validateAttendeesCount($sessionEvent);
+//
+//            if (!empty($duplicateAttendees)) {
+//                // message
+//                $this->addFlash(
+//                    'error',
+//                    'Név többször szerpel az űrlapon: ' . PHP_EOL . implode(', ', $duplicateAttendees)
+//                );
+//
+//                // show list
+//                return $this->redirectToRoute('session_edit_session_event', array(
+//                    'id' => $sessionEvent->getId()
+//                ));
+//
+//            }
 
             // Rule #2 - One subscription can only be present on a session event twice
 
