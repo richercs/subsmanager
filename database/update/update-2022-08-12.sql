@@ -7,6 +7,12 @@ ALTER TABLE `schedule_item`
 
 ALTER TABLE `schedule_item` ADD `is_weekly_online` TINYINT(1) NOT NULL AFTER `scheduled_due_time`;
 
--- -- Subscription
--- ALTER TABLE `subscription` ADD `credit` INT DEFAULT NULL AFTER `attendance_count`, ADD `subscription_type` ENUM('attendance', 'credit') AFTER `price`;
--- UPDATE `subscription` SET `subscription_type` = 'attendance' WHERE `attendance_count` IS NOT NULL;
+-- Subscription
+ALTER TABLE `subscription`
+    ADD `credit` INT DEFAULT NULL AFTER `attendance_count`,
+    ADD `subscription_type` ENUM('attendance', 'credit') AFTER `price`;
+
+UPDATE `subscription` SET `subscription_type` = 'attendance' WHERE `attendance_count` IS NOT NULL;
+
+-- Session Event
+ALTER TABLE `session_event` ADD `session_credit_requirement` INT DEFAULT NULL AFTER `session_event_date`;

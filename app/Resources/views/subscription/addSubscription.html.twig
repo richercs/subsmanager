@@ -1,108 +1,128 @@
 {% extends 'subscription/layout.html.twig' %}
 
 {% block body %}
-    {{ parent() }}
-    <h3>Új Bérlet</h3>
-    <div id="yellow-wrapper">
-        {{ form_start(form) }}
-        {{ form_errors(form) }}
-        {{ form_row(form._token) }}
-        <div class="attendee-input-wrap">
-            {{ form_row(form.owner, {'label': 'Tulajdonos'}) }}
-        </div>
-        <div class="form-group">
-            <div class="col-sm-2"></div>
-            <div class="col-sm-10">
-                <label class="radio-inline">
-                    <input type="radio" name="optradio" value="1">4 Alkalmas
-                </label>
-                <label class="radio-inline">
-                    <input type="radio" name="optradio" value="2">10 Alkalmas
-                </label>
-                <label class="radio-inline">
-                    <input type="radio" name="optradio" value="3">Egyéb
-                </label>
-            </div>
-        </div>
-        {{ form_row(form.attendanceCount, {'label': 'Alkalmak Száma'}) }}
-        {{ form_row(form.startDate, {'label': 'Kezdeti Időpont'}) }}
-        {{ form_row(form.dueDate, {'label': 'Lejárati Időpont'}) }}
-        {{ form_row(form.numberOfExtensions, {'label': 'Hosszabítások Száma'}) }}
-        {{ form_row(form.price, {'label': 'Ár'}) }}
-        {{ form_row(form.save) }}
-        {{ form_end(form, {'render_rest': false}) }}
-    </div>
+	{{ parent() }}
+	<h3>Új Bérlet</h3>
+	<div id="yellow-wrapper">
+		{{ form_start(form) }}
+		{{ form_errors(form) }}
+		{{ form_row(form._token) }}
+		<div class="attendee-input-wrap">
+			{{ form_row(form.owner, {'label': 'Tulajdonos'}) }}
+		</div>
+		{% if new_subscription.subscriptionType == 'attendance' %}
+			<div class="form-group">
+				<div class="col-sm-2"></div>
+				<div class="col-sm-10">
+					<label class="radio-inline">
+						<input type="radio" name="optradio" value="1">4 Alkalmas
+					</label>
+					<label class="radio-inline">
+						<input type="radio" name="optradio" value="2">10 Alkalmas
+					</label>
+					<label class="radio-inline">
+						<input type="radio" name="optradio" value="3">Egyéb
+					</label>
+				</div>
+			</div>
+			{{ form_row(form.attendanceCount, {'label': 'Alkalmak Száma'}) }}
+		{% else %}
+			{{ form_row(form.credit, {'label': 'Kreditek Száma'}) }}
+		{% endif %}
+		{{ form_row(form.startDate, {'label': 'Kezdeti Időpont'}) }}
+		{{ form_row(form.dueDate, {'label': 'Lejárati Időpont'}) }}
+		{{ form_row(form.numberOfExtensions, {'label': 'Hosszabítások Száma'}) }}
+		{{ form_row(form.price, {'label': 'Ár'}) }}
+		{{ form_row(form.save) }}
+		{{ form_end(form, {'render_rest': false}) }}
+	</div>
 {% endblock %}
 
 {% block stylesheets %}
-    {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('assets/vendor/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css') }}" />
+	{{ parent() }}
+	<link rel="stylesheet"
+		  href="{{ asset('assets/vendor/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css') }}"/>
 {% endblock %}
 
 
 {% block javascript %}
-    {{ parent() }}
+{{ parent() }}
 
-    <script src="{{ asset('assets/vendor/symfony-collection/jquery.collection.js') }}"></script>
-    <script src="{{ asset('assets/vendor/moment/min/moment.min.js') }}"></script>
-    <script src="{{ asset('assets/vendor/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js') }}"></script>
-    <script src="{{ asset('assets/vendor/jquery-ui/jquery-ui.min.js') }}"></script>
-    <script src="{{ asset('bundles/pugxautocompleter/js/autocompleter-jqueryui.js') }}"></script>
-    <script src="{{ asset('js/auto-suggest-users.js') }}"></script>
+<script src="{{ asset('assets/vendor/symfony-collection/jquery.collection.js') }}"></script>
+<script src="{{ asset('assets/vendor/moment/min/moment.min.js') }}"></script>
+<script src="{{ asset('assets/vendor/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js') }}"></script>
+<script src="{{ asset('assets/vendor/jquery-ui/jquery-ui.min.js') }}"></script>
+<script src="{{ asset('bundles/pugxautocompleter/js/autocompleter-jqueryui.js') }}"></script>
+<script src="{{ asset('js/auto-suggest-users.js') }}"></script>
 
-    <script>
-        $(function () {
-            $('.datetimepicker').datetimepicker({
-                format: 'YYYY-MM-DD HH:mm'
-            });
-        });
-    </script>
+<script>
+	$(function () {
+		$('.datetimepicker').datetimepicker({
+			format: 'YYYY-MM-DD HH:mm'
+		});
+	});
+</script>
 {% endblock %}
 
 {% block body_end_javascripts %}
-    <script type="text/javascript">
+	<script type="text/javascript">
 
-        $(document).ready(function () {
+		$(document).ready(function () {
 
-            var today = moment().set({hour:0,minute:0,second:0,millisecond:0}).format('YYYY-MM-DD HH:mm');
+			var today = moment().set({hour: 0, minute: 0, second: 0, millisecond: 0}).format('YYYY-MM-DD HH:mm');
 
-            var extensionDate;
+			var extensionDate;
 
-            $("input[name='optradio']").change(function(){
+			$("input[name='optradio']").change(function () {
 
-                if ($(this).val() === '1') {
+				if ($(this).val() === '1') {
 
-                    extensionDate = moment(today, "YYYY-MM-DD HH:mm").set({hour:23,minute:59,second:0,millisecond:0}).add(1, 'months');
+					extensionDate = moment(today, "YYYY-MM-DD HH:mm").set({
+						hour: 23,
+						minute: 59,
+						second: 0,
+						millisecond: 0
+					}).add(1, 'months');
 
-                    $('#app_subscription_attendanceCount').val(4);
-                    $('#app_subscription_startDate').val(today);
-                    $('#app_subscription_dueDate').val(extensionDate.format('YYYY-MM-DD HH:mm'));
-                    $('#app_subscription_price').val(6000);
+					$('#app_subscription_attendanceCount').val(4);
+					$('#app_subscription_startDate').val(today);
+					$('#app_subscription_dueDate').val(extensionDate.format('YYYY-MM-DD HH:mm'));
+					$('#app_subscription_price').val(6000);
 
-                } else if ($(this).val() === '2') {
+				} else if ($(this).val() === '2') {
 
-                    extensionDate = moment(today, "YYYY-MM-DD HH:mm").set({hour:23,minute:59,second:0,millisecond:0}).add(2, 'months');
+					extensionDate = moment(today, "YYYY-MM-DD HH:mm").set({
+						hour: 23,
+						minute: 59,
+						second: 0,
+						millisecond: 0
+					}).add(2, 'months');
 
-                    $('#app_subscription_attendanceCount').val(10);
-                    $('#app_subscription_startDate').val(today);
-                    $('#app_subscription_dueDate').val(extensionDate.format('YYYY-MM-DD HH:mm'));
-                    $('#app_subscription_price').val(12000);
+					$('#app_subscription_attendanceCount').val(10);
+					$('#app_subscription_startDate').val(today);
+					$('#app_subscription_dueDate').val(extensionDate.format('YYYY-MM-DD HH:mm'));
+					$('#app_subscription_price').val(12000);
 
-                } else {
+				} else {
 
-                    extensionDate = moment(today, "YYYY-MM-DD HH:mm").set({hour:23,minute:59,second:0,millisecond:0}).add(1, 'months');
+					extensionDate = moment(today, "YYYY-MM-DD HH:mm").set({
+						hour: 23,
+						minute: 59,
+						second: 0,
+						millisecond: 0
+					}).add(1, 'months');
 
-                    $('#app_subscription_attendanceCount').val(0);
-                    $('#app_subscription_startDate').val(today);
-                    $('#app_subscription_dueDate').val(extensionDate.format('YYYY-MM-DD HH:mm'));
-                }
+					$('#app_subscription_attendanceCount').val(0);
+					$('#app_subscription_startDate').val(today);
+					$('#app_subscription_dueDate').val(extensionDate.format('YYYY-MM-DD HH:mm'));
+				}
 
-                var form = $('.form-horizontal');
+				var form = $('.form-horizontal');
 
-                form.submit(function () {
-                    $('#app_subscription_numberOfExtensions').prop("disabled", false);
-                });
-            });
-        });
-    </script>
+				form.submit(function () {
+					$('#app_subscription_numberOfExtensions').prop("disabled", false);
+				});
+			});
+		});
+	</script>
 {% endblock %}

@@ -1,79 +1,85 @@
 {% extends 'subscription/layout.html.twig' %}
 
 {% block body %}
-    {{ parent() }}
-    <h3>Bérlet használat</h3>
-    <div id="yellow-wrapper">
-        <div id="view-subscription-attendances-wrapper">
-            <h4><b>Bérlet Adatok</b></h4>
-            {% block AdminSubscriptionId %}
-                {% if logged_in_user is not null %}
-                    {% if logged_in_user.getIsAdmin %}
-                        <b>Bérlet Azonosító: </b>{{ subscription.getId }}<br/>
-                    {% endif %}
-                {% endif %}
-            {%  endblock %}
-            <b>Tulajdonos: </b>{{ subscription.getOwner.getLastName }} {{ subscription.getOwner.getFirstName }}<br/>
-            <b>Alkalmak Száma: </b>{{ subscription.getAttendanceCount }}<br/>
-            <b>Kezdeti Időpont: </b>{{ subscription.getStartDateString }}<br/>
-            <b>Lejárati Időpont: </b>{{ subscription.getDueDateString }}<br/>
-            <b>Hosszabbítások Száma: </b>{{ subscription.getNumberOfExtensions }}<br/>
-            <b>Ár: </b>{{ subscription.getPrice }}<br/>
-            <br>
-            <h4><b>Látogattot Órák</b></h4>
-            <table class="table colored-table">
-                <thead>
-                <tr>
-                    <th>Óra Típus</th>
-                    <th>Időpont</th>
-                    <th>Résztvevő</th>
-                    {% block AdminLinkToFormHeader %}
-                        {% if logged_in_user is not null %}
-                            {% if logged_in_user.getIsAdmin %}
-                                <th>Űrlap</th>
-                            {% endif %}
-                        {% endif %}
-                    {%  endblock %}
-                </tr>
-                </thead>
-                <tbody>
-                {% for attendanceRecord in attendances %}
-                    <tr>
-                        <td>
-                            {{ attendanceRecord.getSessionEvent.scheduleItem.getSessionName }}
-                        </td>
-                        <td>
-                            {{ attendanceRecord.getSessionEvent.getSessionEventDate|date('Y.m.d.')  }}
-                        </td>
-                        <td>
-                            {{ attendanceRecord.getAttendee.getLastName }} {{ attendanceRecord.getAttendee.getFirstName }}
-                        </td>
-                        {% block AdminLinkToFormBody %}
-                            {% if logged_in_user is not null %}
-                                {% if logged_in_user.getIsAdmin %}
-                                    <td>
-                                        <a href="{{ path('sessionevent_view', {'id': attendanceRecord.getSessionEvent.getId}) }}" class="btn btn-link"><span style="font-size:16px; padding-left: 8px;" class="pull-right showopacity glyphicon glyphicon-list-alt"></span></a>
-                                    </td>
-                                {% endif %}
-                            {% endif %}
-                        {%  endblock %}
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-            <a id="formBackButton" href="#" class="btn btn-primary">Vissza</a>
-        </div>
-    </div>
+	{{ parent() }}
+	<h3>Bérlet használat</h3>
+	<div id="yellow-wrapper">
+		<div id="view-subscription-attendances-wrapper">
+			<h4><b>Bérlet Adatok</b></h4>
+			{% block AdminSubscriptionId %}
+				{% if logged_in_user is not null %}
+					{% if logged_in_user.getIsAdmin %}
+						<b>Bérlet Azonosító: </b>{{ subscription.getId }}<br/>
+					{% endif %}
+				{% endif %}
+			{% endblock %}
+			<b>Tulajdonos: </b>{{ subscription.getOwner.getLastName }} {{ subscription.getOwner.getFirstName }}<br/>
+			{% if subscription.subscriptionType == 'attendance' %}
+				<b>Alkalmak Száma: </b>{{ subscription.getAttendanceCount }}<br/>
+			{% else %}
+				<b>Kreditek Száma: </b>{{ subscription.credit }}<br/>
+			{% endif %}
+			<b>Kezdeti Időpont: </b>{{ subscription.getStartDateString }}<br/>
+			<b>Lejárati Időpont: </b>{{ subscription.getDueDateString }}<br/>
+			<b>Hosszabbítások Száma: </b>{{ subscription.getNumberOfExtensions }}<br/>
+			<b>Ár: </b>{{ subscription.getPrice }}<br/>
+			<br>
+			<h4><b>Látogattot Órák</b></h4>
+			<table class="table colored-table">
+				<thead>
+				<tr>
+					<th>Óra Típus</th>
+					<th>Időpont</th>
+					<th>Résztvevő</th>
+					{% block AdminLinkToFormHeader %}
+						{% if logged_in_user is not null %}
+							{% if logged_in_user.getIsAdmin %}
+								<th>Űrlap</th>
+							{% endif %}
+						{% endif %}
+					{% endblock %}
+				</tr>
+				</thead>
+				<tbody>
+				{% for attendanceRecord in attendances %}
+					<tr>
+						<td>
+							{{ attendanceRecord.getSessionEvent.scheduleItem.getSessionName }}
+						</td>
+						<td>
+							{{ attendanceRecord.getSessionEvent.getSessionEventDate|date('Y.m.d.') }}
+						</td>
+						<td>
+							{{ attendanceRecord.getAttendee.getLastName }} {{ attendanceRecord.getAttendee.getFirstName }}
+						</td>
+						{% block AdminLinkToFormBody %}
+							{% if logged_in_user is not null %}
+								{% if logged_in_user.getIsAdmin %}
+									<td>
+										<a href="{{ path('sessionevent_view', {'id': attendanceRecord.getSessionEvent.getId}) }}"
+										   class="btn btn-link"><span style="font-size:16px; padding-left: 8px;"
+																	  class="pull-right showopacity glyphicon glyphicon-list-alt"></span></a>
+									</td>
+								{% endif %}
+							{% endif %}
+						{% endblock %}
+					</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+			<a id="formBackButton" href="#" class="btn btn-primary">Vissza</a>
+		</div>
+	</div>
 {% endblock %}
 
 {% block stylesheets %}
-    {{ parent() }}
+	{{ parent() }}
 {% endblock %}
 
 {% block body_end_javascripts %}
-    <script type="text/javascript">
-        $('#formBackButton').click( function () {
-            window.history.back()
-        })
-    </script>
+	<script type="text/javascript">
+		$('#formBackButton').click(function () {
+			window.history.back()
+		})
+	</script>
 {% endblock %}
