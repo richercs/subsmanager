@@ -1,13 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: csabi
- * Date: 1/27/17
- * Time: 6:42 PM
- */
 
 namespace AppBundle\Controller;
-
 
 use AppBundle\Entity\AnnouncedSession;
 use AppBundle\Entity\AttendanceHistory;
@@ -21,188 +14,191 @@ use AppBundle\Repository\AttendanceHistoryRepository;
 use AppBundle\Repository\ScheduleItemRepository;
 use AppBundle\Repository\SessionEventRepository;
 use AppBundle\Repository\SubscriptionRepository;
-use AppBundle\Repository\UserAccountRepository;
 use Doctrine\Common\Collections\ArrayCollection;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\OptimisticLockException;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class SessionEventController extends Controller
 {
-    /**
-     * @Route("/sessionevent/list_all", name="session_event_list_all")
-     *
-     * @Security("has_role('ROLE_ADMIN')")
-     *
-     * @param Request request
-     * @return array
-     */
-    public function listAllSessionEventsAction(Request $request)
-    {
-        /** @var UserAccount $loggedInUser */
-        $loggedInUser = $this->getUser();
+	/**
+	 * @Route("/sessionevent/list_all", name="session_event_list_all")
+	 *
+	 * @Security("has_role('ROLE_ADMIN')")
+	 *
+	 * @param Request $request
+	 * @return Response|null
+	 */
+	public function listAllSessionEventsAction(Request $request)
+	{
+		/** @var UserAccount $loggedInUser */
+		$loggedInUser = $this->getUser();
 
-        /** @var EntityManager $em */
-        $em = $this->get('doctrine.orm.default_entity_manager');
+		/** @var EntityManager $em */
+		$em = $this->get('doctrine.orm.default_entity_manager');
 
-        /** @var SessionEventRepository $sessionEventRepo */
-        $sessionEventRepo = $em->getRepository('AppBundle\Entity\SessionEvent');
+		/** @var SessionEventRepository $sessionEventRepo */
+		$sessionEventRepo = $em->getRepository('AppBundle\Entity\SessionEvent');
 
-        $events = $sessionEventRepo->findAll();
+		$events = $sessionEventRepo->findAll();
 
-        return $this->render('event/listAllSessionEvents.html.twig',
-            array(
-                'base_dir' => realpath($this->container->getParameter('kernel.root_dir').'/..').DIRECTORY_SEPARATOR,
-                'events' => $events,
-                'logged_in_user' => $loggedInUser
-            ));
-    }
+		return $this->render('event/listAllSessionEvents.html.twig',
+			[
+				'base_dir' => realpath($this->container->getParameter('kernel.root_dir') . '/..') . DIRECTORY_SEPARATOR,
+				'events' => $events,
+				'logged_in_user' => $loggedInUser
+			]
+		);
+	}
 
-    /**
-     * @Route("sessionevent/search_edit_sessionevent", name="sessionevent_search_edit")
-     *
-     * @Security("has_role('ROLE_ADMIN')")
-     *
-     * @param Request request
-     * @return array
-     */
-    public function searchSessionEventsForEditAction(Request $request)
-    {
-        /** UserAccount $loggedInUser */
-        $loggedInUser = $this->getUser();
+	/**
+	 * @Route("sessionevent/search_edit_sessionevent", name="sessionevent_search_edit")
+	 *
+	 * @Security("has_role('ROLE_ADMIN')")
+	 *
+	 * @param Request $request
+	 * @return Response|null
+	 */
+	public function searchSessionEventsForEditAction(Request $request)
+	{
+		/** UserAccount $loggedInUser */
+		$loggedInUser = $this->getUser();
 
-        /** @var EntityManager $em */
-        $em = $this->get('doctrine.orm.default_entity_manager');
+		/** @var EntityManager $em */
+		$em = $this->get('doctrine.orm.default_entity_manager');
 
-        /** @var SessionEventRepository $sessionEventRepository */
-        $sessionEventRepository = $em->getRepository('AppBundle\Entity\SessionEvent');
+		/** @var SessionEventRepository $sessionEventRepository */
+		$sessionEventRepository = $em->getRepository('AppBundle\Entity\SessionEvent');
 
-        $searchStartDate = $request->get('searchStart');
+		$searchStartDate = $request->get('searchStart');
 
-        $searchDueDate = $request->get('searchDue');
+		$searchDueDate = $request->get('searchDue');
 
-        $searchScheduleItemId = $request->get('searchScheduleItemId');
+		$searchScheduleItemId = $request->get('searchScheduleItemId');
 
-        if(is_null($searchScheduleItemId) || $searchScheduleItemId == "") {
+		if (is_null($searchScheduleItemId) || $searchScheduleItemId == "") {
 
-            if(is_null($searchStartDate) && is_null($searchDueDate) || $searchStartDate == "" && $searchDueDate == "") {
-                $events = $sessionEventRepository->getLastThirtySessions();
-            } else {
-                $events = $sessionEventRepository->getSessionsBetweenDates($searchStartDate, $searchDueDate);
-            }
-        } else {
+			if (is_null($searchStartDate) && is_null($searchDueDate) || $searchStartDate == "" && $searchDueDate == "") {
+				$events = $sessionEventRepository->getLastThirtySessions();
+			} else {
+				$events = $sessionEventRepository->getSessionsBetweenDates($searchStartDate, $searchDueDate);
+			}
+		} else {
 
-            /** @var ScheduleItemRepository $scheduleItemRepository */
-            $scheduleItemRepository = $em->getRepository(ScheduleItem::class);
+			/** @var ScheduleItemRepository $scheduleItemRepository */
+			$scheduleItemRepository = $em->getRepository(ScheduleItem::class);
 
-            $filteredScheduleItem = $scheduleItemRepository->find($searchScheduleItemId);
+			$filteredScheduleItem = $scheduleItemRepository->find($searchScheduleItemId);
 
-            if (!$filteredScheduleItem) {
-                $this->addFlash(
-                    'error',
-                    'Nincs ilyen azonosítójú órarendi elem: ' . $filteredScheduleItem . '!'
-                );
-            }
+			if (!$filteredScheduleItem) {
+				$this->addFlash(
+					'error',
+					'Nincs ilyen azonosítójú órarendi elem: ' . $filteredScheduleItem . '!'
+				);
+			}
 
-            if(is_null($searchStartDate) && is_null($searchDueDate) || $searchStartDate == "" && $searchDueDate == "") {
-                $events = $sessionEventRepository->getLastThirtySessionsFilteredScheduleItem($filteredScheduleItem);
-            } else {
-                $events = $sessionEventRepository->getSessionsBetweenDatesFilteredScheduleItem($searchStartDate, $searchDueDate, $filteredScheduleItem);
-            }
-        }
+			if (is_null($searchStartDate) && is_null($searchDueDate) || $searchStartDate == "" && $searchDueDate == "") {
+				$events = $sessionEventRepository->getLastThirtySessionsFilteredScheduleItem($filteredScheduleItem);
+			} else {
+				$events = $sessionEventRepository->getSessionsBetweenDatesFilteredScheduleItem($searchStartDate, $searchDueDate, $filteredScheduleItem);
+			}
+		}
 
-        /** @var AdminStatsController $adminStatsController */
-        $adminStatsController = $this->get('admin_stats');
+		/** @var AdminStatsController $adminStatsController */
+		$adminStatsController = $this->get('admin_stats');
 
 
-        /** @var SessionEvent $event */
-        foreach ($events as $event) {
+		/** @var SessionEvent $event */
+		foreach ($events as $event) {
 
-            $revenue = $adminStatsController->calculateRevenueAction($event);
+			$revenue = $adminStatsController->calculateRevenueAction($event);
 
-            $event->setRevenue($revenue);
-        }
+			$event->setRevenue($revenue);
+		}
 
-        /** @var ScheduleItemRepository $scheduleItemRepository */
-        $scheduleItemRepository = $em->getRepository('AppBundle\Entity\ScheduleItem');
+		/** @var ScheduleItemRepository $scheduleItemRepository */
+		$scheduleItemRepository = $em->getRepository('AppBundle\Entity\ScheduleItem');
 
-        $scheduleItems = $scheduleItemRepository->findAll();
+		$scheduleItems = $scheduleItemRepository->findAll();
 
-        return $this->render('event/listSessionEventsEdit.html.twig', array(
-            'events' => $events,
-            'searchStart' => $searchStartDate,
-            'searchDue' =>$searchDueDate,
-            'searchScheduleItemId' => $searchScheduleItemId,
-            'schedule_items' => $scheduleItems,
-            'logged_in_user' => $loggedInUser
-        ));
-    }
+		return $this->render('event/listSessionEventsEdit.html.twig', array(
+			'events' => $events,
+			'searchStart' => $searchStartDate,
+			'searchDue' => $searchDueDate,
+			'searchScheduleItemId' => $searchScheduleItemId,
+			'schedule_items' => $scheduleItems,
+			'logged_in_user' => $loggedInUser
+		));
+	}
 
-    /**
-     * @Route("/sessionevent/add_session_event", name="session_add_session_event")
-     *
-     * @Security("has_role('ROLE_ADMIN')")
-     *
-     * @param Request request
-     * @return array
-     */
-    public function addSessionEventAction(Request $request)
-    {
-        /** @var UserAccount $loggedInUser */
-        $loggedInUser = $this->getUser();
+	/**
+	 * @Route("/sessionevent/add_session_event", name="session_add_session_event")
+	 *
+	 * @Security("has_role('ROLE_ADMIN')")
+	 *
+	 * @param Request $request
+	 * @return Response|RedirectResponse|null
+	 * @throws OptimisticLockException
+	 */
+	public function addSessionEventAction(Request $request)
+	{
+		/** @var UserAccount $loggedInUser */
+		$loggedInUser = $this->getUser();
 
-        /** @var EntityManager $em */
-        $em = $this->get('doctrine.orm.default_entity_manager');
+		/** @var EntityManager $em */
+		$em = $this->get('doctrine.orm.default_entity_manager');
 
-        /** @var ScheduleItemRepository $scheduleItemRepository */
-        $scheduleItemRepository = $em->getRepository(ScheduleItem::class);
+		/** @var ScheduleItemRepository $scheduleItemRepository */
+		$scheduleItemRepository = $em->getRepository(ScheduleItem::class);
 
-        /** @var AnnouncedSessionRepository $announcedSessionRepository */
-        $announcedSessionRepository = $em->getRepository(AnnouncedSession::class);
+		/** @var AnnouncedSessionRepository $announcedSessionRepository */
+		$announcedSessionRepository = $em->getRepository(AnnouncedSession::class);
 
-        $scheduleItemCollection = $scheduleItemRepository->findAll();
+		$scheduleItemCollection = $scheduleItemRepository->findAll();
 
-        $scheduleItemCollection = array_combine(range(1, count($scheduleItemCollection)), array_values($scheduleItemCollection));
+		$scheduleItemCollection = array_combine(range(1, count($scheduleItemCollection)), array_values($scheduleItemCollection));
 
-        /** @var ScheduleItem $scheduleItem */
-        foreach ($scheduleItemCollection as $key => $scheduleItem) {
-            if($scheduleItem->isDeleted()) {
-                unset($scheduleItemCollection[$key]);
-            }
-        }
+		/** @var ScheduleItem $scheduleItem */
+		foreach ($scheduleItemCollection as $key => $scheduleItem) {
+			if ($scheduleItem->isDeleted()) {
+				unset($scheduleItemCollection[$key]);
+			}
+		}
 
-        $newEvent = new SessionEvent();
+		$newEvent = new SessionEvent();
 
-        $form = $this->createForm(new SessionEventType($scheduleItemCollection, true), $newEvent);
-        $form->handleRequest($request);
+		$form = $this->createForm(new SessionEventType($scheduleItemCollection, true), $newEvent);
+		$form->handleRequest($request);
 
-        if ($form->isValid())
-        {
+		if ($form->isValid()) {
 
-            $scheduleItemId = $request->get('appbundle_sessionevent')['scheduleItem'];
+			$scheduleItemId = $request->get('appbundle_sessionevent')['scheduleItem'];
 
-            $scheduleItem = $scheduleItemRepository->find($scheduleItemId);
+			$scheduleItem = $scheduleItemRepository->find($scheduleItemId);
 
-            $newEvent->setScheduleItem($scheduleItem);
+			$newEvent->setScheduleItem($scheduleItem);
 
-            $announcedSessionId = $request->get('appbundle_sessionevent')['announcedSession'];
+			$announcedSessionId = $request->get('appbundle_sessionevent')['announcedSession'];
 
-            $announcedSession = $announcedSessionRepository->find($announcedSessionId);
+			$announcedSession = $announcedSessionRepository->find($announcedSessionId);
 
-            if (!empty($announcedSession)) {
+			if (!empty($announcedSession)) {
 
-                $newEvent->setAnnouncedSession($announcedSession);
+				$newEvent->setAnnouncedSession($announcedSession);
 
-                $announcedSession->setSessionEvent($newEvent);
-            }
+				$announcedSession->setSessionEvent($newEvent);
+			}
 
-            // save and continue button that redirects to the edit page
-            if($form->get('saveAndContinue')->isClicked()) {
+			// save and continue button that redirects to the edit page
+			if ($form->get('saveAndContinue')->isClicked()) {
 
-                // Attendance Records Validation
-                // Rule #1 - Every attendee is unique
+				// Attendance Records Validation
+				// Rule #1 - Every attendee is unique
 //
 //                $duplicateAttendees = $this->validateAttendeesCount($newEvent);
 //
@@ -218,35 +214,35 @@ class SessionEventController extends Controller
 //
 //                }
 
-                // Rule #2 - One subscription can only be present on a session event twice
+				// Rule #2 - One subscription can only be present on a session event twice
 
-                $duplicateSubscriptions = $this->validateSubscriptionsCount($newEvent);
+				$duplicateSubscriptions = $this->validateSubscriptionsCount($newEvent);
 
-                if (!empty($duplicateSubscriptions)) {
-                    // message
-                    $this->addFlash(
-                        'error',
-                        'Bérlet többször szerpel az űrlapon mint 2, azonosító: ' . PHP_EOL . implode(', ', $duplicateSubscriptions)
-                    );
+				if (!empty($duplicateSubscriptions)) {
+					// message
+					$this->addFlash(
+						'error',
+						'Bérlet többször szerpel az űrlapon mint 2, azonosító: ' . PHP_EOL . implode(', ', $duplicateSubscriptions)
+					);
 
-                    // show list
-                    return $this->redirectToRoute('session_add_session_event');
-                }
+					// show list
+					return $this->redirectToRoute('session_add_session_event');
+				}
 
-                // The OneToMany association and the symfony-collection bundle manages the attendees ArrayCollection
-                $em->persist($newEvent);
-                $em->flush();
-                $this->addFlash(
-                    'notice',
-                    'Változtatások Elmentve!'
-                );
-                return $this->redirectToRoute('session_edit_session_event', array(
-                    'id' => $newEvent->getId()
-                ));
-            }
+				// The OneToMany association and the symfony-collection bundle manages the attendees ArrayCollection
+				$em->persist($newEvent);
+				$em->flush();
+				$this->addFlash(
+					'notice',
+					'Változtatások Elmentve!'
+				);
+				return $this->redirectToRoute('session_edit_session_event', array(
+					'id' => $newEvent->getId()
+				));
+			}
 
-            // Attendance Records Validation
-            // Rule #1 - Every attendee is unique
+			// Attendance Records Validation
+			// Rule #1 - Every attendee is unique
 
 //            $duplicateAttendees = $this->validateAttendeesCount($newEvent);
 //
@@ -262,197 +258,255 @@ class SessionEventController extends Controller
 //
 //            }
 
-            // Rule #2 - One subscription can only be present on a session event twice
+			// Rule #2 - One subscription can only be present on a session event twice
 
-            $duplicateSubscriptions = $this->validateSubscriptionsCount($newEvent);
+			$duplicateSubscriptions = $this->validateSubscriptionsCount($newEvent);
 
-            if (!empty($duplicateSubscriptions)) {
-                // message
-                $this->addFlash(
-                    'error',
-                    'Bérlet többször szerpel az űrlapon mint 2, azonosító: ' . PHP_EOL . implode(', ', $duplicateSubscriptions)
-                );
+			if (!empty($duplicateSubscriptions)) {
+				// message
+				$this->addFlash(
+					'error',
+					'Bérlet többször szerpel az űrlapon mint 2, azonosító: ' . PHP_EOL . implode(', ', $duplicateSubscriptions)
+				);
 
-                // show list
-                return $this->redirectToRoute('session_add_session_event');
-            }
+				// show list
+				return $this->redirectToRoute('session_add_session_event');
+			}
 
-            // The OneToMany association and the symfony-collection bundle manages the attendees ArrayCollection
-            $em->persist($newEvent);
-            $em->flush();
-            $this->addFlash(
-                'notice',
-                'Változtatások Elmentve!'
-            );
-            return $this->redirectToRoute('sessionevent_search_edit');
-        }
+			// The OneToMany association and the symfony-collection bundle manages the attendees ArrayCollection
+			$em->persist($newEvent);
+			$em->flush();
+			$this->addFlash(
+				'notice',
+				'Változtatások Elmentve!'
+			);
+			return $this->redirectToRoute('sessionevent_search_edit');
+		}
 
-        return $this->render('event/addSessionEvent.html.twig',
-            array(
-                'new_event' => $newEvent,
-                'form' => $form->createView(),
-                'logged_in_user' => $loggedInUser
-            ));
+		return $this->render('event/addSessionEvent.html.twig',
+			array(
+				'new_event' => $newEvent,
+				'form' => $form->createView(),
+				'logged_in_user' => $loggedInUser
+			));
 
-    }
+	}
 
-    /**
-     * Opens edit page for session events with passed $id.
-     *
-     * @Route("/sessionevent/{id}", name="session_edit_session_event", defaults={"id" = -1})
-     *
-     * @Security("has_role('ROLE_ADMIN')")
-     *
-     * @param $id
-     * @param $subscriptionId
-     * @param Request $request
-     * @return array
-     */
-    public function editSessionEventAction($id, $subscriptionId = null, Request $request)
-    {
+	/**
+	 *
+	 * @param SessionEvent $sessionEvent
+	 *
+	 * $return array
+	 */
+	public function validateSubscriptionsCount($sessionEvent)
+	{
 
-        // This is for the back URL
-        if (!is_null($request->query->get('subscription_id'))) {
-            $subscriptionId = intval($request->query->get('subscription_id'));
-        }
+		// Subscription validation
+		// Rule #2 - One subscription can only be present on a session event twice
 
-        /** @var UserAccount $loggedInUser */
-        $loggedInUser = $this->getUser();
+		$subscriptions = new ArrayCollection();
 
-        /** @var EntityManager $em */
-        $em = $this->get('doctrine.orm.default_entity_manager');
+		/** @var AttendanceHistory $attendanceRecord */
+		foreach ($sessionEvent->getAttendees() as $attendanceRecord) {
+			$subscriptions->add($attendanceRecord->getSubscription());
+		}
 
-        /** @var SessionEventRepository $sessionEventRepository */
-        $sessionEventRepository = $em->getRepository('AppBundle\Entity\SessionEvent');
+		$duplicates = new ArrayCollection();
 
-        /** @var AnnouncedSessionRepository $announcedSessionRepository */
-        $announcedSessionRepository = $em->getRepository(AnnouncedSession::class);
+		/** @var Subscription $subscription */
+		foreach ($subscriptions as $subscription) {
 
-        // This is for the back URL
-        $searchStartDate = $request->get('searchStart');
+			$countDuplicates = 0;
 
-        $searchDueDate = $request->get('searchDue');
+			foreach ($subscriptions as $subscriptiontoCheck) {
+				if ($subscription == $subscriptiontoCheck) {
+					$countDuplicates = $countDuplicates + 1;
+				}
+			}
 
-        $searchScheduleItemId = $request->get('searchScheduleItemId');
+			if ($countDuplicates >= 3) {
 
-        // Editing session event
-        /** @var SessionEvent $sessionEvent */
-        $sessionEvent = $sessionEventRepository->find($id);
+				$duplicates->add($subscription->getId());
+			}
+		}
 
-        if (!$sessionEvent) {
-            $this->addFlash(
-                'error',
-                'Nincs ilyen azonosítójú óra esemény: ' . $id . '!'
-            );
-            return $this->redirectToRoute('sessionevent_search_edit');
-        }
+		if ($duplicates->count() >= 1) {
+			return $duplicates->toArray();
+		}
+		return array();
+	}
 
-        /** @var AttendanceHistory $attendee */
-        foreach ($sessionEvent->getAttendees() as $attendee) {
+	/**
+	 * Opens edit page for session events with passed $id.
+	 *
+	 * @Route("/sessionevent/{id}", name="session_edit_session_event", defaults={"id" = -1})
+	 *
+	 * @Security("has_role('ROLE_ADMIN')")
+	 *
+	 * @param $id
+	 * @param Request $request
+	 * @param $subscriptionId
+	 * @return RedirectResponse|Response|null
+	 * @throws OptimisticLockException
+	 */
+	public function editSessionEventAction($id, Request $request, $subscriptionId = null)
+	{
 
-            if(!is_null($attendee->getSubscription())) {
+		// This is for the back URL
+		if (!is_null($request->query->get('subscription_id'))) {
+			$subscriptionId = intval($request->query->get('subscription_id'));
+		}
 
-                $subscriptionIdInRecord = $attendee->getSubscription()->getId();
+		/** @var UserAccount $loggedInUser */
+		$loggedInUser = $this->getUser();
 
-                /** @var SubscriptionRepository $repository */
-                $repository = $this->get('doctrine.orm.default_entity_manager')->getRepository(Subscription::class);
+		/** @var EntityManager $em */
+		$em = $this->get('doctrine.orm.default_entity_manager');
 
-                /** @var Subscription $subscription */
-                $subscription = $repository->find($subscriptionIdInRecord);
+		/** @var SessionEventRepository $sessionEventRepository */
+		$sessionEventRepository = $em->getRepository('AppBundle\Entity\SessionEvent');
 
-                /** @var AttendanceHistoryRepository $attendaceHistoryRepo */
-                $attendaceHistoryRepo = $this->get('doctrine.orm.default_entity_manager')->getRepository(AttendanceHistory::class);
+		/** @var AnnouncedSessionRepository $announcedSessionRepository */
+		$announcedSessionRepository = $em->getRepository(AnnouncedSession::class);
 
-                $subscriptionUsages = $attendaceHistoryRepo->findBy(array('subscription' => $subscriptionIdInRecord));
+		// This is for the back URL
+		$searchStartDate = $request->get('searchStart');
 
-                $countOfSubscriptionUsages = count($subscriptionUsages);
+		$searchDueDate = $request->get('searchDue');
 
-                if(is_null($subscription->getAttendanceCount())) {
-                    $attendee->setSubscriptionInfo("Havi bérlet (használatok száma: " . $countOfSubscriptionUsages . ")");
-                } else {
-                    $attendee->setSubscriptionInfo("Alkalmak Száma: " . $subscription->getAttendanceCount()
-                        . "\n"
-                        . "Fennmaradó: " . ($subscription->getAttendanceCount() - $countOfSubscriptionUsages));
-                }
-            }
-        }
+		$searchScheduleItemId = $request->get('searchScheduleItemId');
 
-        $originalAnnouncedSession = $sessionEvent->getAnnouncedSession();
+		// Editing session event
+		/** @var SessionEvent $sessionEvent */
+		$sessionEvent = $sessionEventRepository->find($id);
 
-        $originalAttendees = new ArrayCollection();
+		if (!$sessionEvent) {
+			$this->addFlash(
+				'error',
+				'Nincs ilyen azonosítójú óra esemény: ' . $id . '!'
+			);
+			return $this->redirectToRoute('sessionevent_search_edit');
+		}
 
-        // Create an ArrayCollection of the current Attendance objects in the database
-        foreach ($sessionEvent->getAttendees() as $attendee) {
-            $originalAttendees->add($attendee);
-        }
+		/** @var AttendanceHistory $attendee */
+		foreach ($sessionEvent->getAttendees() as $attendee) {
+
+			if (!is_null($attendee->getSubscription())) {
+
+				$subscriptionIdInRecord = $attendee->getSubscription()->getId();
+
+				/** @var SubscriptionRepository $repository */
+				$repository = $this->get('doctrine.orm.default_entity_manager')->getRepository(Subscription::class);
+
+				/** @var Subscription $subscription */
+				$subscription = $repository->find($subscriptionIdInRecord);
+
+				/** @var AttendanceHistoryRepository $attendanceHistoryRepository */
+				$attendanceHistoryRepository = $this->get('doctrine.orm.default_entity_manager')->getRepository(AttendanceHistory::class);
+
+				$attendances = $attendanceHistoryRepository->findBy(array('subscription' => $subscriptionIdInRecord));
+
+				$countOfSubscriptionUsages = count($attendances);
+
+				$creditUsage = 0;
+				/** @var AttendanceHistory $attendance */
+				foreach ($attendances as $attendance) {
+					// TODO: duplicate subscription usages on session events count here as double tax on credit
+					$creditUsage += $attendance->getSessionEvent()->getSessionCreditRequirement();
+				}
+
+				if ($subscription->getSubscriptionType() === Subscription::SUBSCRIPTION_TYPE_CREDIT) {
+					$attendee->setSubscriptionInfo(
+						"Kreditek Száma: " . $subscription->getCredit()
+						. "\n"
+						. "Fennmaradó: " . ($subscription->getCredit() - $creditUsage)
+					);
+				} else {
+					$attendee->setSubscriptionInfo(
+						"Alkalmak Száma: " . $subscription->getAttendanceCount()
+						. "\n"
+						. "Fennmaradó: " . ($subscription->getAttendanceCount() - $countOfSubscriptionUsages)
+					);
+				}
+			}
+		}
+
+		$originalAnnouncedSession = $sessionEvent->getAnnouncedSession();
+
+		$originalAttendees = new ArrayCollection();
+
+		// Create an ArrayCollection of the current Attendance objects in the database
+		foreach ($sessionEvent->getAttendees() as $attendee) {
+			$originalAttendees->add($attendee);
+		}
 
 
-        $form = $this->createForm(new SessionEventType(array(), false, $id), $sessionEvent);
-        $form->handleRequest($request);
+		$form = $this->createForm(new SessionEventType(array(), false, $id), $sessionEvent);
+		$form->handleRequest($request);
 
-        if ($form->isValid()) {
+		if ($form->isValid()) {
 
-            $announcedSessionId = $request->get('appbundle_sessionevent')['announcedSession'];
+			$announcedSessionId = $request->get('appbundle_sessionevent')['announcedSession'];
 
-            $announcedSession = $announcedSessionRepository->find($announcedSessionId);
+			$announcedSession = $announcedSessionRepository->find($announcedSessionId);
 
-            if (!empty($announcedSession)) {
+			if (!empty($announcedSession)) {
 
-                $sessionEvent->setAnnouncedSession($announcedSession);
+				$sessionEvent->setAnnouncedSession($announcedSession);
 
-                $announcedSession->setSessionEvent($sessionEvent);
+				$announcedSession->setSessionEvent($sessionEvent);
 
-                if (!empty($originalAnnouncedSession) && $announcedSession !== $originalAnnouncedSession) {
+				if (!empty($originalAnnouncedSession) && $announcedSession !== $originalAnnouncedSession) {
 
-                    $originalAnnouncedSession->setSessionEvent(null);
-                }
-            } else {
+					$originalAnnouncedSession->setSessionEvent(null);
+				}
+			} else {
 
-                if (!empty($originalAnnouncedSession)) {
-                    $originalAnnouncedSession->setSessionEvent(null);
-                }
+				if (!empty($originalAnnouncedSession)) {
+					$originalAnnouncedSession->setSessionEvent(null);
+				}
 
-                $sessionEvent->setAnnouncedSession(null);
-            }
+				$sessionEvent->setAnnouncedSession(null);
+			}
 
-            // remove the relationship between the attendee and the Session event
-            foreach ($originalAttendees as $attendee) {
-                if (false === $sessionEvent->getAttendees()->contains($attendee)) {
-                    // remove the Session event from the Attendee
-                    // $attendee->setSessionEvent(null);
-                    // $em->persist($attendee);
+			// remove the relationship between the attendee and the Session event
+			foreach ($originalAttendees as $attendee) {
+				if (false === $sessionEvent->getAttendees()->contains($attendee)) {
+					// remove the Session event from the Attendee
+					// $attendee->setSessionEvent(null);
+					// $em->persist($attendee);
 
-                    // to delete the attendee entirely
-                    $em->remove($attendee);
-                }
-            }
-            // DELETE Session event
-            if ($form->get('delete')->isClicked()) {
+					// to delete the attendee entirely
+					$em->remove($attendee);
+				}
+			}
+			// DELETE Session event
+			if ($form->get('delete')->isClicked()) {
 
-                if (!empty($sessionEvent->getAnnouncedSession())) {
+				if (!empty($sessionEvent->getAnnouncedSession())) {
 
-                    $sessionEvent->getAnnouncedSession()->setSessionEvent(null);
-                }
+					$sessionEvent->getAnnouncedSession()->setSessionEvent(null);
+				}
 
-                $em->remove($sessionEvent);
-                $em->flush();
+				$em->remove($sessionEvent);
+				$em->flush();
 
-                // message
-                $this->addFlash(
-                    'notice',
-                    '"'. $id . '" azonosítójú óra esemény sikeresen törölve!'
-                );
+				// message
+				$this->addFlash(
+					'notice',
+					'"' . $id . '" azonosítójú óra esemény sikeresen törölve!'
+				);
 
-                // show list
-                return $this->redirectToRoute('sessionevent_search_edit', array(
-                    'searchStart' => $searchStartDate,
-                    'searchDue' =>$searchDueDate,
-                    'searchScheduleItemId' => $searchScheduleItemId,
-                ));
-            }
+				// show list
+				return $this->redirectToRoute('sessionevent_search_edit', array(
+					'searchStart' => $searchStartDate,
+					'searchDue' => $searchDueDate,
+					'searchScheduleItemId' => $searchScheduleItemId,
+				));
+			}
 
-            // Attendance Records Validation
-            // Rule #1 - Every attendee is unique
+			// Attendance Records Validation
+			// Rule #1 - Every attendee is unique
 
 //            $duplicateAttendees = $this->validateAttendeesCount($sessionEvent);
 //
@@ -470,228 +524,195 @@ class SessionEventController extends Controller
 //
 //            }
 
-            // Rule #2 - One subscription can only be present on a session event twice
+			// Rule #2 - One subscription can only be present on a session event twice
 
-            $duplicateSubscriptions = $this->validateSubscriptionsCount($sessionEvent);
+			$duplicateSubscriptions = $this->validateSubscriptionsCount($sessionEvent);
 
-            if (!empty($duplicateSubscriptions)) {
-                // message
-                $this->addFlash(
-                    'error',
-                    'Bérlet többször szerpel az űrlapon mint 2, azonosító: ' . PHP_EOL . implode(', ', $duplicateSubscriptions)
-                );
+			if (!empty($duplicateSubscriptions)) {
+				// message
+				$this->addFlash(
+					'error',
+					'Bérlet többször szerpel az űrlapon mint 2, azonosító: ' . PHP_EOL . implode(', ', $duplicateSubscriptions)
+				);
 
-                // show list
-                return $this->redirectToRoute('session_edit_session_event', array(
-                    'id' => $sessionEvent->getId()
-                ));
-            }
-
-
-
-            $em->persist($sessionEvent);
-            $em->flush();
-            $this->addFlash(
-                'notice',
-                'Változtatások Elmentve!'
-            );
+				// show list
+				return $this->redirectToRoute('session_edit_session_event', array(
+					'id' => $sessionEvent->getId()
+				));
+			}
 
 
-            // Update the subscription Info textareas on each Attendance Record
-
-            /** @var SessionEvent $sessionEvent */
-            $sessionEvent = $sessionEventRepository->find($id);
-
-            /** @var AttendanceHistory $attendee */
-            foreach ($sessionEvent->getAttendees() as $attendee) {
-
-                if(!is_null($attendee->getSubscription())) {
-
-                    $subscriptionIdInRecord = $attendee->getSubscription()->getId();
-
-                    /** @var SubscriptionRepository $repository */
-                    $repository = $this->get('doctrine.orm.default_entity_manager')->getRepository(Subscription::class);
-
-                    /** @var Subscription $subscription */
-                    $subscription = $repository->find($subscriptionIdInRecord);
-
-                    /** @var AttendanceHistoryRepository $attendaceHistoryRepo */
-                    $attendaceHistoryRepo = $this->get('doctrine.orm.default_entity_manager')->getRepository(AttendanceHistory::class);
-
-                    $subscriptionUsages = $attendaceHistoryRepo->findBy(array('subscription' => $subscriptionIdInRecord));
-
-                    $countOfSubscriptionUsages = count($subscriptionUsages);
-
-                    if(is_null($subscription->getAttendanceCount())) {
-                        $attendee->setSubscriptionInfo("Havi bérlet (használatok száma: " . $countOfSubscriptionUsages . ")");
-                    } else {
-                        $attendee->setSubscriptionInfo("Alkalmak Száma: " . $subscription->getAttendanceCount()
-                            . "\n"
-                            . "Fennmaradó: " . ($subscription->getAttendanceCount() - $countOfSubscriptionUsages));
-                    }
-                }
-            }
-
-            // TODO: Validate this code pls. Is it ok to recreate the form and what happens at next submit?
-
-            $form = $this->createForm(new SessionEventType(array(), false, $id), $sessionEvent);
-
-            return $this->render('event/editSessionEvent.html.twig',
-                array(
-                    'sessionevent' => $sessionEvent,
-                    'searchStart' => $searchStartDate,
-                    'searchDue' =>$searchDueDate,
-                    'searchScheduleItemId' => $searchScheduleItemId,
-                    'form' => $form->createView(),
-                    'subscription_id' => $subscriptionId,
-                    'logged_in_user' => $loggedInUser
-                ));
-        }
-
-        return $this->render('event/editSessionEvent.html.twig',
-            array(
-                'sessionevent' => $sessionEvent,
-                'searchStart' => $searchStartDate,
-                'searchDue' =>$searchDueDate,
-                'searchScheduleItemId' => $searchScheduleItemId,
-                'form' => $form->createView(),
-                'subscription_id' => $subscriptionId,
-                'logged_in_user' => $loggedInUser
-            ));
-    }
-
-    /**
-     *
-     * @Route("/sessionevent/view_sessionevent/{id}", name="sessionevent_view", defaults={"id" = -1})
-     *
-     * @Security("has_role('ROLE_ADMIN')")
-     *
-     * @param $id
-     * @param Request $request
-     * @return array
-     */
-    public function viewSessionEvent($id, Request $request) {
-
-        /** @var UserAccount $loggedInUser */
-        $loggedInUser = $this->getUser();
-
-        /** @var EntityManager $em */
-        $em = $this->get('doctrine.orm.default_entity_manager');
-
-        /** @var SessionEventRepository $sessionEventRepo */
-        $sessionEventRepo = $em->getRepository('AppBundle\Entity\SessionEvent');
-
-        /** @var SessionEvent $sessionevent */
-        $sessionevent = $sessionEventRepo->find($id);
-
-        if (!$sessionevent) {
-            $this->addFlash(
-                'error',
-                'Nincs ilyen azonosítójú óra esemény: ' . $id . '!'
-            );
-            return $this->redirectToRoute('sessionevent_search_edit');
-        }
-
-        /** @var AdminStatsController $adminStatsController */
-        $adminStatsController = $this->get('admin_stats');
-
-        $revenue = $adminStatsController->calculateRevenueAction($sessionevent);
-
-        $sessionevent->setRevenue($revenue);
-
-        return $this->render('event/viewSessionEvent.html.twig',
-            array(
-                'sessionevent' => $sessionevent,
-                'logged_in_user' => $loggedInUser
-            ));
+			$em->persist($sessionEvent);
+			$em->flush();
+			$this->addFlash(
+				'notice',
+				'Változtatások Elmentve!'
+			);
 
 
-    }
+			// Update the subscription Info textareas on each Attendance Record
 
-    /**
-     *
-     * @param SessionEvent $sessionEvent
-     *
-     * $return array
-     */
-    public function validateAttendeesCount($sessionEvent) {
+			/** @var SessionEvent $sessionEvent */
+			$sessionEvent = $sessionEventRepository->find($id);
 
-        // Attendee validation
-        // Rule #1 - Every attendee is unique
+			/** @var AttendanceHistory $attendee */
+			foreach ($sessionEvent->getAttendees() as $attendee) {
 
-        $attendees = new ArrayCollection();
+				if (!is_null($attendee->getSubscription())) {
 
-        /** @var AttendanceHistory $attendee */
-        foreach ($sessionEvent->getAttendees() as $attendee) {
-            $attendees->add($attendee->getAttendee());
-        }
+					$subscriptionIdInRecord = $attendee->getSubscription()->getId();
 
-        $duplicates = new ArrayCollection();
+					/** @var SubscriptionRepository $repository */
+					$repository = $this->get('doctrine.orm.default_entity_manager')->getRepository(Subscription::class);
 
-        /** @var UserAccount $attendee */
-        foreach ($attendees as $attendee) {
+					/** @var Subscription $subscription */
+					$subscription = $repository->find($subscriptionIdInRecord);
 
-            $countDuplicates = 0;
+					/** @var AttendanceHistoryRepository $attendanceHistoryRepository */
+					$attendanceHistoryRepository = $this->get('doctrine.orm.default_entity_manager')->getRepository(AttendanceHistory::class);
 
-            foreach ($attendees as $attendeetoCheck) {
-                if ($attendee == $attendeetoCheck) {
-                    $countDuplicates = $countDuplicates + 1;
-                }
-            }
+					$attendances = $attendanceHistoryRepository->findBy(array('subscription' => $subscriptionIdInRecord));
 
-            if ($countDuplicates >= 2) {
+					$countOfSubscriptionUsages = count($attendances);
 
-                $duplicates->add($attendee->getUsername());
-            }
-        }
+					$creditUsage = 0;
+					/** @var AttendanceHistory $attendance */
+					foreach ($attendances as $attendance) {
+						// TODO: duplicate subscription usages on session events count here as double tax on credit
+						$creditUsage += $attendance->getSessionEvent()->getSessionCreditRequirement();
+					}
 
-        if ($duplicates->count() >= 1) {
-            return $duplicates->toArray();
-        }
-        return array();
-    }
+					if ($subscription->getSubscriptionType() === Subscription::SUBSCRIPTION_TYPE_CREDIT) {
+						$attendee->setSubscriptionInfo(
+							"Kreditek Száma: " . $subscription->getCredit()
+							. "\n"
+							. "Fennmaradó: " . ($subscription->getCredit() - $creditUsage)
+						);
+					} else {
+						$attendee->setSubscriptionInfo(
+							"Alkalmak Száma: " . $subscription->getAttendanceCount()
+							. "\n"
+							. "Fennmaradó: " . ($subscription->getAttendanceCount() - $countOfSubscriptionUsages)
+						);
+					}
+				}
+			}
 
-    /**
-     *
-     * @param SessionEvent $sessionEvent
-     *
-     * $return array
-     */
-    public function validateSubscriptionsCount($sessionEvent) {
+			$form = $this->createForm(new SessionEventType(array(), false, $id), $sessionEvent);
 
-        // Subscription validation
-        // Rule #2 - One subscription can only be present on a session event twice
+			return $this->render('event/editSessionEvent.html.twig',
+				array(
+					'sessionevent' => $sessionEvent,
+					'searchStart' => $searchStartDate,
+					'searchDue' => $searchDueDate,
+					'searchScheduleItemId' => $searchScheduleItemId,
+					'form' => $form->createView(),
+					'subscription_id' => $subscriptionId,
+					'logged_in_user' => $loggedInUser
+				));
+		}
 
-        $subscriptions = new ArrayCollection();
+		return $this->render('event/editSessionEvent.html.twig',
+			array(
+				'sessionevent' => $sessionEvent,
+				'searchStart' => $searchStartDate,
+				'searchDue' => $searchDueDate,
+				'searchScheduleItemId' => $searchScheduleItemId,
+				'form' => $form->createView(),
+				'subscription_id' => $subscriptionId,
+				'logged_in_user' => $loggedInUser
+			));
+	}
 
-        /** @var AttendanceHistory $attendanceRecord */
-        foreach ($sessionEvent->getAttendees() as $attendanceRecord) {
-            $subscriptions->add($attendanceRecord->getSubscription());
-        }
+	/**
+	 *
+	 * @Route("/sessionevent/view_sessionevent/{id}", name="sessionevent_view", defaults={"id" = -1})
+	 *
+	 * @Security("has_role('ROLE_ADMIN')")
+	 *
+	 * @param $id
+	 * @param Request $request
+	 * @return RedirectResponse|Response|null
+	 */
+	public function viewSessionEvent($id, Request $request)
+	{
 
-        $duplicates = new ArrayCollection();
+		/** @var UserAccount $loggedInUser */
+		$loggedInUser = $this->getUser();
 
-        /** @var Subscription $subscription */
-        foreach ($subscriptions as $subscription) {
+		/** @var EntityManager $em */
+		$em = $this->get('doctrine.orm.default_entity_manager');
 
-            $countDuplicates = 0;
+		/** @var SessionEventRepository $sessionEventRepo */
+		$sessionEventRepo = $em->getRepository('AppBundle\Entity\SessionEvent');
 
-            foreach ($subscriptions as $subscriptiontoCheck) {
-                if ($subscription == $subscriptiontoCheck) {
-                    $countDuplicates = $countDuplicates + 1;
-                }
-            }
+		/** @var SessionEvent $sessionevent */
+		$sessionevent = $sessionEventRepo->find($id);
 
-            if ($countDuplicates >= 3) {
+		if (!$sessionevent) {
+			$this->addFlash(
+				'error',
+				'Nincs ilyen azonosítójú óra esemény: ' . $id . '!'
+			);
+			return $this->redirectToRoute('sessionevent_search_edit');
+		}
 
-                $duplicates->add($subscription->getId());
-            }
-        }
+		/** @var AdminStatsController $adminStatsController */
+		$adminStatsController = $this->get('admin_stats');
 
-        if ($duplicates->count() >= 1) {
-            return $duplicates->toArray();
-        }
-        return array();
-    }
+		$revenue = $adminStatsController->calculateRevenueAction($sessionevent);
 
+		$sessionevent->setRevenue($revenue);
+
+		return $this->render('event/viewSessionEvent.html.twig',
+			[
+				'sessionevent' => $sessionevent,
+				'logged_in_user' => $loggedInUser
+			]
+		);
+	}
+
+	/**
+	 *
+	 * @param SessionEvent $sessionEvent
+	 *
+	 * $return array
+	 */
+	public function validateAttendeesCount($sessionEvent)
+	{
+
+		// Attendee validation
+		// Rule #1 - Every attendee is unique
+
+		$attendees = new ArrayCollection();
+
+		/** @var AttendanceHistory $attendee */
+		foreach ($sessionEvent->getAttendees() as $attendee) {
+			$attendees->add($attendee->getAttendee());
+		}
+
+		$duplicates = new ArrayCollection();
+
+		/** @var UserAccount $attendee */
+		foreach ($attendees as $attendee) {
+
+			$countDuplicates = 0;
+
+			foreach ($attendees as $attendeetoCheck) {
+				if ($attendee == $attendeetoCheck) {
+					$countDuplicates = $countDuplicates + 1;
+				}
+			}
+
+			if ($countDuplicates >= 2) {
+
+				$duplicates->add($attendee->getUsername());
+			}
+		}
+
+		if ($duplicates->count() >= 1) {
+			return $duplicates->toArray();
+		}
+		return array();
+	}
 }

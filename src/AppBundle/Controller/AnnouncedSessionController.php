@@ -139,9 +139,6 @@ class AnnouncedSessionController extends Controller
 
             $newAnnouncedSession->setScheduleItem($scheduleItem);
 
-
-            // TODO: Validate by business rules if need be
-
             // The OneToMany association and the symfony-collection bundle manages the signups ArrayCollection
             $em->persist($newAnnouncedSession);
             $em->flush();
@@ -242,8 +239,6 @@ class AnnouncedSessionController extends Controller
                     'searchScheduleItemId' => $searchScheduleItemId,
                 ));
             }
-
-            // TODO: Business rules validation
 
             $em->persist($announcedSession);
             $em->flush();

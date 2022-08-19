@@ -182,11 +182,8 @@
 {% endblock %}
 
 {% block body_end_javascripts %}
-
 	{% if break_event is defined %}
-
 		{% if reverting is defined %}
-
 			<script type="text/javascript">
 
 				var confirmDeleteCheckbox = $('#confirmDeleteCheckBox');
@@ -208,11 +205,8 @@
 						$('#form_save').attr("disabled", true);
 					}
 				});
-
 			</script>
-
 		{% else %}
-
 			<script type="text/javascript">
 
 				var confirmExtendCheckbox = $('#confirmExtendCheckBox');
@@ -234,11 +228,7 @@
 						$('#form_save').attr("disabled", true);
 					}
 				});
-
 			</script>
-
 		{% endif %}
-
 	{% endif %}
-
 {% endblock %}

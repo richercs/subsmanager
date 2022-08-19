@@ -3,124 +3,125 @@
 namespace AppBundle\Repository;
 
 use AppBundle\Entity\BreakEvent;
-use AppBundle\Entity\Subscription;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityRepository;
 
 
 class SubscriptionRepository extends EntityRepository
 {
-    public function getRunningSubs() {
-    }
+	public function getRunningSubs()
+	{
+	}
 
-    /**
-     *
-     *@param BreakEvent $breakEvent
-     * @return array
-     */
-    public function getClashingSubscriptions($break_day) {
-
-        $query = $this->_em->createQuery('
+	/**
+	 *
+	 * @param BreakEvent $breakEvent
+	 * @return array
+	 */
+	public function getClashingSubscriptions($break_day)
+	{
+		$query = $this->_em->createQuery('
                 SELECT subscription
-                FROM AppBundle\Entity\Subscription subscription 
+                FROM AppBundle\Entity\Subscription subscription
                 WHERE subscription.startDate <= :break_day
                 AND subscription.dueDate >= :break_day
            ');
 
-        $query->setParameters(array(
-            'break_day' => $break_day,
-        ));
+		$query->setParameters(array(
+			'break_day' => $break_day,
+		));
 
-        $result = $query->getResult();
+		$result = $query->getResult();
 
-        return $result;
-    }
+		return $result;
+	}
 
-    public function getSubscriptionsBetweenDates($stats_start, $stats_due) {
-
-        $query = $this->_em->createQuery('
+	public function getSubscriptionsBetweenDates($stats_start, $stats_due)
+	{
+		$query = $this->_em->createQuery('
                 SELECT subscription
-                FROM AppBundle\Entity\Subscription subscription 
+                FROM AppBundle\Entity\Subscription subscription
                 WHERE subscription.startDate >= :stats_start
                 AND subscription.startDate <= :stats_due
            ');
 
-        $query->setParameters(array(
-            'stats_start' => $stats_start,
-            'stats_due' => $stats_due
-        ));
+		$query->setParameters(array(
+			'stats_start' => $stats_start,
+			'stats_due' => $stats_due
+		));
 
-        $result = $query->getResult();
+		$result = $query->getResult();
 
-        return $result;
-    }
+		return $result;
+	}
 
-    public function getLastFiftySubscriptions() {
-
-        $query = $this->_em->createQuery('
+	public function getLastFiftySubscriptions()
+	{
+		$query = $this->_em->createQuery('
                 SELECT subscription
-                FROM AppBundle\Entity\Subscription subscription 
+                FROM AppBundle\Entity\Subscription subscription
                 ORDER BY subscription.id DESC
            ');
 
-        $query->setMaxResults(50);
+		$query->setMaxResults(50);
 
-        $result = $query->getResult();
+		$result = $query->getResult();
 
-        return $result;
-    }
+		return $result;
+	}
 
-    public function findUsableSubscriptions()
-    {
-        $query = $this->_em->createQuery('
+	public function findUsableSubscriptions()
+	{
+		$query = $this->_em->createQuery('
             SELECT
-              s.id, COUNT(ah.id) as c, COALESCE(s.attendanceCount, 0) AS treshold
+              s.id, COALESCE(SUM(session_event.sessionCreditRequirement), 0) as c, COALESCE(s.credit, 0) AS treshold
             FROM
                 AppBundle\Entity\Subscription s
-            LEFT JOIN 
+            LEFT JOIN
               AppBundle\Entity\AttendanceHistory ah WITH ah.subscription = s.id
+            LEFT JOIN
+              AppBundle\Entity\SessionEvent session_event WITH ah.session_event = session_event.id
             WHERE
               s.dueDate >= CURRENT_DATE()
-            GROUP BY 
+            GROUP BY
               s.id
-            HAVING 
+            HAVING
               c < treshold
         ');
 
-        $runningSubs = $query->getArrayResult();
+		$runningSubs = $query->getArrayResult();
 
-        $runningSubIds = array_column($runningSubs, 'id');
+		$runningSubIds = array_column($runningSubs, 'id');
 
-        return $this->findBy(array('id' => $runningSubIds));
-    }
+		return $this->findBy(array('id' => $runningSubIds));
+	}
 
-    public function findUsableSubscriptionsForUser($owner)
-    {
-        $query = $this->_em->createQuery('
+	public function findUsableSubscriptionsForUser($owner)
+	{
+		$query = $this->_em->createQuery('
             SELECT
               s.id, COUNT(ah.id) as c, COALESCE(s.attendanceCount, 0) AS treshold
             FROM
                 AppBundle\Entity\Subscription s
-            LEFT JOIN 
+            LEFT JOIN
               AppBundle\Entity\AttendanceHistory ah WITH ah.subscription = s.id
             WHERE
               s.dueDate >= CURRENT_DATE()
-              AND 
+              AND
               s.owner = :owner
-            GROUP BY 
+            GROUP BY
               s.id
-            HAVING 
+            HAVING
               c < treshold
         ');
 
-        $query->setParameters(array(
-            'owner' => $owner
-        ));
+		$query->setParameters(array(
+			'owner' => $owner
+		));
 
-        $runningSubs = $query->getArrayResult();
+		$runningSubs = $query->getArrayResult();
 
-        $runningSubIds = array_column($runningSubs, 'id');
+		$runningSubIds = array_column($runningSubs, 'id');
 
-        return $this->findBy(array('id' => $runningSubIds));
-    }
+		return $this->findBy(array('id' => $runningSubIds));
+	}
 }
