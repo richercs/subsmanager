@@ -36,23 +36,30 @@ class ScheduleItem
     /**
      * @var string
      *
-     * @ORM\Column(name="scheduled_day", nullable = false)
+     * @ORM\Column(name="scheduled_day", nullable = true)
      */
     protected $scheduledDay;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="scheduled_start_time", nullable = false)
+     * @ORM\Column(name="scheduled_start_time", nullable = true)
      */
     protected $scheduledStartTime;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="scheduled_due_time", nullable = false)
+     * @ORM\Column(name="scheduled_due_time", nullable = true)
      */
     protected $scheduledDueTime;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_weekly_online", type="boolean", nullable = false)
+     */
+    protected $isWeeklyOnline;
 
     /**
      * @var string
@@ -166,6 +173,22 @@ class ScheduleItem
     {
         $this->scheduledDueTime = $scheduledDueTime;
     }
+
+	/**
+	 * @return boolean
+	 */
+	public function getIsWeeklyOnline()
+	{
+		return $this->isWeeklyOnline;
+	}
+
+	/**
+	 * @param boolean $isWeeklyOnline
+	 */
+	public function setIsWeeklyOnline($isWeeklyOnline)
+	{
+		$this->isWeeklyOnline = $isWeeklyOnline;
+	}
 
     /**
      * @return string

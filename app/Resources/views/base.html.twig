@@ -1,136 +1,198 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8" />
-        <title>{% block title %}Bérlet Kezelő [Subsmanager]{% endblock %}</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
-        <link rel="stylesheet" href="{{ asset('css/main.css') }}">
+<head>
+	<meta charset="UTF-8"/>
+	<title>{% block title %}Bérlet Kezelő [Subsmanager]{% endblock %}</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+	<link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}"/>
+	<link rel="stylesheet" href="{{ asset('css/main.css') }}">
 
-        <link rel="stylesheet" href="{{ asset('css/jquery-ui.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/jquery-ui.min.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/jquery-ui.structure.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/jquery-ui.theme.css') }}">
+	<link rel="stylesheet" href="{{ asset('css/jquery-ui.css') }}">
+	<link rel="stylesheet" href="{{ asset('css/jquery-ui.min.css') }}">
+	<link rel="stylesheet" href="{{ asset('css/jquery-ui.structure.css') }}">
+	<link rel="stylesheet" href="{{ asset('css/jquery-ui.theme.css') }}">
 
-        <link rel="stylesheet" href="{{ asset('assets/vendor/bootstrap/dist/css/bootstrap.min.css') }}" />
-        {% block stylesheets %}{%  endblock %}
-        <script src="{{ asset('assets/vendor/jquery/dist/jquery.min.js') }}"></script>
-        <script src="{{ asset('assets/vendor/bootstrap/dist/js/bootstrap.min.js') }}"></script>
-        {% block javascript %}{% endblock %}
-    </head>
-    <body>
-        <div class="container-fluid">
-            <div class="row" id="row-wrapper">
-                <div class="grid-menu col-md-3 col-lg-3">
-                    {% block sidebar %}
-                    <!-- SIDEBAR -->
-                    <nav class="navbar navbar-default sidebar" role="navigation">
-                        <div class="container-fluid">
-                            <div class="navbar-header">
-                                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-sidebar-navbar-collapse-1">
-                                    <span class="sr-only">Toggle navigation</span>
-                                    <span class="icon-bar"></span>
-                                    <span class="icon-bar"></span>
-                                    <span class="icon-bar"></span>
-                                </button>
-                            </div>
-                            <div class="collapse navbar-collapse" id="bs-sidebar-navbar-collapse-1">
-                                <ul class="nav navbar-nav">
-                                    {% block loggedInBoard %}
-                                        {% if logged_in_user is not null %}
-                                            <li><p id="logged-in-board-p">Bejelentkezve:<br>{{ logged_in_user.getEmail }}</p></li>
-                                            <li><a href="{{ path('fos_user_security_logout') }}">Kijelentkezés<span style="font-size:16px; padding-left: 8px;" class="pull-right showopacity glyphicon glyphicon-log-out"></span></a></li>
-                                        {% endif %}
-                                    {% endblock %}
-                                    <li class="active"><a href="{{ path('homepage') }}">Fő oldal<span style="font-size:16px; padding-left: 8px;" class="pull-right showopacity glyphicon glyphicon-home"></span></a></li>
+	<link rel="stylesheet" href="{{ asset('assets/vendor/bootstrap/dist/css/bootstrap.min.css') }}"/>
+	{% block stylesheets %}{% endblock %}
+	<script src="{{ asset('assets/vendor/jquery/dist/jquery.min.js') }}"></script>
+	<script src="{{ asset('assets/vendor/bootstrap/dist/js/bootstrap.min.js') }}"></script>
+	{% block javascript %}{% endblock %}
+</head>
+<body>
+<div class="container-fluid">
+	<div class="row" id="row-wrapper">
+		<div class="grid-menu col-md-3 col-lg-3">
+			{% block sidebar %}
+				<!-- SIDEBAR -->
+				<nav class="navbar navbar-default sidebar" role="navigation">
+					<div class="container-fluid">
+						<div class="navbar-header">
+							<button type="button" class="navbar-toggle" data-toggle="collapse"
+									data-target="#bs-sidebar-navbar-collapse-1">
+								<span class="sr-only">Toggle navigation</span>
+								<span class="icon-bar"></span>
+								<span class="icon-bar"></span>
+								<span class="icon-bar"></span>
+							</button>
+						</div>
+						<div class="collapse navbar-collapse" id="bs-sidebar-navbar-collapse-1">
+							<ul class="nav navbar-nav">
+								{% block loggedInBoard %}
+									{% if logged_in_user is not null %}
+										<li><p id="logged-in-board-p">Bejelentkezve:<br>{{ logged_in_user.getEmail }}
+											</p></li>
+										<li><a href="{{ path('fos_user_security_logout') }}">Kijelentkezés<span
+													style="font-size:16px; padding-left: 8px;"
+													class="pull-right showopacity glyphicon glyphicon-log-out"></span></a>
+										</li>
+									{% endif %}
+								{% endblock %}
+								<li class="active"><a href="{{ path('homepage') }}">Fő oldal<span
+											style="font-size:16px; padding-left: 8px;"
+											class="pull-right showopacity glyphicon glyphicon-home"></span></a></li>
 
-                                    {% block loggedInMenu %}
-                                        {% if logged_in_user is not null %}
-                                            {% if logged_in_user.getIsAdmin %}
-                                                <li class="dropdown">
-                                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Felhasználók <span class="caret"></span><span style="font-size:16px; padding-left: 8px;" class="pull-right showopacity glyphicon glyphicon-user"></span></a>
-                                                    <ul class="dropdown-menu forAnimate" role="menu">
-                                                        <li><a href="{{path('useraccount_add_user')}}">Új Felhasználó</a></li>
-                                                        <li class="divider"></li>
-                                                        <li><a href="{{path('useraccount_search_useraccount')}}">Felhasználók Keresése</a></li>
-                                                    </ul>
-                                                </li>
-                                                <li class="dropdown">
-                                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Bérletek <span class="caret"></span><span style="font-size:16px; padding-left: 8px;" class="pull-right showopacity glyphicon glyphicon-list-alt"></span></a>
-                                                    <ul class="dropdown-menu forAnimate" role="menu">
-                                                        <li><a href="{{path('subscription_add_subscription')}}">Új Bérlet</a></li>
-                                                        <li class="divider"></li>
-                                                        <li><a href="{{path('subscription_list_all')}}">Bérletek Lista</a></li>
-                                                    </ul>
-                                                </li>
-                                                <li class="dropdown">
-                                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Órarend <span class="caret"></span><span style="font-size:16px; padding-left: 8px;" class="pull-right showopacity glyphicon glyphicon-calendar"></span></a>
-                                                    <ul class="dropdown-menu forAnimate" role="menu">
-                                                        <li><a href="{{path('schedule_add_item')}}">Új Órarendi Elem</a></li>
-                                                        <li class="divider"></li>
-                                                        <li><a href="{{path('schedule_list_all')}}">Órarendi Elemek Lista</a></li>
-                                                    </ul>
-                                                </li>
-                                                <li class="dropdown">
-                                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Óra Események <span class="caret"></span><span style="font-size:16px; padding-left: 8px;" class="pull-right showopacity glyphicon glyphicon-th-list"></span></a>
-                                                    <ul class="dropdown-menu forAnimate" role="menu">
-                                                        <li><a href="{{path('session_add_session_event')}}">Új Óra Esemény</a></li>
-                                                        <li><a href="{{path('break_add_breakevent')}}">Új Szünet Esemény</a></li>
-                                                        <li class="divider"></li>
-                                                        <li><a href="{{path('sessionevent_search_edit')}}">Óra Események Lista</a></li>
-                                                        <li><a href="{{path('break_event_list_all')}}">Szünetek Lista</a></li>
-                                                    </ul>
-                                                </li>
-                                                <li class="dropdown">
-                                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Bejelentkezések <span class="caret"></span><span style="font-size:16px; padding-left: 8px;" class="pull-right showopacity glyphicon glyphicon-book"></span></a>
-                                                    <ul class="dropdown-menu forAnimate" role="menu">
-                                                        <li><a href="{{path('add_announced_session')}}">Új Bejelentkezéses Óra</a></li>
-                                                        <li class="divider"></li>
-                                                        <li><a href="{{path('announced_session_search_edit')}}">Bejelentkezéses Órák Lista</a></li>
-                                                    </ul>
-                                                </li>
-                                                <li><a href="{{ path('usercontact_list_all') }}" class="btn btn-warning menubar-btn" style="color: black;"><span style="font-size:16px; padding-left: 8px;" class="pull-right showopacity glyphicon glyphicon-flag"></span><span id="contacts_count_badge" class="badge">{{ app.session.get('pending_user_contact_count') }}</span>Kapcsolat Felvételi Űrlapok</a></li>
-                                            {% endif %}
-                                            <li><a href="{{ path('useraccount_view',{'id': logged_in_user.id}) }}" class="btn btn-primary menubar-btn" style="color: black;"><span style="font-size:16px; padding-left: 8px;" class="pull-right showopacity glyphicon glyphicon-user"></span>Adatok Megtekintése</a></li>
-                                            <li><a href="{{ path('useraccount_edit_user',{'id': logged_in_user.id}) }}" class="btn btn-info menubar-btn" style="color: black;"><span style="font-size:16px; padding-left: 8px;" class="pull-right showopacity glyphicon glyphicon-pencil"></span>Adatok Szerkesztése</a></li>
-                                        {% else %}
-                                            <li><a href="{{ path('fos_user_security_login') }}" class="btn btn-link menubar-btn"><span style="font-size:16px; padding-left: 8px;" class="pull-right showopacity glyphicon glyphicon-log-in"></span>Belépés</a></li>
-                                        {% endif %}
-                                    {% endblock %}
-                                    <li><a href="{{ path('usercontact_add_contact') }}" class="btn btn-success menubar-btn" style="color: black;"><span style="font-size:16px; padding-left: 8px;" class="pull-right showopacity glyphicon glyphicon-envelope"></span>Kapcsolat Felvételi Űrlap</a></li>
-                                    {% block admin_stats %}
-                                        {% if logged_in_user is not null %}
-                                            {% if logged_in_user.getIsAdmin %}
-                                                <li><a href="{{ path('admin_stats') }}" class="btn btn-primary menubar-btn" style="color: black;"><span style="font-size:16px; padding-left: 8px;" class="pull-right showopacity glyphicon glyphicon-stats"></span>Statisztika</a></li>
-                                            {% endif %}
-                                        {% endif %}
-                                    {% endblock %}
-                                </ul>
-                            </div>
-                        </div>
-                    </nav>
-                    <!-- SIDEBAR -->
-                    {% endblock %}
-                </div>
-                <div class="grid-content col-md-9 col-lg-9">
-                    <div id="content">
-                        {% for flash_message in app.session.flashBag.get('notice') %}
-                            <div class="flash-notice alert alert-success">
-                                {{ flash_message }}
-                            </div>
-                        {% endfor %}
-                        {% for flash_message in app.session.flashBag.get('error') %}
-                            <div class="flash-notice alert alert-danger">
-                                {{ flash_message }}
-                            </div>
-                        {% endfor %}
-                        {% block body %}{% endblock %}
+								{% block loggedInMenu %}
+									{% if logged_in_user is not null %}
+										{% if logged_in_user.getIsAdmin %}
+											<li class="dropdown">
+												<a href="#" class="dropdown-toggle" data-toggle="dropdown">Felhasználók
+													<span class="caret"></span><span
+														style="font-size:16px; padding-left: 8px;"
+														class="pull-right showopacity glyphicon glyphicon-user"></span></a>
+												<ul class="dropdown-menu forAnimate" role="menu">
+													<li><a href="{{ path('useraccount_add_user') }}">Új Felhasználó</a>
+													</li>
+													<li class="divider"></li>
+													<li><a href="{{ path('useraccount_search_useraccount') }}">Felhasználók
+															Keresése</a></li>
+												</ul>
+											</li>
+											<li class="dropdown">
+												<a href="#" class="dropdown-toggle" data-toggle="dropdown">Bérletek
+													<span class="caret"></span><span
+														style="font-size:16px; padding-left: 8px;"
+														class="pull-right showopacity glyphicon glyphicon-list-alt"></span></a>
+												<ul class="dropdown-menu forAnimate" role="menu">
+													<li><a href="{{ path('subscription_add_subscription') }}">Új
+															Bérlet</a></li>
+													<li class="divider"></li>
+													<li><a href="{{ path('subscription_list_all') }}">Bérletek Lista</a>
+													</li>
+												</ul>
+											</li>
+											<li class="dropdown">
+												<a href="#" class="dropdown-toggle" data-toggle="dropdown">Órarend <span
+														class="caret"></span><span
+														style="font-size:16px; padding-left: 8px;"
+														class="pull-right showopacity glyphicon glyphicon-calendar"></span></a>
+												<ul class="dropdown-menu forAnimate" role="menu">
+													<li><a href="{{ path('schedule_add_item') }}">Új Órarendi Elem</a>
+													</li>
+													<li class="divider"></li>
+													<li><a href="{{ path('schedule_add_weekly_online_item') }}">Új Heti
+															Online Órarendi Elem</a></li>
+													<li class="divider"></li>
+													<li><a href="{{ path('schedule_list_all') }}">Órarendi Elemek
+															Lista</a></li>
+												</ul>
+											</li>
+											<li class="dropdown">
+												<a href="#" class="dropdown-toggle" data-toggle="dropdown">Óra Események
+													<span class="caret"></span><span
+														style="font-size:16px; padding-left: 8px;"
+														class="pull-right showopacity glyphicon glyphicon-th-list"></span></a>
+												<ul class="dropdown-menu forAnimate" role="menu">
+													<li><a href="{{ path('session_add_session_event') }}">Új Óra
+															Esemény</a></li>
+													<li><a href="{{ path('break_add_breakevent') }}">Új Szünet
+															Esemény</a></li>
+													<li class="divider"></li>
+													<li><a href="{{ path('sessionevent_search_edit') }}">Óra Események
+															Lista</a></li>
+													<li><a href="{{ path('break_event_list_all') }}">Szünetek Lista</a>
+													</li>
+												</ul>
+											</li>
+											<li class="dropdown">
+												<a href="#" class="dropdown-toggle" data-toggle="dropdown">Bejelentkezések
+													<span class="caret"></span><span
+														style="font-size:16px; padding-left: 8px;"
+														class="pull-right showopacity glyphicon glyphicon-book"></span></a>
+												<ul class="dropdown-menu forAnimate" role="menu">
+													<li><a href="{{ path('add_announced_session') }}">Új Bejelentkezéses
+															Óra</a></li>
+													<li class="divider"></li>
+													<li><a href="{{ path('announced_session_search_edit') }}">Bejelentkezéses
+															Órák Lista</a></li>
+												</ul>
+											</li>
+											<li><a href="{{ path('usercontact_list_all') }}"
+												   class="btn btn-warning menubar-btn" style="color: black;"><span
+														style="font-size:16px; padding-left: 8px;"
+														class="pull-right showopacity glyphicon glyphicon-flag"></span><span
+														id="contacts_count_badge"
+														class="badge">{{ app.session.get('pending_user_contact_count') }}</span>Kapcsolat
+													Felvételi Űrlapok</a></li>
+										{% endif %}
+										<li><a href="{{ path('useraccount_view',{'id': logged_in_user.id}) }}"
+											   class="btn btn-primary menubar-btn" style="color: black;"><span
+													style="font-size:16px; padding-left: 8px;"
+													class="pull-right showopacity glyphicon glyphicon-user"></span>Adatok
+												Megtekintése</a></li>
+										<li><a href="{{ path('useraccount_edit_user',{'id': logged_in_user.id}) }}"
+											   class="btn btn-info menubar-btn" style="color: black;"><span
+													style="font-size:16px; padding-left: 8px;"
+													class="pull-right showopacity glyphicon glyphicon-pencil"></span>Adatok
+												Szerkesztése</a></li>
+									{% else %}
+										<li><a href="{{ path('fos_user_security_login') }}"
+											   class="btn btn-link menubar-btn"><span
+													style="font-size:16px; padding-left: 8px;"
+													class="pull-right showopacity glyphicon glyphicon-log-in"></span>Belépés</a>
+										</li>
+									{% endif %}
+								{% endblock %}
+								<li><a href="{{ path('usercontact_add_contact') }}" class="btn btn-success menubar-btn"
+									   style="color: black;"><span style="font-size:16px; padding-left: 8px;"
+																   class="pull-right showopacity glyphicon glyphicon-envelope"></span>Kapcsolat
+										Felvételi Űrlap</a></li>
+								{% block admin_stats %}
+									{% if logged_in_user is not null %}
+										{% if logged_in_user.getIsAdmin %}
+											<li><a href="{{ path('admin_stats') }}" class="btn btn-primary menubar-btn"
+												   style="color: black;"><span
+														style="font-size:16px; padding-left: 8px;"
+														class="pull-right showopacity glyphicon glyphicon-stats"></span>Statisztika</a>
+											</li>
+										{% endif %}
+									{% endif %}
+								{% endblock %}
+							</ul>
+						</div>
+					</div>
+				</nav>
+				<!-- SIDEBAR -->
+			{% endblock %}
+		</div>
+		<div class="grid-content col-md-9 col-lg-9">
+			<div id="content">
+				{% for flash_message in app.session.flashBag.get('notice') %}
+					<div class="flash-notice alert alert-success">
+						{{ flash_message }}
+					</div>
+				{% endfor %}
+				{% for flash_message in app.session.flashBag.get('error') %}
+					<div class="flash-notice alert alert-danger">
+						{{ flash_message }}
+					</div>
+				{% endfor %}
+				{% block body %}{% endblock %}
 
-                    </div>
-                </div>
-            </div>
-        </div>
+			</div>
+		</div>
+	</div>
+</div>
 
-        {% block body_end_javascripts %}{% endblock %}
-    </body>
+{% block body_end_javascripts %}{% endblock %}
+</body>
 </html>

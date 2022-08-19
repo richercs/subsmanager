@@ -1,0 +1,20 @@
+{% extends 'schedule/layout.html.twig' %}
+
+{% block body %}
+	{{ parent() }}
+	<h3>Új Heti Online Órarendi Elem</h3>
+	<div id="yellow-wrapper">
+		{{ form_start(form) }}
+		{{ form_errors(form) }}
+		{{ form_row(form._token) }}
+		{{ form_row(form.scheduledItemName, { 'label': 'Órarendi Elem Neve' }) }}
+		{{ form_row(form.location, {'label': 'Hely'}) }}
+		{{ form_row(form.session_name, {'label': 'Óra Neve'}) }}
+		{{ form_row(form.save) }}
+		{{ form_end(form, {'render_rest': false}) }}
+	</div>
+{% endblock %}
+
+{% block stylesheets %}
+	{{ parent() }}
+{% endblock %}
