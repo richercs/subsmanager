@@ -330,29 +330,16 @@ class UserAccountController extends Controller
 
 		$subscriptions = $subscriptionRepository->findBy(array('owner' => $userAccount->getId()));
 
-		/** @var AttendanceHistoryRepository $attendanceHistoryRepo */
-		$attendanceHistoryRepo = $em->getRepository(AttendanceHistory::class);
-
 		/** ArrayCollection $activeSubs */
 		$activeSubs = new ArrayCollection();
 
 		/** @var Subscription $subscription */
 		foreach ($subscriptions as $subscription) {
 
-			if ($subscription->getStatusBoolean()) {
-
-				$attendances = $attendanceHistoryRepo->findBy(array('subscription' => $subscription));
-				$subscription->setUsages(count($attendances));
-
-				if ($subscription->getSubscriptionType() === Subscription::SUBSCRIPTION_TYPE_CREDIT) {
-					$activeSubs->add($subscription);
-				}
-
-				if ($subscription->getSubscriptionType() === Subscription::SUBSCRIPTION_TYPE_ATTENDANCE
-					&& $subscription->getUsages() < $subscription->getAttendanceCount()
-				) {
-					$activeSubs->add($subscription);
-				}
+			if ($subscription->getStatusBoolean()
+				&& $subscription->getSubscriptionType() === Subscription::SUBSCRIPTION_TYPE_CREDIT
+			) {
+				$activeSubs->add($subscription);
 			}
 		}
 

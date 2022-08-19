@@ -71,53 +71,6 @@
 				{% endfor %}
 				</tbody>
 			</table>
-			<br>
-			<h4><b>Aktív Alkalmas Bérletek</b></h4>
-			<table class="table colored-table">
-				<thead>
-				<tr>
-					<th>#</th>
-					<th>Tulaj.</th>
-					<th>Alk.</th>
-					<th>Indul/Lejár</th>
-					<th>Ár</th>
-					<th>Részletek</th>
-				</tr>
-				</thead>
-				<tbody>
-				{% for subscription in subscriptions %}
-					{% if subscription.subscriptionType == 'attendance' %}
-						<tr>
-							<td>
-								{{ subscription.id }}
-							</td>
-							<td>
-								{{ subscription.owner.getLastName }} {{ subscription.owner.getFirstName }}
-							</td>
-							<td>
-								{{ subscription.attendanceCount }}
-							</td>
-							<td>
-								{{ subscription.getStartDateString }} - {{ subscription.getDueDateString }}
-							</td>
-							<td>
-								{{ subscription.price }}
-							</td>
-							<td>
-								<a href="{{ path('subscription_view_attendances', {'id': subscription.id}) }}"
-								   class="btn btn-default"><span style="font-size:16px; padding-left: 8px;"
-																 class="pull-right showopacity glyphicon glyphicon-chevron-right"></span></a>
-								{% if logged_in_user is not null and logged_in_user.getIsAdmin %}
-									<a href="{{ path('subscription_edit_subscription', {'id': subscription.getId, 'user_account_id': user_account.getId}) }}"
-									   class="btn btn-link"><span style="font-size:16px; padding-left: 8px;"
-																  class="pull-right showopacity glyphicon glyphicon-cog"></span></a>
-								{% endif %}
-							</td>
-						</tr>
-					{% endif %}
-				{% endfor %}
-				</tbody>
-			</table>
 			<a href="{{ path('useraccount_view_all_subs', {'id': user_account.getId}) }}" class="btn btn-primary">Összes
 				Bérlet Megtekintése</a>
 		</div>

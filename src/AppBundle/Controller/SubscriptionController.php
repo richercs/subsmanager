@@ -40,17 +40,16 @@ class SubscriptionController extends Controller
 		/** @var EntityManager $em */
 		$em = $this->get('doctrine.orm.default_entity_manager');
 
-		/** @var SubscriptionRepository $subscriptionRepo */
-		$subscriptionRepo = $em->getRepository('AppBundle\Entity\Subscription');
+		/** @var SubscriptionRepository $subscriptionRepository */
+		$subscriptionRepository = $em->getRepository('AppBundle\Entity\Subscription');
 
-		$subscriptions = $subscriptionRepo->findAll();
+		$subscriptions = $subscriptionRepository->findAll();
 
 		$activeSubs = new ArrayCollection();
 		$nonActiveSubs = new ArrayCollection();
 
 		/** @var Subscription $subscription */
 		foreach ($subscriptions as $subscription) {
-			// Condition #1 - the due date of the subscription is not in the past
 			if ($subscription->getStatusBoolean()) {
 				$activeSubs->add($subscription);
 			} else {
@@ -58,35 +57,8 @@ class SubscriptionController extends Controller
 			}
 		}
 
-		$activeSubsWithZeroAttendanceCount = new ArrayCollection();
-		$activeSubsWithNonZeroAttendanceCount = new ArrayCollection();
-
-		/** @var Subscription $activeSub */
-		foreach ($activeSubs as $activeSub) {
-			if ($activeSub->getUsages() != 0) {
-				$activeSubsWithNonZeroAttendanceCount->add($activeSub);
-			} else {
-				$activeSubsWithZeroAttendanceCount->add($activeSub);
-			}
-		}
-
-		// Move subscriptions to non-active where the subscription owner has another subscription
-		// that has not expired but has more than 0 usages left
-		$nonZeroActiveSubOwners = new ArrayCollection();
-
-		/** @var Subscription $nonZeroActiveSub */
-		foreach ($activeSubsWithNonZeroAttendanceCount as $nonZeroActiveSub) {
-			$nonZeroActiveSubOwners->add($nonZeroActiveSub->getOwner());
-		}
-
-		/** @var Subscription $zeroActiveSu b */
-		foreach ($activeSubsWithZeroAttendanceCount as $zeroActiveSub) {
-			$zeroActiveSubOwner = $zeroActiveSub->getOwner();
-			if ($nonZeroActiveSubOwners->contains($zeroActiveSubOwner)) {
-				$activeSubs->removeElement($zeroActiveSub);
-				$nonActiveSubs->add($zeroActiveSub);
-			}
-		}
+		$this->calculateUsageAndCredit($activeSubs);
+		$this->calculateUsageAndCredit($nonActiveSubs);
 
 		// SORTING - Active subscription sorted by the remaining attendance counts
 		$activeSubsIterator = $activeSubs->getIterator();
@@ -94,7 +66,7 @@ class SubscriptionController extends Controller
 		$activeSubsIterator->uasort(function ($first, $second) {
 			/** @var Subscription $first */
 			/** @var Subscription $second */
-			return (int)$first->getUsages() > (int)$second->getUsages() ? 1 : -1;
+			return $first->getCurrentCredit() > $second->getCurrentCredit() ? 1 : -1;
 		});
 
 		$activeSubs = new ArrayCollection(iterator_to_array($activeSubsIterator));
@@ -109,9 +81,6 @@ class SubscriptionController extends Controller
 		});
 
 		$nonActiveSubs = new ArrayCollection(array_slice(iterator_to_array($nonActiveSubsIterator), 0, 50));
-
-		$this->calculateUsageAndCredit($activeSubs);
-		$this->calculateUsageAndCredit($nonActiveSubs);
 
 		return $this->render('subscription/listAllSubscriptions.html.twig',
 			[
@@ -144,7 +113,6 @@ class SubscriptionController extends Controller
 			$creditUsage = 0;
 			/** @var AttendanceHistory $attendance */
 			foreach ($attendances as $attendance) {
-				// TODO: duplicate subscription usages on session events count here as double tax on credit
 				$creditUsage += $attendance->getSessionEvent()->getSessionCreditRequirement();
 			}
 

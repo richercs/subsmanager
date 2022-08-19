@@ -54,8 +54,10 @@ class Subscription
 	 * @var int $credit
 	 *
 	 * @ORM\Column(name="credit", type="integer", nullable = true)
+     * @Assert\NotBlank
+     * @Assert\GreaterThan(value = 0)
 	 */
-	protected $credit = 50;
+	protected $credit;
 
 	/**
 	 * @ORM\Column(name="subscription_type", type="string", columnDefinition="ENUM('attendance', 'credit')")
