@@ -54,8 +54,6 @@ class Subscription
 	 * @var int $credit
 	 *
 	 * @ORM\Column(name="credit", type="integer", nullable = true)
-     * @Assert\NotBlank
-     * @Assert\GreaterThan(value = 0)
 	 */
 	protected $credit;
 
@@ -308,10 +306,13 @@ class Subscription
 
 	/**
 	 * @param mixed $usages
+	 * @return self
 	 */
 	public function setUsages($usages)
 	{
 		$this->usages = $usages;
+
+		return $this;
 	}
 
 	/**
@@ -324,10 +325,13 @@ class Subscription
 
 	/**
 	 * @param int $currentCredit
+	 * @return self
 	 */
 	public function setCurrentCredit($currentCredit)
 	{
 		$this->currentCredit = $currentCredit;
+
+		return $this;
 	}
 
 	/**

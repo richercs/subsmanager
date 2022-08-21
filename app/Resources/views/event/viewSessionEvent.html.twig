@@ -1,57 +1,66 @@
 {% extends 'event/layout.html.twig' %}
 
 {% block body %}
-    {{ parent() }}
-    <h3>Óra Esemény Adatainak Megtekintése</h3>
-    <div id="yellow-wrapper">
-        <div id="view-session-event-wrapper">
-            <h5><b>Űrlap Azonosító: </b></h5><div class="data-wrapper">{{ sessionevent.getId }}</div>
-            <h5><b>Időpont: </b></h5><div class="data-wrapper">{{ sessionevent.getSessionEventDateString }}</div>
-            <h5><b>Órarendi Elem: </b></h5><div class="data-wrapper">{{ sessionevent.getScheduleItem }}</div>
-            <h5><b>Bérletesek: </b></h5>
-            <table class="table colored-table">
-                <thead>
-                <tr>
-                    <th>Résztvevő</th>
-                    <th>Bérlet</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for attendanceRecord in sessionevent.getAttendees %}
-                    <tr>
-                        <td>
-                            {{ attendanceRecord.getAttendee.getLastName }} {{ attendanceRecord.getAttendee.getFirstName }}
-                        </td>
-                        <td>
-                            {% if attendanceRecord.getSubscription is not null %}
-                                [{{ attendanceRecord.getSubscription.getId }}]
-                                {{ attendanceRecord.getSubscription.getOwner.getLastName }} {{ attendanceRecord.getSubscription.getOwner.getFirstName }}
-                                ({{ attendanceRecord.getSubscription.getStartDateString }} - {{ attendanceRecord.getSubscription.getDueDateString }})
-                                {{ attendanceRecord.getSubscription.getAttendanceCount }}
-                            {% endif %}
-                        </td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-            <h5><b>Eladott Napidíjak: </b></h5><div class="data-wrapper">{{ sessionevent.getSessionFeeNumbersSold }}</div>
-            <h5><b>Napidíj Bevétel: </b></h5><div class="data-wrapper">{{ sessionevent.getSessionFeeRevenueSold|number_format(0, '.', ' ') }} Ft</div>
-            <h5><b>Teljes Bevétel: </b></h5><div class="data-wrapper">{{ sessionevent.getRevenue|number_format(0, '.', ' ') }} Ft</div>
-            <h5><b>Létrehozva: </b></h5><div class="data-wrapper">{{ sessionevent.getCreated|date('Y.m.d. H:i:s') }}</div>
-        </div>
-        <br>
-        <a id="formBackButton" href="#" class="btn btn-primary">Vissza</a>
-    </div>
+	{{ parent() }}
+	<h3>Óra Esemény Adatainak Megtekintése</h3>
+	<div id="yellow-wrapper">
+		<div id="view-session-event-wrapper">
+			<h5><b>Űrlap Azonosító: </b></h5>
+			<div class="data-wrapper">{{ sessionevent.getId }}</div>
+			<h5><b>Időpont: </b></h5>
+			<div class="data-wrapper">{{ sessionevent.getSessionEventDateString }}</div>
+			<h5><b>Órarendi Elem: </b></h5>
+			<div class="data-wrapper">{{ sessionevent.getScheduleItem }}</div>
+			<h5><b>Kreditigény: </b></h5>
+			<div class="data-wrapper">{{ sessionevent.sessionCreditRequirement }}</div>
+			<h5><b>Bérletesek: </b></h5>
+			<table class="table colored-table">
+				<thead>
+				<tr>
+					<th>Résztvevő</th>
+					<th>Bérlet</th>
+				</tr>
+				</thead>
+				<tbody>
+				{% for attendanceRecord in sessionevent.getAttendees %}
+					<tr>
+						<td>
+							{{ attendanceRecord.getAttendee.getLastName }} {{ attendanceRecord.getAttendee.getFirstName }}
+						</td>
+						<td>
+							{% if attendanceRecord.getSubscription is not null %}
+								[{{ attendanceRecord.getSubscription.getId }}]
+								{{ attendanceRecord.getSubscription.getOwner.getLastName }} {{ attendanceRecord.getSubscription.getOwner.getFirstName }}
+								({{ attendanceRecord.getSubscription.getStartDateString }} - {{ attendanceRecord.getSubscription.getDueDateString }})
+								{{ attendanceRecord.getSubscription.getAttendanceCount }}
+							{% endif %}
+						</td>
+					</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+			<h5><b>Eladott Napidíjak: </b></h5>
+			<div class="data-wrapper">{{ sessionevent.getSessionFeeNumbersSold }}</div>
+			<h5><b>Napidíj Bevétel: </b></h5>
+			<div class="data-wrapper">{{ sessionevent.getSessionFeeRevenueSold|number_format(0, '.', ' ') }} Ft</div>
+			<h5><b>Teljes Bevétel: </b></h5>
+			<div class="data-wrapper">{{ sessionevent.getRevenue|number_format(0, '.', ' ') }} Ft</div>
+			<h5><b>Létrehozva: </b></h5>
+			<div class="data-wrapper">{{ sessionevent.getCreated|date('Y.m.d. H:i:s') }}</div>
+		</div>
+		<br>
+		<a id="formBackButton" href="#" class="btn btn-primary">Vissza</a>
+	</div>
 {% endblock %}
 
 {% block stylesheets %}
-    {{ parent() }}
+	{{ parent() }}
 {% endblock %}
 
 {% block body_end_javascripts %}
-    <script type="text/javascript">
-        $('#formBackButton').click( function () {
-            window.history.back()
-        })
-    </script>
+	<script type="text/javascript">
+		$('#formBackButton').click(function () {
+			window.history.back()
+		})
+	</script>
 {% endblock %}

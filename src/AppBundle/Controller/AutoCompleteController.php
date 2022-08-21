@@ -93,7 +93,6 @@ class AutoCompleteController extends Controller
 		/** @var SubscriptionRepository $repository */
 		$repository = $this->get('doctrine.orm.default_entity_manager')->getRepository(Subscription::class);
 
-		// TODO: Nem adja majd vissza csak a krediteseket, tehát egy régi session event NEM LESZ SZERKESZTHETŐ
 		$subscriptions = $repository->findUsableSubscriptions();
 
 		$responseArray = [];
@@ -206,7 +205,6 @@ class AutoCompleteController extends Controller
 		$creditUsage = 0;
 		/** @var AttendanceHistory $attendance */
 		foreach ($attendances as $attendance) {
-			// TODO: duplicate subscription usages on session events count here as double tax on credit
 			$creditUsage += $attendance->getSessionEvent()->getSessionCreditRequirement();
 		}
 

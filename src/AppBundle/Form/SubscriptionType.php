@@ -35,12 +35,20 @@ class SubscriptionType extends AbstractType
 				'class' => 'AppBundle:UserAccount'
 			));
 
-		if ($this->subscription->getSubscriptionType() === Subscription::SUBSCRIPTION_TYPE_ATTENDANCE) {
-			$builder
-				->add('attendanceCount');
-		} else {
-			$builder
-				->add('credit');
+		switch ($this->subscription->getSubscriptionType()) {
+			case Subscription::SUBSCRIPTION_TYPE_ATTENDANCE:
+				$builder
+					->add('attendanceCount');
+				break;
+			case Subscription::SUBSCRIPTION_TYPE_CREDIT:
+				$builder
+					->add('credit', 'integer', [
+						'attr' => [
+							'min' => 1
+						],
+						'required' => true,
+					]);
+				break;
 		}
 
 		$builder

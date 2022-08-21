@@ -196,26 +196,7 @@ class SessionEventController extends Controller
 
 			// save and continue button that redirects to the edit page
 			if ($form->get('saveAndContinue')->isClicked()) {
-
-				// Attendance Records Validation
-				// Rule #1 - Every attendee is unique
-//
-//                $duplicateAttendees = $this->validateAttendeesCount($newEvent);
-//
-//                if (!empty($duplicateAttendees)) {
-//                    // message
-//                    $this->addFlash(
-//                        'error',
-//                        'Név többször szerpel az űrlapon: ' . PHP_EOL . implode(', ', $duplicateAttendees)
-//                    );
-//
-//                    // show list
-//                    return $this->redirectToRoute('session_add_session_event');
-//
-//                }
-
-				// Rule #2 - One subscription can only be present on a session event twice
-
+				// Rule - One subscription can only be present on a session event twice
 				$duplicateSubscriptions = $this->validateSubscriptionsCount($newEvent);
 
 				if (!empty($duplicateSubscriptions)) {
@@ -226,6 +207,19 @@ class SessionEventController extends Controller
 					);
 
 					// show list
+					return $this->redirectToRoute('session_add_session_event');
+				}
+
+				// Rule - Negative credit check
+				$negativeCreditSubscriptions = $this->validateSubscriptionsCredit($newEvent, (int)$form->get('sessionCreditRequirement')->getData());
+
+				if (!empty($negativeCreditSubscriptions)) {
+					// message
+					$this->addFlash(
+						'error',
+						'Negatív fennmaradó kredites bérlet szerepel az űrlapon: ' . PHP_EOL . implode(', ', $negativeCreditSubscriptions)
+					);
+
 					return $this->redirectToRoute('session_add_session_event');
 				}
 
@@ -241,25 +235,7 @@ class SessionEventController extends Controller
 				));
 			}
 
-			// Attendance Records Validation
-			// Rule #1 - Every attendee is unique
-
-//            $duplicateAttendees = $this->validateAttendeesCount($newEvent);
-//
-//            if (!empty($duplicateAttendees)) {
-//                // message
-//                $this->addFlash(
-//                    'error',
-//                    'Név többször szerpel az űrlapon: ' . PHP_EOL . implode(', ', $duplicateAttendees)
-//                );
-//
-//                // show list
-//                return $this->redirectToRoute('session_add_session_event');
-//
-//            }
-
 			// Rule #2 - One subscription can only be present on a session event twice
-
 			$duplicateSubscriptions = $this->validateSubscriptionsCount($newEvent);
 
 			if (!empty($duplicateSubscriptions)) {
@@ -270,6 +246,19 @@ class SessionEventController extends Controller
 				);
 
 				// show list
+				return $this->redirectToRoute('session_add_session_event');
+			}
+
+			// Rule - Negative credit check
+			$negativeCreditSubscriptions = $this->validateSubscriptionsCredit($newEvent, (int)$form->get('sessionCreditRequirement')->getData());
+
+			if (!empty($negativeCreditSubscriptions)) {
+				// message
+				$this->addFlash(
+					'error',
+					'Negatív fennmaradó kredites bérlet szerepel az űrlapon: ' . PHP_EOL . implode(', ', $negativeCreditSubscriptions)
+				);
+
 				return $this->redirectToRoute('session_add_session_event');
 			}
 
@@ -293,17 +282,13 @@ class SessionEventController extends Controller
 	}
 
 	/**
-	 *
 	 * @param SessionEvent $sessionEvent
-	 *
-	 * $return array
+	 * @return array
 	 */
 	public function validateSubscriptionsCount($sessionEvent)
 	{
-
 		// Subscription validation
-		// Rule #2 - One subscription can only be present on a session event twice
-
+		// Rule - One subscription can only be present on a session event twice
 		$subscriptions = new ArrayCollection();
 
 		/** @var AttendanceHistory $attendanceRecord */
@@ -318,22 +303,84 @@ class SessionEventController extends Controller
 
 			$countDuplicates = 0;
 
-			foreach ($subscriptions as $subscriptiontoCheck) {
-				if ($subscription == $subscriptiontoCheck) {
+			foreach ($subscriptions as $subscriptionToCheck) {
+				if ($subscription == $subscriptionToCheck) {
 					$countDuplicates = $countDuplicates + 1;
 				}
 			}
 
 			if ($countDuplicates >= 3) {
-
 				$duplicates->add($subscription->getId());
 			}
 		}
 
-		if ($duplicates->count() >= 1) {
-			return $duplicates->toArray();
+		return $duplicates->count() >= 1 ? $duplicates->toArray() : [];
+	}
+
+	/**
+	 * @param SessionEvent $sessionEvent
+	 * @param int|null $sessionCreditRequirement
+	 * @return array
+	 */
+	public function validateSubscriptionsCredit($sessionEvent, $sessionCreditRequirement = null)
+	{
+		$subscriptions = new ArrayCollection();
+
+		/** @var AttendanceHistory $attendanceRecord */
+		foreach ($sessionEvent->getAttendees() as $attendanceRecord) {
+			if ($attendanceRecord->getSubscription()->getSubscriptionType() !== Subscription::SUBSCRIPTION_TYPE_CREDIT) {
+				continue;
+			}
+			$creditUsage = $this->calculatePreviousCreditUsage($attendanceRecord->getSubscription(), $sessionEvent->getId());
+			$creditUsage += !empty($sessionCreditRequirement) ? $sessionCreditRequirement : $sessionEvent->getSessionCreditRequirement();
+
+			// duplicate subscription usage counts twice on the same session form
+			if ($subscriptions->contains($attendanceRecord->getSubscription())) {
+				$creditUsage += !empty($sessionCreditRequirement) ? $sessionCreditRequirement : $sessionEvent->getSessionCreditRequirement();
+			}
+
+			$subscriptions->add($attendanceRecord->getSubscription()->setCurrentCredit(
+				$attendanceRecord->getSubscription()->getCredit() - $creditUsage
+			));
 		}
-		return array();
+
+		$negativeCreditSubscriptions = new ArrayCollection();
+
+		/** @var Subscription $subscription */
+		foreach ($subscriptions as $subscription) {
+
+			if ($subscription->getCurrentCredit() < 0) {
+				$negativeCreditSubscriptions->add($subscription->getId());
+			}
+		}
+
+		return $negativeCreditSubscriptions->count() >= 1 ? $negativeCreditSubscriptions->toArray() : [];
+	}
+
+	/**
+	 * @param Subscription $subscription
+	 * @param int|null $ownId
+	 * @return Subscription
+	 */
+	private function calculatePreviousCreditUsage(Subscription $subscription, $ownId = null)
+	{
+		/** @var EntityManager $em */
+		$em = $this->get('doctrine.orm.default_entity_manager');
+
+		/** @var AttendanceHistoryRepository $attendanceHistoryRepo */
+		$attendanceHistoryRepo = $em->getRepository(AttendanceHistory::class);
+
+		$attendances = $attendanceHistoryRepo->findBy(array('subscription' => $subscription));
+
+		$creditUsage = 0;
+		/** @var AttendanceHistory $attendance */
+		foreach ($attendances as $attendance) {
+			if ($attendance->getSessionEvent()->getId() !== $ownId) {
+				$creditUsage += $attendance->getSessionEvent()->getSessionCreditRequirement();
+			}
+		}
+
+		return $creditUsage;
 	}
 
 	/**
@@ -351,7 +398,6 @@ class SessionEventController extends Controller
 	 */
 	public function editSessionEventAction($id, Request $request, $subscriptionId = null)
 	{
-
 		// This is for the back URL
 		if (!is_null($request->query->get('subscription_id'))) {
 			$subscriptionId = intval($request->query->get('subscription_id'));
@@ -411,22 +457,24 @@ class SessionEventController extends Controller
 				$creditUsage = 0;
 				/** @var AttendanceHistory $attendance */
 				foreach ($attendances as $attendance) {
-					// TODO: duplicate subscription usages on session events count here as double tax on credit
 					$creditUsage += $attendance->getSessionEvent()->getSessionCreditRequirement();
 				}
 
-				if ($subscription->getSubscriptionType() === Subscription::SUBSCRIPTION_TYPE_CREDIT) {
-					$attendee->setSubscriptionInfo(
-						"Kreditek Száma: " . $subscription->getCredit()
-						. "\n"
-						. "Fennmaradó: " . ($subscription->getCredit() - $creditUsage)
-					);
-				} else {
-					$attendee->setSubscriptionInfo(
-						"Alkalmak Száma: " . $subscription->getAttendanceCount()
-						. "\n"
-						. "Fennmaradó: " . ($subscription->getAttendanceCount() - $countOfSubscriptionUsages)
-					);
+				switch ($subscription->getSubscriptionType()) {
+					case Subscription::SUBSCRIPTION_TYPE_CREDIT:
+						$attendee->setSubscriptionInfo(
+							"Kreditek Száma: " . $subscription->getCredit()
+							. "\n"
+							. "Fennmaradó: " . ($subscription->getCredit() - $creditUsage)
+						);
+						break;
+					case Subscription::SUBSCRIPTION_TYPE_ATTENDANCE:
+						$attendee->setSubscriptionInfo(
+							"Alkalmak Száma: " . $subscription->getAttendanceCount()
+							. "\n"
+							. "Fennmaradó: " . ($subscription->getAttendanceCount() - $countOfSubscriptionUsages)
+						);
+						break;
 				}
 			}
 		}
@@ -505,27 +553,7 @@ class SessionEventController extends Controller
 				));
 			}
 
-			// Attendance Records Validation
-			// Rule #1 - Every attendee is unique
-
-//            $duplicateAttendees = $this->validateAttendeesCount($sessionEvent);
-//
-//            if (!empty($duplicateAttendees)) {
-//                // message
-//                $this->addFlash(
-//                    'error',
-//                    'Név többször szerpel az űrlapon: ' . PHP_EOL . implode(', ', $duplicateAttendees)
-//                );
-//
-//                // show list
-//                return $this->redirectToRoute('session_edit_session_event', array(
-//                    'id' => $sessionEvent->getId()
-//                ));
-//
-//            }
-
-			// Rule #2 - One subscription can only be present on a session event twice
-
+			// Rule - One subscription can only be present on a session event twice
 			$duplicateSubscriptions = $this->validateSubscriptionsCount($sessionEvent);
 
 			if (!empty($duplicateSubscriptions)) {
@@ -535,12 +563,25 @@ class SessionEventController extends Controller
 					'Bérlet többször szerpel az űrlapon mint 2, azonosító: ' . PHP_EOL . implode(', ', $duplicateSubscriptions)
 				);
 
-				// show list
 				return $this->redirectToRoute('session_edit_session_event', array(
 					'id' => $sessionEvent->getId()
 				));
 			}
 
+			// Rule - Negative credit check
+			$negativeCreditSubscriptions = $this->validateSubscriptionsCredit($sessionEvent);
+
+			if (!empty($negativeCreditSubscriptions)) {
+				// message
+				$this->addFlash(
+					'error',
+					'Negatív fennmaradó kredites bérlet szerepel az űrlapon: ' . PHP_EOL . implode(', ', $negativeCreditSubscriptions)
+				);
+
+				return $this->redirectToRoute('session_edit_session_event', array(
+					'id' => $sessionEvent->getId()
+				));
+			}
 
 			$em->persist($sessionEvent);
 			$em->flush();
@@ -549,9 +590,7 @@ class SessionEventController extends Controller
 				'Változtatások Elmentve!'
 			);
 
-
 			// Update the subscription Info textareas on each Attendance Record
-
 			/** @var SessionEvent $sessionEvent */
 			$sessionEvent = $sessionEventRepository->find($id);
 
@@ -578,22 +617,24 @@ class SessionEventController extends Controller
 					$creditUsage = 0;
 					/** @var AttendanceHistory $attendance */
 					foreach ($attendances as $attendance) {
-						// TODO: duplicate subscription usages on session events count here as double tax on credit
 						$creditUsage += $attendance->getSessionEvent()->getSessionCreditRequirement();
 					}
 
-					if ($subscription->getSubscriptionType() === Subscription::SUBSCRIPTION_TYPE_CREDIT) {
-						$attendee->setSubscriptionInfo(
-							"Kreditek Száma: " . $subscription->getCredit()
-							. "\n"
-							. "Fennmaradó: " . ($subscription->getCredit() - $creditUsage)
-						);
-					} else {
-						$attendee->setSubscriptionInfo(
-							"Alkalmak Száma: " . $subscription->getAttendanceCount()
-							. "\n"
-							. "Fennmaradó: " . ($subscription->getAttendanceCount() - $countOfSubscriptionUsages)
-						);
+					switch ($subscription->getSubscriptionType()) {
+						case Subscription::SUBSCRIPTION_TYPE_CREDIT:
+							$attendee->setSubscriptionInfo(
+								"Kreditek Száma: " . $subscription->getCredit()
+								. "\n"
+								. "Fennmaradó: " . ($subscription->getCredit() - $creditUsage)
+							);
+							break;
+						case Subscription::SUBSCRIPTION_TYPE_ATTENDANCE:
+							$attendee->setSubscriptionInfo(
+								"Alkalmak Száma: " . $subscription->getAttendanceCount()
+								. "\n"
+								. "Fennmaradó: " . ($subscription->getAttendanceCount() - $countOfSubscriptionUsages)
+							);
+							break;
 					}
 				}
 			}
