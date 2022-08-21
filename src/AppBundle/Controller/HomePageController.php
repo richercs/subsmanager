@@ -105,7 +105,7 @@ class HomePageController extends Controller
     }
 
     /**
-     * @Route("/login_faliure", name="login_faliure")
+     * @Route("/login_failure", name="login_failure")
      *
      * @param Request request
      *
@@ -113,6 +113,6 @@ class HomePageController extends Controller
      */
     public function executeLoginFaliure()
     {
-        return new RedirectResponse($this->getParameter('login_faliure'));
+        return new RedirectResponse($this->getParameter('login_failure'));
     }
 }
