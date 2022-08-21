@@ -1,9 +1,9 @@
 
 -- Schedule item
 ALTER TABLE `schedule_item`
-    CHANGE COLUMN `scheduled_day` `scheduled_day` VARCHAR(255) NULL ,
-    CHANGE COLUMN `scheduled_start_time` `scheduled_start_time` VARCHAR(255) NULL ,
-    CHANGE COLUMN `scheduled_due_time` `scheduled_due_time` VARCHAR(255) NULL ;
+    CHANGE COLUMN `scheduled_day` `scheduled_day` VARCHAR(255) NULL,
+    CHANGE COLUMN `scheduled_start_time` `scheduled_start_time` VARCHAR(255) NULL,
+    CHANGE COLUMN `scheduled_due_time` `scheduled_due_time` VARCHAR(255) NULL;
 
 ALTER TABLE `schedule_item` ADD `is_weekly_online` TINYINT(1) NOT NULL AFTER `scheduled_due_time`;
 
@@ -16,3 +16,10 @@ UPDATE `subscription` SET `subscription_type` = 'attendance' WHERE `attendance_c
 
 -- Session Event
 ALTER TABLE `session_event` ADD `session_credit_requirement` INT DEFAULT NULL AFTER `session_event_date`;
+
+-- Announced Session
+ALTER TABLE `announced_session`
+    ADD `announced_session_type` ENUM('single_limited', 'weekly_online_unlimited') AFTER `schedule_item_id`,
+    CHANGE COLUMN `max_number_of_signups` `max_number_of_signups` INT DEFAULT NULL;
+
+UPDATE `announced_session` SET `announced_session_type` = 'single_limited' WHERE `max_number_of_signups` IS NOT NULL;

@@ -17,6 +17,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class AnnouncedSession
 {
+	const ANNOUNCED_SESSION_TYPE_SINGLE_LIMITED = 'single_limited';
+	const ANNOUNCED_SESSION_TYPE_WEEKLY_ONLINE = 'weekly_online_unlimited';
 
     public function __construct() {
         $this->signees = new ArrayCollection();
@@ -40,6 +42,11 @@ class AnnouncedSession
      */
     protected $scheduleItem;
 
+	/**
+	 * @ORM\Column(name="announced_session_type", type="string", columnDefinition="ENUM('single_limited', 'weekly_online_unlimited')")
+	 */
+	protected $announcedSessionType;
+
     /**
      * @var SessionEvent
      *
@@ -60,7 +67,7 @@ class AnnouncedSession
 
     /**
      * @var int
-     * @ORM\Column(name="max_number_of_signups", type="integer", nullable = false)
+     * @ORM\Column(name="max_number_of_signups", type="integer", nullable = true)
      */
     protected $maxNumberOfSignUps;
 
@@ -128,6 +135,22 @@ class AnnouncedSession
     {
         $this->scheduleItem = $scheduleItem;
     }
+
+	/**
+	 * @return mixed
+	 */
+	public function getAnnouncedSessionType()
+	{
+		return $this->announcedSessionType;
+	}
+
+	/**
+	 * @param mixed $announcedSessionType
+	 */
+	public function setAnnouncedSessionType($announcedSessionType)
+	{
+		$this->announcedSessionType = $announcedSessionType;
+	}
 
     /**
      * @return SessionEvent

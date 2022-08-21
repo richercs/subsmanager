@@ -1,43 +1,47 @@
 {% extends 'signups/layout.html.twig' %}
 
 {% form_theme form with
-    [
-        '@ninsuo/jquery.collection.html.twig',
-        '/signups/signupRecordsFormTheme.html.twig'
-    ]
+	[
+		'@ninsuo/jquery.collection.html.twig',
+		'/signups/signupRecordsFormTheme.html.twig'
+	]
 %}
 
 {% block body %}
-    {{ parent() }}
-    <h3>Bejelentkezéses Óra Szerkesztése</h3>
-    <div id="yellow-wrapper">
-        {{ form_start(form) }}
-        {{ form_errors(form) }}
-        {{ form_row(form._token) }}
-        {{ form_row(form.scheduleItem, {'label': 'Órarendi Elem'}) }}
-        {{ form_row(form.timeOfEvent, {'label': 'Időpont'}) }}
-        {{ form_row(form.timeFromFinalized, {'label': 'Véglegesítés időpontja'}) }}
-        {{ form_row(form.maxNumberOfSignUps, {'label': 'Max bejelentkezések száma'}) }}
-        {{ form_row(form.signees, {'label': 'Bejelentkezők'}) }}
-        {{ form_row(form.save) }}
-        {{ form_row(form.delete) }}
-        {{ form_end(form, {'render_rest': false}) }}
-        <div class="checkbox">
-            <label><input type="checkbox" id="confirmDeleteCheckBox" value="">Törlés engedélyezve</label>
-        </div>
-        <a href="{{ path('announced_session_search_edit', {'searchStart': searchStart, 'searchDue': searchDue, 'searchScheduleItemId': searchScheduleItemId}) }}" class="btn btn-primary">Vissza</a>
-        <a href="{{ path('homepage') }}" class="btn btn-primary">Fő oldal</a>
-    </div>
+	{{ parent() }}
+	<h3>{% if announcedSession.announcedSessionType == 'weekly_online_unlimited' %}Heti Online{% endif %} Bejelentkezéses Óra Szerkesztése</h3>
+	<div id="yellow-wrapper">
+		{{ form_start(form) }}
+		{{ form_errors(form) }}
+		{{ form_row(form._token) }}
+		{{ form_row(form.scheduleItem, {'label': 'Órarendi Elem'}) }}
+		{{ form_row(form.timeOfEvent, {'label': 'Időpont'}) }}
+		{{ form_row(form.timeFromFinalized, {'label': 'Véglegesítés időpontja'}) }}
+		{% if announcedSession.announcedSessionType == 'single_limited' %}
+			{{ form_row(form.maxNumberOfSignUps, {'label': 'Max bejelentkezések száma'}) }}
+		{% endif %}
+		{{ form_row(form.signees, {'label': 'Bejelentkezők'}) }}
+		{{ form_row(form.save) }}
+		{{ form_row(form.delete) }}
+		{{ form_end(form, {'render_rest': false}) }}
+		<div class="checkbox">
+			<label><input type="checkbox" id="confirmDeleteCheckBox" value="">Törlés engedélyezve</label>
+		</div>
+		<a href="{{ path('announced_session_search_edit', {'searchStart': searchStart, 'searchDue': searchDue, 'searchScheduleItemId': searchScheduleItemId}) }}"
+		   class="btn btn-primary">Vissza</a>
+		<a href="{{ path('homepage') }}" class="btn btn-primary">Fő oldal</a>
+	</div>
 {% endblock %}
 
 {% block stylesheets %}
-    {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('assets/vendor/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css') }}" />
+	{{ parent() }}
+	<link rel="stylesheet"
+		  href="{{ asset('assets/vendor/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css') }}"/>
 {% endblock %}
 
 
 {% block javascript %}
-    <script src="{{ asset('assets/vendor/symfony-collection/jquery.collection.js') }}"></script>
+<script src="{{ asset('assets/vendor/symfony-collection/jquery.collection.js') }}"></script>
     <script src="{{ asset('assets/vendor/moment/min/moment.min.js') }}"></script>
     <script src="{{ asset('assets/vendor/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js') }}"></script>
     <script src="{{ asset('assets/vendor/jquery-ui/jquery-ui.min.js') }}"></script>
@@ -47,52 +51,52 @@
 
 
 {% block body_end_javascripts %}
-    <script>
-        $(function () {
-            $('.datetimepicker').datetimepicker({
-                format: 'YYYY-MM-DD HH:mm'
-            });
-        });
-    </script>
-    <script type="text/javascript">
+	<script>
+		$(function () {
+			$('.datetimepicker').datetimepicker({
+				format: 'YYYY-MM-DD HH:mm'
+			});
+		});
+	</script>
+	<script type="text/javascript">
 
-        var confirmDeleteCheckbox = $('#confirmDeleteCheckBox');
+		var confirmDeleteCheckbox = $('#confirmDeleteCheckBox');
 
-        if (confirmDeleteCheckbox.is(":checked")) {
-            // let it submit
-            $('#appbundle_announced_session_delete').attr("disabled", false);
-        } else {
-            // don't let it submit
-            $('#appbundle_announced_session_delete').attr("disabled", true);
-        }
+		if (confirmDeleteCheckbox.is(":checked")) {
+			// let it submit
+			$('#appbundle_announced_session_delete').attr("disabled", false);
+		} else {
+			// don't let it submit
+			$('#appbundle_announced_session_delete').attr("disabled", true);
+		}
 
-        confirmDeleteCheckbox.click( function () {
-            if ($('#confirmDeleteCheckBox').is(":checked")) {
-                // let it submit
-                $('#appbundle_announced_session_delete').attr("disabled", false);
-            } else {
-                // don't let it submit
-                $('#appbundle_announced_session_delete').attr("disabled", true);
-            }
-        });
+		confirmDeleteCheckbox.click(function () {
+			if ($('#confirmDeleteCheckBox').is(":checked")) {
+				// let it submit
+				$('#appbundle_announced_session_delete').attr("disabled", false);
+			} else {
+				// don't let it submit
+				$('#appbundle_announced_session_delete').attr("disabled", true);
+			}
+		});
 
-    </script>
+	</script>
 
-    <script type="text/javascript">
+	<script type="text/javascript">
 
-        $(document).ready(function () {
+		$(document).ready(function () {
 
-            let setTimeFromFinalizedBasedOnTimeOfEvent = function () {
+			let setTimeFromFinalizedBasedOnTimeOfEvent = function () {
 
-                let timeOfEvent = $('#appbundle_announced_session_timeOfEvent').val();
+				let timeOfEvent = $('#appbundle_announced_session_timeOfEvent').val();
 
-                let calculatedTimeOfFinalzed = moment(timeOfEvent,  "YYYY-MM-DD HH:mm").subtract(3, 'hour').format('YYYY-MM-DD HH:mm');
+				let calculatedTimeOfFinalzed = moment(timeOfEvent, "YYYY-MM-DD HH:mm").subtract(3, 'hour').format('YYYY-MM-DD HH:mm');
 
-                $('#appbundle_announced_session_timeFromFinalized').val(calculatedTimeOfFinalzed);
+				$('#appbundle_announced_session_timeFromFinalized').val(calculatedTimeOfFinalzed);
 
-            };
+			};
 
-            $('#appbundle_announced_session_timeOfEvent').on('dp.change', setTimeFromFinalizedBasedOnTimeOfEvent);
-        });
-    </script>
+			$('#appbundle_announced_session_timeOfEvent').on('dp.change', setTimeFromFinalizedBasedOnTimeOfEvent);
+		});
+	</script>
 {% endblock %}
