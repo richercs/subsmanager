@@ -1,321 +1,313 @@
 <?php
 
-
 namespace AppBundle\Controller;
-
 
 use AppBundle\Entity\AnnouncedSession;
 use AppBundle\Entity\SessionSignUp;
 use AppBundle\Entity\UserAccount;
 use AppBundle\Repository\AnnouncedSessionRepository;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\EntityManager;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class SessionSignUpApiController extends \Symfony\Bundle\FrameworkBundle\Controller\Controller
 {
+	/**
+	 * @Route("/api/sessiondata", name="sessiondata_get")
+	 *
+	 * @param Request $request
+	 * @return Response
+	 */
+	public function getAnnouncedSessionDataAction(Request $request)
+	{
+		$loggedInUser = $this->getUser();
 
-    /**
-     * @Route("/api/sessiondata", name="sessiondata_get")
-     *
-     *
-     * @param Request $request
-     * @return Response
-     */
-    public function getAnnouncedSessionDataAction (Request $request)
-    {
+		if (!$loggedInUser) {
+			return new Response(null);
+		}
 
-        $loggedInUser = $this->getUser();
+		/**
+		 * If there is no available session then return null
+		 * Available session: Announced session where session event id is null
+		 */
+		$availableSessions = $this->get('sign_up_manager')->getAvailableSessions();
 
-        if (!$loggedInUser) {
-            return new Response(null);
-        }
+		if (empty($availableSessions)) {
+			return new Response(null);
+		}
 
-        /**
-         * If there is no available session then return null
-         * Available session: Announced session where session event id is null
-         */
-        $availableSessions = $this->get('sign_up_manager')->getAvailableSessions();
+		$announcedSessionDataCollection = new ArrayCollection();
 
-        if (empty($availableSessions)) {
-            return new Response(null);
-        }
+		/** @var AnnouncedSession $availableSession */
+		foreach ($availableSessions as $availableSession) {
+			try {
 
-        $announcedSessionDataCollection = new ArrayCollection();
+				// This is necessary to check because if user is not signed up then we can't check for any
+				// property of session sign up by user like extras
+				$alreadySignedUp = $this->get('sign_up_manager')->isUserSignedUpToSession($loggedInUser, $availableSession->getId());
 
-        /** @var AnnouncedSession $availableSession */
-        foreach ($availableSessions as $availableSession) {
-            try {
+				// This is to calculate the time the user can start signing up to the session
+				$timeOfAvailabilityByUserSubs = $this->get('sign_up_manager')->getTimeOfAvailabilityOfUserBySubs($loggedInUser, $availableSession);
 
-                // This is necessary to check because if user is not signed up then we can't check for any
-                // property of session sign up by user like extras
-                $alreadySignedUp = $this->get('sign_up_manager')->isUserSignedUpToSession($loggedInUser, $availableSession->getId());
+				$announcedSessionDataCollection->add(array(
+					'id' => $availableSession->getId(),
+					'sessionName' => $availableSession->getScheduleItem()->getScheduledItemName(),
+					'timeOfEvent' => $availableSession->getTimeOfEvent()->format('Y.m.d. H:i'),
+					'alreadySignedUp' => $this->get('sign_up_manager')->isUserSignedUpToSession($loggedInUser, $availableSession->getId()),
+					'alreadyOnWaitList' => $this->get('sign_up_manager')->isUserWaitListedToSession($loggedInUser, $availableSession->getId()),
+					'canSignUp' => $this->get('sign_up_manager')->userCanSignUpToSession($loggedInUser, $availableSession->getId()),
+					'canSignUpOnWaitList' => $this->get('sign_up_manager')->userCanSignUpToWaitList($loggedInUser, $availableSession->getId()),
+					'isListFinalized' => $availableSession->isFinalized(),
+					'extras' => $alreadySignedUp ? $this->get('sign_up_manager')->getExtrasSetByUser($loggedInUser, $availableSession->getId()) : null,
+					'timeOfAvailabilityByUser' => !empty($timeOfAvailabilityByUserSubs) ? $timeOfAvailabilityByUserSubs->format('Y.m.d. H:i') : null,
+					'locationOfEvent' => $availableSession->getScheduleItem()->getLocation()
+				));
+			} catch (\Exception $e) {
+				continue;
+			}
+		}
 
-                // This is to calculate the time the user can start signing up to the session
-                $timeOfAvailabilityByUserSubs = $this->get('sign_up_manager')->getTimeOfAvailabilityOfUserBySubs($loggedInUser, $availableSession);
+		$response = new JsonResponse();
 
-                $announcedSessionDataCollection->add(array(
-                    'id' => $availableSession->getId(),
-                    'sessionName' => $availableSession->getScheduleItem()->getScheduledItemName(),
-                    'timeOfEvent' => $availableSession->getTimeOfEvent()->format('Y.m.d. H:i'),
-                    'alreadySignedUp' => $this->get('sign_up_manager')->isUserSignedUpToSession($loggedInUser, $availableSession->getId()),
-                    'alreadyOnWaitList' => $this->get('sign_up_manager')->isUserWaitListedToSession($loggedInUser, $availableSession->getId()),
-                    'canSignUp' => $this->get('sign_up_manager')->userCanSignUpToSession($loggedInUser, $availableSession->getId()),
-                    'canSignUpOnWaitList' => $this->get('sign_up_manager')->userCanSignUpToWaitList($loggedInUser, $availableSession->getId()),
-                    'isListFinalized' => $availableSession->isFinalized(),
-                    'extras' => $alreadySignedUp ? $this->get('sign_up_manager')->getExtrasSetByUser($loggedInUser, $availableSession->getId()) : null,
-                    'timeOfAvailabilityByUser' => !empty($timeOfAvailabilityByUserSubs) ? $timeOfAvailabilityByUserSubs->format('Y.m.d. H:i') : null,
-                    'locationOfEvent' => $availableSession->getScheduleItem()->getLocation()
-                ));
-            } catch (\Exception $e) {
-                continue;
-            }
-        }
+		return $response->setData(array(
+			'announcedSessionsData' => $announcedSessionDataCollection->toArray(),
+			'error' => null
+		));
+	}
 
-        $response = new JsonResponse();
+	/**
+	 * @Route("/api/do_signup/{id}", name="do_signup")
+	 *
+	 * @param integer $id
+	 * @param Request $request
+	 * @return Response
+	 */
+	public function doSignUpAction($id, Request $request)
+	{
+		/** @var UserAccount $loggedInUser */
+		$loggedInUser = $this->getUser();
 
-        return $response->setData(array(
-            'announcedSessionsData' => $announcedSessionDataCollection->toArray(),
-            'error' => null
-        ));
-    }
+		if (!$loggedInUser) {
+			return new Response(null);
+		}
 
-    /**
-     * @Route("/api/do_signup/{id}", name="do_signup")
-     *
-     * @param integer $id
-     * @param Request $request
-     * @return Response
-     */
-    public function doSignUpAction ($id, Request $request)
-    {
-        /** @var UserAccount $loggedInUser */
-        $loggedInUser = $this->getUser();
+		if (empty((int)$id)) {
+			return new Response(null);
+		}
 
-        if (!$loggedInUser) {
-            return new Response(null);
-        }
+		try {
+			$this->get('sign_up_manager')->signUpUserToSession(
+				$loggedInUser,
+				$id
+			);
 
-        if (empty((int) $id)) {
-            return new Response(null);
-        }
+			// Successful session signup for logged-in User
+			$response = new JsonResponse();
 
-        try {
-            $this->get('sign_up_manager')->signUpUserToSession(
-                $loggedInUser,
-                $id
-            );
+			return $response->setData(array(
+				"status" => "successful",
+				"message" => null,
+			));
 
-            // Successful session signup for logged in User
-            $response = new JsonResponse();
+		} catch (\Exception $e) {
+			$response = new JsonResponse();
 
-            return $response->setData(array(
-                "status" => "successful",
-                "message" => null,
-            ));
+			return $response->setData(array(
+				"status" => "error",
+				"message" => $e->getMessage(),
+			));
+		}
+	}
 
-        } catch (\Exception $e) {
-            $response = new JsonResponse();
+	/**
+	 * @Route("/api/do_signup_on_waitlist/{id}", name="do_signup_on_waitlist")
+	 *
+	 * @param integer $id
+	 * @param Request $request
+	 * @return Response
+	 */
+	public function doSignUpOnWaitListAction($id, Request $request)
+	{
+		/** @var UserAccount $loggedInUser */
+		$loggedInUser = $this->getUser();
 
-            return $response->setData(array(
-                "status" => "error",
-                "message" => $e->getMessage(),
-            ));
-        }
-    }
+		if (!$loggedInUser) {
+			return new Response(null);
+		}
 
-    /**
-     * @Route("/api/do_signup_on_waitlist/{id}", name="do_signup_on_waitlist")
-     *
-     * @param integer $id
-     * @param Request $request
-     * @return Response
-     */
-    public function doSignUpOnWaitListAction ($id, Request $request)
-    {
-        /** @var UserAccount $loggedInUser */
-        $loggedInUser = $this->getUser();
+		if (empty((int)$id)) {
+			return new Response(null);
+		}
 
-        if (!$loggedInUser) {
-            return new Response(null);
-        }
+		try {
+			$this->get('sign_up_manager')->waitListUserToSession(
+				$loggedInUser,
+				$id
+			);
 
-        if (empty((int) $id)) {
-            return new Response(null);
-        }
+			// Successful wait listed session signup for logged-in User
+			$response = new JsonResponse();
 
-        try {
-            $this->get('sign_up_manager')->waitListUserToSession(
-                $loggedInUser,
-                $id
-            );
+			return $response->setData(array(
+				"status" => "successful",
+				"message" => null,
+			));
 
-            // Successful wait listed session signup for logged in User
-            $response = new JsonResponse();
+		} catch (\Exception $e) {
+			$response = new JsonResponse();
 
-            return $response->setData(array(
-                "status" => "successful",
-                "message" => null,
-            ));
+			return $response->setData(array(
+				"status" => "error",
+				"message" => $e->getMessage(),
+			));
+		}
+	}
 
-        } catch (\Exception $e) {
-            $response = new JsonResponse();
+	/**
+	 * @Route("/api/do_signoff/{id}", name="do_signoff")
+	 *
+	 * @param integer $id
+	 * @param Request $request
+	 * @return Response
+	 */
+	public function doSignOffAction($id, Request $request)
+	{
+		/** @var UserAccount $loggedInUser */
+		$loggedInUser = $this->getUser();
 
-            return $response->setData(array(
-                "status" => "error",
-                "message" => $e->getMessage(),
-            ));
-        }
-    }
+		if (!$loggedInUser) {
+			return new Response(null);
+		}
 
-    /**
-     * @Route("/api/do_signoff/{id}", name="do_signoff")
-     *
-     * @param integer $id
-     * @param Request $request
-     * @return Response
-     */
-    public function doSignOffAction ($id, Request $request)
-    {
-        /** @var UserAccount $loggedInUser */
-        $loggedInUser = $this->getUser();
+		if (empty((int)$id)) {
+			return new Response(null);
+		}
 
-        if (!$loggedInUser) {
-            return new Response(null);
-        }
+		try {
 
-        if (empty((int) $id)) {
-            return new Response(null);
-        }
+			$this->get('sign_up_manager')->signOffUserFromSession(
+				$loggedInUser,
+				$id
+			);
 
-        try {
+			// Successful session sign off for logged-in User
+			$response = new JsonResponse();
 
-            $this->get('sign_up_manager')->signOffUserFromSession(
-                $loggedInUser,
-                $id
-            );
+			return $response->setData(array(
+				"status" => "successful",
+				"message" => null,
+			));
 
-            // Successful session sign off for logged in User
-            $response = new JsonResponse();
+		} catch (\Exception $e) {
+			$response = new JsonResponse();
 
-            return $response->setData(array(
-                "status" => "successful",
-                "message" => null,
-            ));
+			return $response->setData(array(
+				"status" => "error",
+				"message" => $e->getMessage(),
+			));
+		}
+	}
 
-        } catch (\Exception $e) {
-            $response = new JsonResponse();
+	/**
+	 * @Route("/loadAnnouncedSessionInfo", name="load_announced_session_info")
+	 *
+	 * @Security("has_role('ROLE_ADMIN')")
+	 *
+	 * @param Request $request
+	 * @return Response
+	 */
+	public function loadAnnouncedSessionInfo(Request $request)
+	{
+		$announcedSessionId = $request->get('announced_session_id');
 
-            return $response->setData(array(
-                "status" => "error",
-                "message" => $e->getMessage(),
-            ));
-        }
-    }
+		if (empty($announcedSessionId)) {
+			return new Response(null);
+		}
 
-    /**
-     * @Route("/loadAnnouncedSessionInfo", name="load_announced_session_info")
-     *
-     * @Security("has_role('ROLE_ADMIN')")
-     *
-     * @param Request $request
-     * @return Response
-     */
-    public function loadAnnouncedSessionInfo(Request $request)
-    {
-        $announcedSessionId = $request->get('announced_session_id');
+		/** @var AnnouncedSessionRepository $announcedSessionRepository */
+		$announcedSessionRepository = $this->get('announced_session_repository');
 
-        if(empty($announcedSessionId)) {
-            return new Response(null);
-        }
+		/** @var AnnouncedSession $announcedSession */
+		$announcedSession = $announcedSessionRepository->find($announcedSessionId);
 
-        /** @var AnnouncedSessionRepository $announcedSessionRepository */
-        $announcedSessionRepository = $this->get('announced_session_repository');
+		if (empty($announcedSession)) {
+			return new Response(null);
+		}
 
-        /** @var AnnouncedSession $announcedSession */
-        $announcedSession = $announcedSessionRepository->find($announcedSessionId);
+		$sessionSignees = new ArrayCollection();
 
-        if(empty($announcedSession)) {
-            return new Response(null);
-        }
+		/** @var SessionSignUp $signee */
+		foreach ($announcedSession->getSignees() as $signee) {
 
-        $sessionSignees = new ArrayCollection();
+			$sessionSignees->add(array(
+				'announced_session_id' => $signee->getAnnouncedSession()->getId(),
+				'signee_name' => $signee->getSignee()->getUsername(),
+				'extras' => $signee->getExtras(),
+				'is_wait_listed' => $signee->isWaitListed()
+			));
+		}
 
-        /** @var SessionSignUp $signee */
-        foreach ($announcedSession->getSignees() as $signee) {
+		$response = new JsonResponse();
 
-            $sessionSignees->add(array(
-                'announced_session_id' => $signee->getAnnouncedSession()->getId(),
-                'signee_name' => $signee->getSignee()->getUsername(),
-                'extras' => $signee->getExtras(),
-                'is_wait_listed' => $signee->isWaitListed()
-            ));
-        }
+		return $response->setData(array(
+			'id' => $announcedSession->getId(),
+			'signees' => $sessionSignees->toArray(),
+		));
+	}
 
-        $response = new JsonResponse();
+	/**
+	 * @Route("/setExtrasForSignedUpUser", name="set_extras_to_session_signee")
+	 *
+	 * @param Request $request
+	 * @return Response
+	 */
+	public function setExtrasForSignedUpUser(Request $request)
+	{
 
-        return $response->setData(array(
-            'id' => $announcedSession->getId(),
-            'signees' => $sessionSignees->toArray(),
-        ));
-    }
+		/** @var UserAccount $loggedInUser */
+		$loggedInUser = $this->getUser();
 
-    /**
-     * @Route("/setExtrasForSignedUpUser", name="set_extras_to_session_signee")
-     *
-     *
-     * @param Request $request
-     * @return Response
-     */
-    public function setExtrasForSignedUpUser(Request $request)
-    {
+		if (!$loggedInUser) {
+			return new Response(null);
+		}
 
-        /** @var UserAccount $loggedInUser */
-        $loggedInUser = $this->getUser();
+		$extrasValue = $request->get('extras_value');
 
-        if (!$loggedInUser) {
-            return new Response(null);
-        }
+		$announcedSessionId = $request->get('announced_session_id');
 
-        $extrasValue = $request->get('extras_value');
+		if ($announcedSessionId === null || $extrasValue === null) {
+			return new Response(null);
+		}
 
-        $announcedSessionId = $request->get('announced_session_id');
+		try {
 
-        if($announcedSessionId === null || $extrasValue === null) {
-            return new Response(null);
-        }
+			$this->get('sign_up_manager')->setExtrasForSignee(
+				$loggedInUser,
+				$extrasValue,
+				$announcedSessionId
+			);
 
-        try {
+			// Successful session sign off for logged-in User
+			$response = new JsonResponse();
 
-            $this->get('sign_up_manager')->setExtrasForSignee(
-                $loggedInUser,
-                $extrasValue,
-                $announcedSessionId
-            );
+			return $response->setData(array(
+				"status" => "successful",
+				"message" => "Sikeresen elmentve!",
+				"session_id" => $announcedSessionId
+			));
 
-            // Successful session sign off for logged in User
-            $response = new JsonResponse();
+		} catch (\Exception $e) {
+			$response = new JsonResponse();
 
-            return $response->setData(array(
-                "status" => "successful",
-                "message" => "Sikeresen elmentve!",
-                "session_id" => $announcedSessionId
-            ));
+			return $response->setData(array(
+				"status" => "error",
+				"message" => $e->getMessage(),
+				"session_id" => $announcedSessionId
+			));
+		}
 
-        } catch (\Exception $e) {
-            $response = new JsonResponse();
-
-            return $response->setData(array(
-                "status" => "error",
-                "message" => $e->getMessage(),
-                "session_id" => $announcedSessionId
-            ));
-        }
-
-    }
-
+	}
 }
