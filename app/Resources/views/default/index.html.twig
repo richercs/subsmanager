@@ -14,6 +14,7 @@
                         <th>ID</th>
                         <th>Órarendi Elem</th>
                         <th>Időpont</th>
+                        <th>Kezdet</th>
                         <th>Lezárás</th>
                         <th>Bejelentkezések</th>
                         <th>Szerk.</th>
@@ -30,6 +31,9 @@
                             </td>
                             <td style="min-width: 90px">
                                 {{ available_session.getTimeOfEvent|date('Y-m-d H:i:s') }}
+                            </td>
+                            <td style="min-width: 90px">
+                                {{ available_session.timeOfSignUpStart|date('Y-m-d H:i:s') }}
                             </td>
                             <td style="min-width: 90px">
                                 {{ available_session.getTimeFromFinalized|date('Y-m-d H:i:s') }}
@@ -61,6 +65,7 @@
                         <th>ID</th>
                         <th>Órarendi Elem</th>
                         <th>Tárgy hét</th>
+						<th>Kezdet</th>
                         <th>Lezárás</th>
                         <th>Bejelentkezések</th>
                         <th>Szerk.</th>
@@ -77,6 +82,9 @@
                             </td>
                             <td style="min-width: 90px">
                                 {{ weekly_online_announces_session.getTimeOfEvent|date('Y-m-d H:i:s') }}
+                            </td>
+                            <td style="min-width: 90px">
+                                {{ weekly_online_announces_session.timeOfSignUpStart|date('Y-m-d H:i:s') }}
                             </td>
                             <td style="min-width: 90px">
                                 {{ weekly_online_announces_session.getTimeFromFinalized|date('Y-m-d H:i:s') }}

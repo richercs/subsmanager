@@ -65,6 +65,12 @@ class AnnouncedSessionType extends AbstractType
 				'format' => 'yyyy-MM-dd HH:mm',
 				'html5' => false,
 			))
+			->add('timeOfSignUpStart', DateType::class, array(
+				'widget' => 'single_text',
+				'attr' => array('class' => 'datetimepicker'),
+				'format' => 'yyyy-MM-dd HH:mm',
+				'html5' => false,
+			))
 			->add('timeFromFinalized', DateType::class, array(
 				'widget' => 'single_text',
 				'attr' => array('class' => 'datetimepicker'),

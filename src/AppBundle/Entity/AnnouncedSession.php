@@ -61,6 +61,11 @@ class AnnouncedSession
     protected $timeOfEvent;
 
     /**
+     * @ORM\Column(name="time_of_signup_start", type="datetime", nullable = false)
+     */
+    protected $timeOfSignUpStart;
+
+    /**
      * @ORM\Column(name="time_from_finalized", type="datetime", nullable = false)
      */
     protected $timeFromFinalized;
@@ -183,6 +188,22 @@ class AnnouncedSession
     {
         $this->timeOfEvent = $timeOfEvent;
     }
+
+	/**
+	 * @return mixed
+	 */
+	public function getTimeOfSignUpStart()
+	{
+		return $this->timeOfSignUpStart;
+	}
+
+	/**
+	 * @param mixed $timeOfSignUpStart
+	 */
+	public function setTimeOfSignUpStart($timeOfSignUpStart)
+	{
+		$this->timeOfSignUpStart = $timeOfSignUpStart;
+	}
 
     /**
      * @return mixed
