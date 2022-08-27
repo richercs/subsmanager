@@ -16,11 +16,11 @@ class AttendanceHistoryRepository extends EntityRepository
     public function getAttendancesOfSubscriptionOrderedBySessionEventDate($subscription) {
 
 	    $query = $this->_em->createQuery('
-	            SELECT attendancehistroy
-	            FROM AppBundle\Entity\AttendanceHistory attendancehistroy 
+	            SELECT attendancehistory
+	            FROM AppBundle\Entity\AttendanceHistory attendancehistory
 	            LEFT JOIN AppBundle\Entity\SessionEvent sessionevent
-	            WITH attendancehistroy.session_event = sessionevent
-	            WHERE attendancehistroy.subscription = :subscription
+	            WITH attendancehistory.session_event = sessionevent
+	            WHERE attendancehistory.subscription = :subscription
 	            ORDER BY sessionevent.sessionEventDate DESC
 	       ');
 
@@ -28,9 +28,7 @@ class AttendanceHistoryRepository extends EntityRepository
 	        'subscription' => $subscription
 	    ));
 
-	    $result = $query->getResult();
-
-	    return $result;
+	    return $query->getResult();
 	}
 
 }

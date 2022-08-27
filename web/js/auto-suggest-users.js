@@ -92,13 +92,27 @@ $(document).ready(function () {
                 var subscriptionInfo = "#appbundle_sessionevent_attendees_".concat(recordNumber, '_subscription_info');
 
                 if (data['id'] != null) {
-                    if (data['attendance_limit'] == null) {
-                        $(subscriptionInfo).val("Havi bérlet (használatok száma: " + data['attendance_count'] + ")");
-                    } else {
-                        $(subscriptionInfo).val("Alkalmak Száma: " + data['attendance_limit']
-                            + "\n"
-                            + "Fennmaradó: " + data['attendance_left']);
-                    }
+					if (data['subscription_type'] === 'credit') {
+						$(subscriptionInfo).val(
+							"Kreditek Száma: " + data['subscription_credit']
+							+ "\n"
+							+ "Fennmaradó: " + data['subscription_credit_left']
+						);
+						var creditRequirement = $('#appbundle_sessionevent_sessionCreditRequirement');
+						if (!isNaN(creditRequirement.val()) && creditRequirement.val() > data['subscription_credit_left']) {
+							$(subscriptionInfo).css("background-color", "red");
+						} else {
+							$(subscriptionInfo).css("background-color", "");
+						}
+					}
+					if (data['subscription_type'] === 'attendance') {
+						$(subscriptionInfo).val(
+							"Alkalmak Száma: " + data['attendance_limit']
+							+ "\n"
+							+ "Fennmaradó: " + data['attendance_left']
+						);
+
+					}
                 }
             }
         });

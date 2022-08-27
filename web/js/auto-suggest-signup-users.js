@@ -26,7 +26,12 @@ $(document).ready(function () {
 
     var pathname = window.location.pathname; // Returns path only
 
-    if (pathname != '/announced_session/add_announced_session') {
+	const announced_session_paths = [
+		'/announced_session/add_announced_session',
+		'/announced_session/add_weekly_online_announced_session'
+	]
+
+    if (!announced_session_paths.includes(window.location.pathname)) {
 
         $('#appbundle_announced_session_scheduleItem').attr('disabled', true);
 

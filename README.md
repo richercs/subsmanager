@@ -230,7 +230,7 @@ app:
 app/config/config_dev.yml
 parameters:
   frontend_host: http://tornazzvelem.localhost
-  login_faliure: http://berletek.tornazzvelem.localhost/login?embeded=true
+  login_failure: http://berletek.tornazzvelem.localhost/login?embeded=true
 
 ```
 

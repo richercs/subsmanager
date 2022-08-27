@@ -17,6 +17,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class AnnouncedSession
 {
+	const ANNOUNCED_SESSION_TYPE_SINGLE_LIMITED = 'single_limited';
+	const ANNOUNCED_SESSION_TYPE_WEEKLY_ONLINE = 'weekly_online_unlimited';
 
     public function __construct() {
         $this->signees = new ArrayCollection();
@@ -40,6 +42,11 @@ class AnnouncedSession
      */
     protected $scheduleItem;
 
+	/**
+	 * @ORM\Column(name="announced_session_type", type="string", columnDefinition="ENUM('single_limited', 'weekly_online_unlimited')")
+	 */
+	protected $announcedSessionType;
+
     /**
      * @var SessionEvent
      *
@@ -54,13 +61,18 @@ class AnnouncedSession
     protected $timeOfEvent;
 
     /**
+     * @ORM\Column(name="time_of_signup_start", type="datetime", nullable = false)
+     */
+    protected $timeOfSignUpStart;
+
+    /**
      * @ORM\Column(name="time_from_finalized", type="datetime", nullable = false)
      */
     protected $timeFromFinalized;
 
     /**
      * @var int
-     * @ORM\Column(name="max_number_of_signups", type="integer", nullable = false)
+     * @ORM\Column(name="max_number_of_signups", type="integer", nullable = true)
      */
     protected $maxNumberOfSignUps;
 
@@ -129,6 +141,22 @@ class AnnouncedSession
         $this->scheduleItem = $scheduleItem;
     }
 
+	/**
+	 * @return mixed
+	 */
+	public function getAnnouncedSessionType()
+	{
+		return $this->announcedSessionType;
+	}
+
+	/**
+	 * @param mixed $announcedSessionType
+	 */
+	public function setAnnouncedSessionType($announcedSessionType)
+	{
+		$this->announcedSessionType = $announcedSessionType;
+	}
+
     /**
      * @return SessionEvent
      */
@@ -160,6 +188,22 @@ class AnnouncedSession
     {
         $this->timeOfEvent = $timeOfEvent;
     }
+
+	/**
+	 * @return mixed
+	 */
+	public function getTimeOfSignUpStart()
+	{
+		return $this->timeOfSignUpStart;
+	}
+
+	/**
+	 * @param mixed $timeOfSignUpStart
+	 */
+	public function setTimeOfSignUpStart($timeOfSignUpStart)
+	{
+		$this->timeOfSignUpStart = $timeOfSignUpStart;
+	}
 
     /**
      * @return mixed
@@ -298,6 +342,10 @@ class AnnouncedSession
      */
     public function isFull()
     {
+		if ($this->announcedSessionType === AnnouncedSession::ANNOUNCED_SESSION_TYPE_WEEKLY_ONLINE) {
+			return false;
+		}
+
         $this->calculateNumberOfSignees();
 
         return $this->numberOfSignees >= $this->maxNumberOfSignUps;

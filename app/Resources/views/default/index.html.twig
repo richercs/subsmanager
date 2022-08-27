@@ -2,6 +2,7 @@
 
 {% block body %}
 
+	<h2>Bejelentkezések</h2>
     {% if available_sessions is not empty and logged_in_user is not null %}
         <div id="stats-wrapper">
             <div id="view-user-account-wrapper">
@@ -13,6 +14,7 @@
                         <th>ID</th>
                         <th>Órarendi Elem</th>
                         <th>Időpont</th>
+                        <th>Kezdet</th>
                         <th>Lezárás</th>
                         <th>Bejelentkezések</th>
                         <th>Szerk.</th>
@@ -31,6 +33,9 @@
                                 {{ available_session.getTimeOfEvent|date('Y-m-d H:i:s') }}
                             </td>
                             <td style="min-width: 90px">
+                                {{ available_session.timeOfSignUpStart|date('Y-m-d H:i:s') }}
+                            </td>
+                            <td style="min-width: 90px">
                                 {{ available_session.getTimeFromFinalized|date('Y-m-d H:i:s') }}
                             </td>
                             <td>
@@ -39,6 +44,56 @@
                             </td>
                             <td>
                                 <a href="{{ path('edit_announced_session', {'id': available_session.getId }) }}" class="btn btn-link"><span style="font-size:16px; padding-left: 8px;" class="pull-right showopacity glyphicon glyphicon-list-alt"></span></a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    {% endif %}
+
+    {% if weekly_online_announces_sessions is not empty and logged_in_user is not null %}
+        <div id="stats-wrapper">
+            <div id="view-user-account-wrapper">
+                <h4><b>Elérhető heti online bejelentkezéses órák</b></h4>
+                <br>
+                <table class="table colored-table">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Órarendi Elem</th>
+                        <th>Tárgyhét</th>
+						<th>Kezdet</th>
+                        <th>Lezárás</th>
+                        <th>Bejelentkezések</th>
+                        <th>Szerk.</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for weekly_online_announces_session in weekly_online_announces_sessions %}
+                        <tr>
+                            <td>
+                                {{ weekly_online_announces_session.getId }}
+                            </td>
+                            <td>
+                                {{ weekly_online_announces_session.getScheduleItem }}
+                            </td>
+                            <td style="min-width: 90px">
+                                {{ weekly_online_announces_session.getTimeOfEvent|date('Y-m-d') }}
+                            </td>
+                            <td style="min-width: 90px">
+                                {{ weekly_online_announces_session.timeOfSignUpStart|date('Y-m-d H:i:s') }}
+                            </td>
+                            <td style="min-width: 90px">
+                                {{ weekly_online_announces_session.getTimeFromFinalized|date('Y-m-d H:i:s') }}
+                            </td>
+                            <td>
+                                {{ weekly_online_announces_session.getNumberOfSignees }}
+                            </td>
+                            <td>
+                                <a href="{{ path('edit_announced_session', {'id': weekly_online_announces_session.getId }) }}" class="btn btn-link"><span style="font-size:16px; padding-left: 8px;" class="pull-right showopacity glyphicon glyphicon-list-alt"></span></a>
                             </td>
                         </tr>
                     {% endfor %}

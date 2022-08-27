@@ -1,77 +1,82 @@
 {% extends 'users/layout.html.twig' %}
 
 {% block body %}
-    {{ parent() }}
-    <h3>Felhasználó Adatainak Megtekintése</h3>
-    <div id="yellow-wrapper">
-        <div id="view-user-account-wrapper">
-            <b>Vezetéknév: </b>{{ user_account.getLastName }}<br/>
-            <b>Keresztnév: </b>{{ user_account.getFirstName }}<br/>
-            <b>Email: </b>{{ user_account.getEmail }}<br/>
-            <b>Legutóbbi belépés: </b>
-                {% if user_account.getLastLogin is not null %}
-                    {{ user_account.getLastLogin|date('Y.m.d. H:i:s') }}
-                {% endif %}
-            <br/>
-            {% block AdminLinkToEditUserAccount %}
-                {% if logged_in_user is not null %}
-                    {% if logged_in_user.getIsAdmin %}
-                        <br>
-                        <a href="{{ path('useraccount_edit_user', {'id': user_account.getId}) }}" class="btn btn-default"><span style="font-size:16px; padding-left: 8px; padding-top: 2px;" class="pull-right showopacity glyphicon glyphicon-cog"></span>Szerkesztés</a>
-                        <br>
-                    {% endif %}
-                {% endif %}
-            {%  endblock %}
-            <br>
-            <h4><b>Aktív Bérletek</b></h4>
-            <table class="table colored-table">
-                <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Tulaj.</th>
-                    <th>Alk.</th>
-                    <th>Indul/Lejár</th>
-                    <th>Ár</th>
-                    <th>Részletek</th>
-                </tr>
-                </thead>
-                <tbody>
-                    {% for subscription in subscriptions %}
-                        <tr>
-                            <td>
-                                {{ subscription.id }}
-                            </td>
-                            <td>
-                                {{ subscription.owner.getLastName }} {{ subscription.owner.getFirstName }}
-                            </td>
-                            <td>
-                                {{ subscription.attendanceCount }}
-                            </td>
-                            <td>
-                                {{ subscription.getStartDateString }} - {{ subscription.getDueDateString }}
-                            </td>
-                            <td>
-                                {{ subscription.price }}
-                            </td>
-                            <td>
-                                <a href="{{ path('subscription_view_attendances', {'id': subscription.id}) }}" class="btn btn-default"><span style="font-size:16px; padding-left: 8px;" class="pull-right showopacity glyphicon glyphicon-chevron-right"></span></a>
-                                {% block AdminLinkToEditSubscription %}
-                                    {% if logged_in_user is not null %}
-                                        {% if logged_in_user.getIsAdmin %}
-                                            <a href="{{ path('subscription_edit_subscription', {'id': subscription.getId, 'user_account_id': user_account.getId}) }}" class="btn btn-link"><span style="font-size:16px; padding-left: 8px;" class="pull-right showopacity glyphicon glyphicon-cog"></span></a>
-                                        {% endif %}
-                                    {% endif %}
-                                {%  endblock %}
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            <a href="{{ path('useraccount_view_all_subs', {'id': user_account.getId}) }}" class="btn btn-primary">Összes Bérlet Megtekintése</a>
-        </div>
-    </div>
+	{{ parent() }}
+	<h3>Felhasználó Adatainak Megtekintése</h3>
+	<div id="yellow-wrapper">
+		<div id="view-user-account-wrapper">
+			<b>Vezetéknév: </b>{{ user_account.getLastName }}<br/>
+			<b>Keresztnév: </b>{{ user_account.getFirstName }}<br/>
+			<b>Email: </b>{{ user_account.getEmail }}<br/>
+			<b>Legutóbbi belépés: </b>
+			{% if user_account.getLastLogin is not null %}
+				{{ user_account.getLastLogin|date('Y.m.d. H:i:s') }}
+			{% endif %}
+			<br/>
+			{% block AdminLinkToEditUserAccount %}
+				{% if logged_in_user is not null %}
+					{% if logged_in_user.getIsAdmin %}
+						<br>
+						<a href="{{ path('useraccount_edit_user', {'id': user_account.getId}) }}"
+						   class="btn btn-default"><span style="font-size:16px; padding-left: 8px; padding-top: 2px;"
+														 class="pull-right showopacity glyphicon glyphicon-cog"></span>Szerkesztés</a>
+						<br>
+					{% endif %}
+				{% endif %}
+			{% endblock %}
+			<br>
+			<h4><b>Aktív Kredites Bérletek</b></h4>
+			<table class="table colored-table">
+				<thead>
+				<tr>
+					<th>#</th>
+					<th>Tulaj.</th>
+					<th>Kredit</th>
+					<th>Indul/Lejár</th>
+					<th>Ár</th>
+					<th>Részletek</th>
+				</tr>
+				</thead>
+				<tbody>
+				{% for subscription in subscriptions %}
+					{% if subscription.subscriptionType == 'credit' %}
+						<tr>
+							<td>
+								{{ subscription.id }}
+							</td>
+							<td>
+								{{ subscription.owner.getLastName }} {{ subscription.owner.getFirstName }}
+							</td>
+							<td>
+								{{ subscription.credit }}
+							</td>
+							<td>
+								{{ subscription.getStartDateString }} - {{ subscription.getDueDateString }}
+							</td>
+							<td>
+								{{ subscription.price }}
+							</td>
+							<td>
+								<a href="{{ path('subscription_view_attendances', {'id': subscription.id}) }}"
+								   class="btn btn-default"><span style="font-size:16px; padding-left: 8px;"
+																 class="pull-right showopacity glyphicon glyphicon-chevron-right"></span></a>
+								{% if logged_in_user is not null and logged_in_user.getIsAdmin %}
+									<a href="{{ path('subscription_edit_subscription', {'id': subscription.getId, 'user_account_id': user_account.getId}) }}"
+									   class="btn btn-link"><span style="font-size:16px; padding-left: 8px;"
+																  class="pull-right showopacity glyphicon glyphicon-cog"></span></a>
+								{% endif %}
+							</td>
+						</tr>
+					{% endif %}
+				{% endfor %}
+				</tbody>
+			</table>
+			<a href="{{ path('useraccount_view_all_subs', {'id': user_account.getId}) }}" class="btn btn-primary">Összes
+				Bérlet Megtekintése</a>
+		</div>
+	</div>
 {% endblock %}
 
 {% block stylesheets %}
-    {{ parent() }}
+	{{ parent() }}
 {% endblock %}

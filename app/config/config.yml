@@ -8,7 +8,7 @@ imports:
 parameters:
     locale: hu
     frontend_host: https://tornazzvelem.hu
-    login_faliure: https://berletek.tornazzvelem.hu/login?embeded=true
+    login_failure: https://berletek.tornazzvelem.hu/login?embeded=true
 
 framework:
     #esi:             ~
@@ -54,6 +54,8 @@ doctrine:
         user:     "%database_user%"
         password: "%database_password%"
         charset:  UTF8
+        mapping_types:
+            enum: string
         # if using pdo_sqlite as your database driver:
         #   1. add the path in parameters.yml
         #     e.g. database_path: "%kernel.root_dir%/data/data.db3"

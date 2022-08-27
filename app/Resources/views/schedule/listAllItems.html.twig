@@ -1,36 +1,35 @@
 {% extends 'schedule/layout.html.twig' %}
 
 {% block body %}
-    {{ parent() }}
-    <h3>Órarendi Elemek</h3>
-    <div id="yellow-wrapper">
-        <h3>Aktív Elemek</h3>
-        <br>
-        <div class="list-group">
-            {% for item in active_items %}
-                <a href="{{ path('schedule_edit_item', {'id': item.id}) }}" class="list-group-item">
-                    <b>{{ item }}</b>
-                    Létrehozva: {{ item.created|date('Y.m.d.') }}
-                </a>
-            {% endfor %}
-        </div>
-    </div>
+	{{ parent() }}
+	<h3>Órarendi Elemek</h3>
+	<div id="yellow-wrapper">
+		<h3>Aktív Elemek</h3>
+		<br>
+		<div class="list-group">
+			{% for item in active_items %}
+				<a href="{{ path('schedule_edit_item', {'id': item.id}) }}" class="list-group-item">
+					<b>{{ item }}</b>
+					Létrehozva: {{ item.created|date('Y.m.d.') }}
+				</a>
+			{% endfor %}
+		</div>
+	</div>
 
-    <div id="yellow-wrapper">
-        <h3>Inaktív Elemek</h3>
-        <br>
-        <div class="list-group">
-            {% for item in inactive_items %}
-                <a href="{{ path('schedule_edit_item', {'id': item.id}) }}" class="list-group-item">
-                    <b>{{ item }}</b>
-                    Létrehozva: {{ item.created|date('Y.m.d.') }}
-                </a>
-            {% endfor %}
-        </div>
-    </div>
-
+	<div id="yellow-wrapper">
+		<h3>Inaktív Elemek</h3>
+		<br>
+		<div class="list-group">
+			{% for item in inactive_items %}
+				<a href="{{ path('schedule_edit_item', {'id': item.id}) }}" class="list-group-item">
+					<b>{{ item }}</b>
+					Létrehozva: {{ item.created|date('Y.m.d.') }}
+				</a>
+			{% endfor %}
+		</div>
+	</div>
 {% endblock %}
 
 {% block stylesheets %}
-    {{ parent() }}
+	{{ parent() }}
 {% endblock %}

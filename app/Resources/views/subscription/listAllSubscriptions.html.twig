@@ -1,194 +1,234 @@
 {% extends 'subscription/layout.html.twig' %}
 
 {% block body %}
-    {{ parent() }}
-    {% if break_event is defined %}
-        <h3>Bérletek Ellenőrzés</h3>
-        <div id="white-wrapper">
-            <b>Szünet Napja:</b> <span style="color: green">{{ break_event.getBreakEventDay|date('Y.m.d.') }}</span><br>
-        </div>
-        <div id="yellow-wrapper">
-            <h4><b>Érintett Bérletek</b></h4>
-            <br>
-            <ul>
-                {% for subscription in subscriptions %}
-                    <li class="bottom-padded-list">
-                        {{ subscription['subscription'].getOwner }}
-                        <br>Bérlet Azonosító: <b>{{ subscription['subscription'].getId }}</b> [{{ subscription['subscription'].getAttendanceCount }} alkalmas]
-                        Hosszabítás Szám: <span style="color: green">{{ subscription['subscription'].getNumberOfExtensions }} </span>
-                        <br>{{ subscription['subscription'].getStartDateString }} -
-                        {{ subscription['oldDueDate'] }}
-                        &nbsp;&nbsp;&nbsp;<b>Új:</b> <span style="color: green">{{ subscription['subscription'].getDueDateString }} </span>
-                    </li>
-                {% endfor %}
-            </ul>
+	{{ parent() }}
+	{% if break_event is defined %}
+		<h3>Bérletek Ellenőrzés</h3>
+		<div id="white-wrapper">
+			<b>Szünet Napja:</b> <span style="color: green">{{ break_event.getBreakEventDay|date('Y.m.d.') }}</span><br>
+		</div>
+		<div id="yellow-wrapper">
+			<h4><b>Érintett Bérletek</b></h4>
+			<br>
+			<ul>
+				{% for subscription in subscriptions %}
+					<li class="bottom-padded-list">
+						{{ subscription['subscription'].getOwner }}
+						<br>Bérlet Azonosító: <b>{{ subscription['subscription'].getId }}</b>
+						[{{ subscription['subscription'].getAttendanceCount }} alkalmas]
+						Hosszabítás Szám: <span style="color: green">{{ subscription['subscription'].getNumberOfExtensions }} </span>
+						<br>{{ subscription['subscription'].getStartDateString }} - {{ subscription['oldDueDate'] }}
+						&nbsp;&nbsp;&nbsp;<b>Új:</b> <span style="color: green">{{ subscription['subscription'].getDueDateString }} </span>
+					</li>
+				{% endfor %}
+			</ul>
 
-            {% if reverting is defined %}
-                <h4> Visszaállítások Mentése</h4>
-                {{ form(form) }}
+			{% if reverting is defined %}
+				<h4> Visszaállítások Mentése</h4>
+				{{ form(form) }}
 
-                <div class="checkbox">
-                    <label><input type="checkbox" id="confirmDeleteCheckBox" value="">Visszaállítás</label>
-                </div>
+				<div class="checkbox">
+					<label><input type="checkbox" id="confirmDeleteCheckBox" value="">Visszaállítás</label>
+				</div>
 
-                <a href="{{ path('break_edit_break_event', {'id': break_event.getId}) }}" class="btn btn-primary">Vissza</a>
-            {% else %}
-                <h4> Hosszabbítások Mentése</h4>
-                {{ form(form) }}
+				<a href="{{ path('break_edit_break_event', {'id': break_event.getId}) }}"
+				   class="btn btn-primary">Vissza</a>
+			{% else %}
+				<h4> Hosszabbítások Mentése</h4>
+				{{ form(form) }}
 
-                <div class="checkbox">
-                    <label><input type="checkbox" id="confirmExtendCheckBox" value="">Hosszabbítás</label>
-                </div>
+				<div class="checkbox">
+					<label><input type="checkbox" id="confirmExtendCheckBox" value="">Hosszabbítás</label>
+				</div>
 
-                <a href="{{ path('break_add_breakevent') }}" class="btn btn-primary">Vissza</a>
-            {% endif %}
+				<a href="{{ path('break_add_breakevent') }}" class="btn btn-primary">Vissza</a>
+			{% endif %}
 
-        </div>
-    {% else %}
-        <div id="stats-wrapper">
-            <div id="view-user-account-wrapper"> <!-- This id has no rules in CSS - TODO: review it -->
-                <h4><b>Aktív bérletek</b></h4>
-                <br>
-                <table class="table colored-table">
-                    <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Név</th>
-                        <th>Lejárati Időpont</th>
-                        <th class="table-col-text-warpper">Alkalmak (Fennmaradó)</th>
-                        <th>Részletek</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for subscription in active_subscriptions %}
-                        <tr>
-                            <td>
-                                {{ subscription.getId }}
-                            </td>
-                            <td>
-                                {{ subscription.getOwner.getUserName }}
-                            </td>
-                            <td>
-                                {{ subscription.getDueDate|date('Y.m.d.') }}
-                            </td>
-                            <td>
-                                {{ subscription.getUsages }} /  {{ subscription.getAttendanceCount }}
-                            </td>
-                            <td>
-                                <a href="{{ path('subscription_view_attendances', {'id': subscription.getId}) }}" class="btn btn-default"><span style="font-size:16px; padding-left: 8px;" class="pull-right showopacity glyphicon glyphicon-chevron-right"></span></a>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
+		</div>
+	{% else %}
+		<div id="stats-wrapper">
+			<div id="view-user-account-wrapper"> <!-- This id has no rules in CSS - TODO: review it -->
+				<h4><b>Aktív Kredites bérletek</b></h4>
+				<br>
+				<table class="table colored-table">
+					<thead>
+					<tr>
+						<th>ID</th>
+						<th>Név</th>
+						<th>Lejárati Időpont</th>
+						<th class="table-col-text-warpper">Kredit (Fennmaradó)</th>
+						<th>Részletek</th>
+					</tr>
+					</thead>
+					<tbody>
+					{% for subscription in active_subscriptions %}
+						<tr>
+							<td>
+								{{ subscription.getId }}
+							</td>
+							<td>
+								{{ subscription.getOwner.getUserName }}
+							</td>
+							<td>
+								{{ subscription.getDueDate|date('Y.m.d.') }}
+							</td>
+							<td>
+								{{ subscription.getCredit }} / {{ subscription.getCurrentCredit }}
+							</td>
+							<td>
+								<a href="{{ path('subscription_view_attendances', {'id': subscription.getId}) }}"
+								   class="btn btn-default"><span style="font-size:16px; padding-left: 8px;"
+																 class="pull-right showopacity glyphicon glyphicon-chevron-right"></span></a>
+							</td>
+						</tr>
+					{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
 
-        <div id="stats-wrapper">
-            <div id="view-user-account-wrapper"> <!-- This id has no rules in CSS - TODO: review it -->
-                <h4><b>Lejárt bérletek</b></h4>
-                <br>
-                <table class="table colored-table">
-                    <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Név</th>
-                        <th>Lejárati Időpont</th>
-                        <th class="table-col-text-warpper">Alkalmak (Fennmaradó)</th>
-                        <th>Részletek</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for subscription in non_active_subscriptions %}
-                        <tr>
-                            <td>
-                                {{ subscription.getId }}
-                            </td>
-                            <td>
-                                {{ subscription.getOwner.getUserName }}
-                            </td>
-                            <td>
-                                {{ subscription.getDueDate|date('Y.m.d.') }}
-                            </td>
-                            <td>
-                                {{ subscription.getUsages }} /  {{ subscription.getAttendanceCount }}
-                            </td>
-                            <td>
-                                <a href="{{ path('subscription_view_attendances', {'id': subscription.getId}) }}" class="btn btn-default"><span style="font-size:16px; padding-left: 8px;" class="pull-right showopacity glyphicon glyphicon-chevron-right"></span></a>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div id="white-wrapper">
-            <a href="{{ path('homepage') }}" class="btn btn-primary">Vissza</a>
-        </div>
-    {% endif %}
+		<div id="stats-wrapper">
+			<div id="view-user-account-wrapper"> <!-- This id has no rules in CSS - TODO: review it -->
+				<h4><b>Lejárt Kredites bérletek</b></h4>
+				<br>
+				<table class="table colored-table">
+					<thead>
+					<tr>
+						<th>ID</th>
+						<th>Név</th>
+						<th>Lejárati Időpont</th>
+						<th class="table-col-text-warpper">Kredit (Fennmaradó)</th>
+						<th>Részletek</th>
+					</tr>
+					</thead>
+					<tbody>
+					{% for subscription in non_active_subscriptions %}
+						{% if subscription.subscriptionType == 'credit' %}
+						<tr>
+							<td>
+								{{ subscription.getId }}
+							</td>
+							<td>
+								{{ subscription.getOwner.getUserName }}
+							</td>
+							<td>
+								{{ subscription.getDueDate|date('Y.m.d.') }}
+							</td>
+							<td>
+								{{ subscription.getCredit }} / {{ subscription.getCurrentCredit }}
+							</td>
+							<td>
+								<a href="{{ path('subscription_view_attendances', {'id': subscription.getId}) }}"
+								   class="btn btn-default"><span style="font-size:16px; padding-left: 8px;"
+																 class="pull-right showopacity glyphicon glyphicon-chevron-right"></span></a>
+							</td>
+						</tr>
+						{% endif %}
+					{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<div id="stats-wrapper">
+			<div id="view-user-account-wrapper"> <!-- This id has no rules in CSS - TODO: review it -->
+				<h4><b>Lejárt Alkalmas bérletek</b></h4>
+				<br>
+				<table class="table colored-table">
+					<thead>
+					<tr>
+						<th>ID</th>
+						<th>Név</th>
+						<th>Lejárati Időpont</th>
+						<th class="table-col-text-warpper">Alkalmak (Fennmaradó)</th>
+						<th>Részletek</th>
+					</tr>
+					</thead>
+					<tbody>
+					{% for subscription in non_active_subscriptions %}
+						{% if subscription.subscriptionType == 'attendance' %}
+						<tr>
+							<td>
+								{{ subscription.getId }}
+							</td>
+							<td>
+								{{ subscription.getOwner.getUserName }}
+							</td>
+							<td>
+								{{ subscription.getDueDate|date('Y.m.d.') }}
+							</td>
+							<td>
+								{{ subscription.getUsages }} / {{ subscription.getAttendanceCount }}
+							</td>
+							<td>
+								<a href="{{ path('subscription_view_attendances', {'id': subscription.getId}) }}"
+								   class="btn btn-default"><span style="font-size:16px; padding-left: 8px;"
+																 class="pull-right showopacity glyphicon glyphicon-chevron-right"></span></a>
+							</td>
+						</tr>
+						{% endif %}
+					{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div id="white-wrapper">
+			<a href="{{ path('homepage') }}" class="btn btn-primary">Vissza</a>
+		</div>
+	{% endif %}
 {% endblock %}
 {% block stylesheets %}
-    {{ parent() }}
+	{{ parent() }}
 {% endblock %}
 
 {% block body_end_javascripts %}
+	{% if break_event is defined %}
+		{% if reverting is defined %}
+			<script type="text/javascript">
 
-    {% if break_event is defined %}
+				var confirmDeleteCheckbox = $('#confirmDeleteCheckBox');
 
-        {% if reverting is defined %}
+				if (confirmDeleteCheckbox.is(":checked")) {
+					// let it submit
+					$('#form_save').attr("disabled", false);
+				} else {
+					// don't let it submit
+					$('#form_save').attr("disabled", true);
+				}
 
-            <script type="text/javascript">
+				confirmDeleteCheckbox.click(function () {
+					if ($('#confirmDeleteCheckBox').is(":checked")) {
+						// let it submit
+						$('#form_save').attr("disabled", false);
+					} else {
+						// don't let it submit
+						$('#form_save').attr("disabled", true);
+					}
+				});
+			</script>
+		{% else %}
+			<script type="text/javascript">
 
-                var confirmDeleteCheckbox = $('#confirmDeleteCheckBox');
+				var confirmExtendCheckbox = $('#confirmExtendCheckBox');
 
-                if (confirmDeleteCheckbox.is(":checked")) {
-                    // let it submit
-                    $('#form_save').attr("disabled", false);
-                } else {
-                    // don't let it submit
-                    $('#form_save').attr("disabled", true);
-                }
+				if (confirmExtendCheckbox.is(":checked")) {
+					// let it submit
+					$('#form_save').attr("disabled", false);
+				} else {
+					// don't let it submit
+					$('#form_save').attr("disabled", true);
+				}
 
-                confirmDeleteCheckbox.click( function () {
-                    if ($('#confirmDeleteCheckBox').is(":checked")) {
-                        // let it submit
-                        $('#form_save').attr("disabled", false);
-                    } else {
-                        // don't let it submit
-                        $('#form_save').attr("disabled", true);
-                    }
-                });
-
-            </script>
-
-        {% else %}
-
-            <script type="text/javascript">
-
-                var confirmExtendCheckbox = $('#confirmExtendCheckBox');
-
-                if (confirmExtendCheckbox.is(":checked")) {
-                    // let it submit
-                    $('#form_save').attr("disabled", false);
-                } else {
-                    // don't let it submit
-                    $('#form_save').attr("disabled", true);
-                }
-
-                confirmExtendCheckbox.click( function () {
-                    if ($('#confirmExtendCheckBox').is(":checked")) {
-                        // let it submit
-                        $('#form_save').attr("disabled", false);
-                    } else {
-                        // don't let it submit
-                        $('#form_save').attr("disabled", true);
-                    }
-                });
-
-            </script>
-
-        {% endif %}
-
-    {% endif %}
-
+				confirmExtendCheckbox.click(function () {
+					if ($('#confirmExtendCheckBox').is(":checked")) {
+						// let it submit
+						$('#form_save').attr("disabled", false);
+					} else {
+						// don't let it submit
+						$('#form_save').attr("disabled", true);
+					}
+				});
+			</script>
+		{% endif %}
+	{% endif %}
 {% endblock %}

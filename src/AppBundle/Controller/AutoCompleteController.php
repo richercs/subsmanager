@@ -11,7 +11,6 @@ use AppBundle\Repository\AttendanceHistoryRepository;
 use AppBundle\Repository\SubscriptionRepository;
 use AppBundle\Repository\UserAccountRepository;
 use AppBundle\Repository\UserContactRepository;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -22,197 +21,203 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class AutoCompleteController extends Controller
 {
-    /**
-     * @Route("/useraccount_search", name="useraccount_search")
-     *
-     * @Security("has_role('ROLE_ADMIN')")
-     *
-     * @param Request request
-     * @return array
-     */
-    public function searchUserAccountAction(Request $request)
-    {
-        /** @var EntityManager $em */
-        $em = $this->get('doctrine.orm.default_entity_manager');
+	/**
+	 * @Route("/useraccount_search", name="useraccount_search")
+	 *
+	 * @Security("has_role('ROLE_ADMIN')")
+	 *
+	 * @param Request $request
+	 * @return Response|null
+	 */
+	public function searchUserAccountAction(Request $request)
+	{
+		/** @var EntityManager $em */
+		$em = $this->get('doctrine.orm.default_entity_manager');
 
-        /** @var UserAccountRepository $userAccountRepository */
-        $userAccountRepository = $em->getRepository('AppBundle\Entity\UserAccount');
+		/** @var UserAccountRepository $userAccountRepository */
+		$userAccountRepository = $em->getRepository('AppBundle\Entity\UserAccount');
 
-        $term = $request->query->get('term'); // use "term" instead of "q" for jquery-ui
+		$term = $request->query->get('term'); // use "term" instead of "q" for jquery-ui
 
-        /** @var array $results */
-        $results = $userAccountRepository->findLikeUserName($term);
+		/** @var array $results */
+		$results = $userAccountRepository->findLikeUserName($term);
 
-        // Do not suggest deleted user accounts
-        /** @var UserAccount $user */
-        foreach ($results as $key => $user) {
-            if($user->isDeleted()) {
-                unset($results[$key]);
-            }
-        }
+		// Do not suggest deleted user accounts
+		/** @var UserAccount $user */
+		foreach ($results as $key => $user) {
+			if ($user->isDeleted()) {
+				unset($results[$key]);
+			}
+		}
 
-        return $this->render('event/attendeeSearch.twig', array(
-            'results' => $results
-        ));
-    }
+		return $this->render('event/attendeeSearch.twig', array(
+			'results' => $results
+		));
+	}
 
-    /**
-     * @Route("/useraccount_get/{id}", name="useraccount_get")
-     *
-     * @Security("has_role('ROLE_ADMIN')")
-     *
-     * @param Request request
-     * @return Response
-     */
-    public function getUserAccountAction($id = null)
-    {
-        /** @var EntityManager $em */
-        $em = $this->get('doctrine.orm.default_entity_manager');
+	/**
+	 * @Route("/useraccount_get/{id}", name="useraccount_get")
+	 *
+	 * @Security("has_role('ROLE_ADMIN')")
+	 *
+	 * @param $id
+	 * @return Response
+	 */
+	public function getUserAccountAction($id = null)
+	{
+		/** @var EntityManager $em */
+		$em = $this->get('doctrine.orm.default_entity_manager');
 
-        /** @var UserAccountRepository $userAccountRepository */
-        $userAccountRepository = $em->getRepository('AppBundle\Entity\UserAccount');
+		/** @var UserAccountRepository $userAccountRepository */
+		$userAccountRepository = $em->getRepository('AppBundle\Entity\UserAccount');
 
-        /** @var UserAccount $useraccount */
-        $useraccount = $userAccountRepository->find($id);
+		/** @var UserAccount $useraccount */
+		$useraccount = $userAccountRepository->find($id);
 
-        return new Response($useraccount->getUsername());
-    }
-
-
-    /**
-     * @Route("/loadSubscription", name="load_subscription_record")
-     *
-     * @Security("has_role('ROLE_ADMIN')")
-     *
-     * @param Request request
-     * @return Response
-     */
-    public function loadSubscriptionRecord(Request $request)
-    {
-        $ownerId = $request->get('owner_id');
-
-        /** @var SubscriptionRepository $repository */
-        $repository = $this->get('doctrine.orm.default_entity_manager')->getRepository(Subscription::class);
-
-        $subscriptions = $repository->findUsableSubscriptions();
-
-        $responseArray = [];
-
-        $ownerSet = false;
-
-        /** @var Subscription $subscription */
-        foreach ($subscriptions as $subscription) {
-
-            if (!$ownerSet) {
-
-                $responseArray[] = array(
-                    'id' => $subscription->getId(),
-                    'label' => (string)$subscription,
-                    'owner' => $subscription->getOwner()->getId(),
-                    'is_owned' => ($ownerId == $subscription->getOwner()->getId())
-                );
-
-                if(($ownerId == $subscription->getOwner()->getId())) {
-
-                    $ownerSet = true;
-                }
-
-            } else {
-
-                $responseArray[] = array(
-                    'id' => $subscription->getId(),
-                    'label' => (string)$subscription,
-                    'owner' => $subscription->getOwner()->getId(),
-                    'is_owned' => ($ownerId == $subscription->getOwner()->getId()) && !$ownerSet
-                );
-            }
-        }
-
-        $response = new JsonResponse();
-
-        return $response->setData($responseArray);
-    }
+		return new Response($useraccount->getUsername());
+	}
 
 
-    /**
-     * @Route("/fill_out_selected_user", name="fill_out_selected_user")
-     *
-     * @Security("has_role('ROLE_ADMIN')")
-     *
-     * @param Request request
-     * @return Response
-     */
-    public function fillOutSelectedUser(Request $request) {
+	/**
+	 * @Route("/loadSubscription", name="load_subscription_record")
+	 *
+	 * @Security("has_role('ROLE_ADMIN')")
+	 *
+	 * @param Request $request
+	 * @return Response
+	 */
+	public function loadSubscriptionRecord(Request $request)
+	{
+		$ownerId = $request->get('owner_id');
 
-        $selectedUserId = $request->get('selectFieldValue');
+		/** @var SubscriptionRepository $repository */
+		$repository = $this->get('doctrine.orm.default_entity_manager')->getRepository(Subscription::class);
 
-        $userContactId = $request->get('userContactId');
+		$subscriptions = $repository->findUsableSubscriptions();
 
-        /** @var EntityManager $em */
-        $em = $this->get('doctrine.orm.default_entity_manager');
+		$responseArray = [];
 
-        /** @var UserAccountRepository $userAccountRepository */
-        $userAccountRepository = $em->getRepository('AppBundle\Entity\UserAccount');
+		$ownerSet = false;
 
-        /** @var UserAccount $selectedUserAccount */
-        $selectedUserAccount = $userAccountRepository->find($selectedUserId);
+		/** @var Subscription $subscription */
+		foreach ($subscriptions as $subscription) {
 
-        /** @var UserContactRepository $userContactRepository */
-        $userContactRepository = $em->getRepository('AppBundle\Entity\UserContact');
+			if (!$ownerSet) {
+				$responseArray[] = array(
+					'id' => $subscription->getId(),
+					'label' => (string)$subscription,
+					'owner' => $subscription->getOwner()->getId(),
+					'is_owned' => ($ownerId == $subscription->getOwner()->getId())
+				);
 
-        /** @var UserContact $userContact */
-        $userContact = $userContactRepository->find($userContactId);
+				if (($ownerId == $subscription->getOwner()->getId())) {
 
-        $response = new JsonResponse();
+					$ownerSet = true;
+				}
+			} else {
+				$responseArray[] = array(
+					'id' => $subscription->getId(),
+					'label' => (string)$subscription,
+					'owner' => $subscription->getOwner()->getId(),
+					'is_owned' => ($ownerId == $subscription->getOwner()->getId()) && !$ownerSet
+				);
+			}
+		}
 
-        if (is_null($selectedUserAccount) || is_null($userContact)) {
-            return $response;
-        }
+		$response = new JsonResponse();
 
-        return $response->setData(array(
-            'user' => array(
-                'username' => (string) $selectedUserAccount->getUsername(),
-            ),
-            'contact' => array(
-                'firstname' => (string) $userContact->getContactFirstName(),
-                'lastname' => (string) $userContact->getContactLastName(),
-                'email' => (string) $userContact->getContactEmail()
-            )
-        ));
-    }
+		return $response->setData($responseArray);
+	}
 
-    /**
-     * @Route("/loadSubscriptionInfo", name="load_subscription_info")
-     *
-     * @Security("has_role('ROLE_ADMIN')")
-     *
-     * @param Request request
-     * @return Response
-     */
-    public function loadSubscriptionInfo(Request $request)
-    {
-        $subscriptionId = $request->get('subscription_id');
+	/**
+	 * @Route("/fill_out_selected_user", name="fill_out_selected_user")
+	 *
+	 * @Security("has_role('ROLE_ADMIN')")
+	 *
+	 * @param Request $request
+	 * @return Response
+	 */
+	public function fillOutSelectedUser(Request $request)
+	{
 
-        /** @var SubscriptionRepository $repository */
-        $repository = $this->get('doctrine.orm.default_entity_manager')->getRepository(Subscription::class);
+		$selectedUserId = $request->get('selectFieldValue');
 
-        /** @var Subscription $subscription */
-        $subscription = $repository->find($subscriptionId);
+		$userContactId = $request->get('userContactId');
 
-        /** @var AttendanceHistoryRepository $attendaceHistoryRepo */
-        $attendaceHistoryRepo = $this->get('doctrine.orm.default_entity_manager')->getRepository(AttendanceHistory::class);
+		/** @var EntityManager $em */
+		$em = $this->get('doctrine.orm.default_entity_manager');
 
-        $subscriptionUsages = $attendaceHistoryRepo->findBy(array('subscription' => $subscriptionId));
+		/** @var UserAccountRepository $userAccountRepository */
+		$userAccountRepository = $em->getRepository('AppBundle\Entity\UserAccount');
 
-        $countOfSubscriptionUsages = count($subscriptionUsages);
+		/** @var UserAccount $selectedUserAccount */
+		$selectedUserAccount = $userAccountRepository->find($selectedUserId);
 
-        $response = new JsonResponse();
+		/** @var UserContactRepository $userContactRepository */
+		$userContactRepository = $em->getRepository('AppBundle\Entity\UserContact');
 
-        return $response->setData(array(
-            'id' => $subscription->getId(),
-            'attendance_limit' => $subscription->getAttendanceCount(),
-            'attendance_left' => ($subscription->getAttendanceCount() - $countOfSubscriptionUsages),
-            'attendance_count' => $countOfSubscriptionUsages
-        ));
-    }
+		/** @var UserContact $userContact */
+		$userContact = $userContactRepository->find($userContactId);
+
+		$response = new JsonResponse();
+
+		if (is_null($selectedUserAccount) || is_null($userContact)) {
+			return $response;
+		}
+
+		return $response->setData(array(
+			'user' => array(
+				'username' => (string)$selectedUserAccount->getUsername(),
+			),
+			'contact' => array(
+				'firstname' => (string)$userContact->getContactFirstName(),
+				'lastname' => (string)$userContact->getContactLastName(),
+				'email' => (string)$userContact->getContactEmail()
+			)
+		));
+	}
+
+	/**
+	 * @Route("/loadSubscriptionInfo", name="load_subscription_info")
+	 *
+	 * @Security("has_role('ROLE_ADMIN')")
+	 *
+	 * @param Request $request
+	 * @return Response
+	 */
+	public function loadSubscriptionInfo(Request $request)
+	{
+		$subscriptionId = $request->get('subscription_id');
+
+		/** @var SubscriptionRepository $repository */
+		$repository = $this->get('doctrine.orm.default_entity_manager')->getRepository(Subscription::class);
+
+		/** @var Subscription $subscription */
+		$subscription = $repository->find($subscriptionId);
+
+		/** @var AttendanceHistoryRepository $attendanceHistoryRepository */
+		$attendanceHistoryRepository = $this->get('doctrine.orm.default_entity_manager')->getRepository(AttendanceHistory::class);
+
+		$attendances = $attendanceHistoryRepository->findBy(array('subscription' => $subscriptionId));
+
+		$countOfSubscriptionUsages = count($attendances);
+
+		$creditUsage = 0;
+		/** @var AttendanceHistory $attendance */
+		foreach ($attendances as $attendance) {
+			$creditUsage += $attendance->getSessionEvent()->getSessionCreditRequirement();
+		}
+
+		$response = new JsonResponse();
+
+		return $response->setData(array(
+			'id' => $subscription->getId(),
+			'subscription_type' => $subscription->getSubscriptionType(),
+			'subscription_credit' => $subscription->getCredit(),
+			'subscription_credit_left' => $subscription->getCredit() - $creditUsage,
+			'attendance_limit' => $subscription->getAttendanceCount(),
+			'attendance_left' => ($subscription->getAttendanceCount() - $countOfSubscriptionUsages),
+			'attendance_count' => $countOfSubscriptionUsages
+		));
+	}
 }
