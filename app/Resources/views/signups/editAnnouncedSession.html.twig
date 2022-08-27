@@ -15,7 +15,11 @@
 		{{ form_errors(form) }}
 		{{ form_row(form._token) }}
 		{{ form_row(form.scheduleItem, {'label': 'Órarendi Elem'}) }}
-		{{ form_row(form.timeOfEvent, {'label': 'Időpont'}) }}
+		{% if announcedSession.announcedSessionType == 'single_limited' %}
+			{{ form_row(form.timeOfEvent, {'label': 'Időpont'}) }}
+		{% else %}
+			{{ form_row(form.timeOfEvent, {'label': 'Tárgyhét'}) }}
+		{% endif %}
 		{{ form_row(form.timeOfSignUpStart, {'label': 'Bejelentkezés kezdete'}) }}
 		{{ form_row(form.timeFromFinalized, {'label': 'Véglegesítés időpontja'}) }}
 		{% if announcedSession.announcedSessionType == 'single_limited' %}
