@@ -64,7 +64,7 @@
                     <tr>
                         <th>ID</th>
                         <th>Órarendi Elem</th>
-                        <th>Tárgy hét</th>
+                        <th>Tárgyhét</th>
 						<th>Kezdet</th>
                         <th>Lezárás</th>
                         <th>Bejelentkezések</th>
@@ -81,7 +81,7 @@
                                 {{ weekly_online_announces_session.getScheduleItem }}
                             </td>
                             <td style="min-width: 90px">
-                                {{ weekly_online_announces_session.getTimeOfEvent|date('Y-m-d H:i:s') }}
+                                {{ weekly_online_announces_session.getTimeOfEvent|date('Y-m-d') }}
                             </td>
                             <td style="min-width: 90px">
                                 {{ weekly_online_announces_session.timeOfSignUpStart|date('Y-m-d H:i:s') }}
