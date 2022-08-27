@@ -55,7 +55,7 @@ class SignUpManager
 	 */
 	public function getAvailableSessions()
 	{
-		$availableSingleLimitedSessions = $this->announcedSessionRepository->getAvailableSessionsOrderedByTimeOfEvent();
+		$availableSingleLimitedSessions = $this->announcedSessionRepository->getAvailableSingleLimitedSessionsOrderedByTimeOfEvent();
 		$availableWeeklyOnlineSessions= $this->announcedSessionRepository->getAvailableWeeklyOnlineSessionsOrderedByTimeOfEvent();
 
 		return array_merge($availableSingleLimitedSessions, $availableWeeklyOnlineSessions);

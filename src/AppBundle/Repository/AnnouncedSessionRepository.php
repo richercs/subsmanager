@@ -8,11 +8,11 @@ use Doctrine\ORM\OptimisticLockException;
 
 class AnnouncedSessionRepository extends EntityRepository
 {
-	public function getAvailableSessionsOrderedByTimeOfEvent()
+	public function getAvailableSingleLimitedSessionsOrderedByTimeOfEvent()
 	{
 		$query = $this->createQueryBuilder('announced_session')
 			->where('announced_session.announcedSessionType = :sessionType')
-			->andWhere('announced_session.sessionEvent is null')
+			->andWhere('announced_session.timeFromFinalized >= CURRENT_TIMESTAMP()')
 			->orderBy('announced_session.timeOfEvent', 'ASC')
 			->getQuery();
 

@@ -66,13 +66,15 @@ class HomePageController extends Controller
 		/** @var AnnouncedSessionRepository $announcedSessionRepository */
 		$announcedSessionRepository = $em->getRepository('AppBundle\Entity\AnnouncedSession');
 
-		$availableSessions = $announcedSessionRepository->findBy(array("sessionEvent" => null));
+		$availableSessions = $announcedSessionRepository->getAvailableSingleLimitedSessionsOrderedByTimeOfEvent();
 
 		// Set extra info needed to list entities
 		/** @var AnnouncedSession $announcedSession */
 		foreach ($availableSessions as $announcedSession) {
 			$announcedSession->calculateNumberOfSignees();
 		}
+
+		$weeklyOnlineAvailableSessions = $announcedSessionRepository->getAvailableWeeklyOnlineSessionsOrderedByTimeOfEvent();
 
 		/** @var ScheduleItem $scheduleItem */
 		foreach ($scheduleItemsOrdered as $key => $scheduleItem) {
@@ -91,7 +93,8 @@ class HomePageController extends Controller
 				'logged_in_user' => $loggedInUser,
 				'ordered_schedule_items' => $scheduleItemsOrdered,
 				'count_scheduleItems_active' => count($scheduleItemsOrdered),
-				'available_sessions' => $availableSessions ? $availableSessions : null
+				'available_sessions' => $availableSessions ?: null,
+				'weekly_online_announces_sessions' => $weeklyOnlineAvailableSessions
 			]
 		);
 	}
