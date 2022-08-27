@@ -31,6 +31,7 @@
 					<th>Óra Típus</th>
 					<th>Időpont</th>
 					<th>Résztvevő</th>
+					<th>Kreditigény</th>
 					{% block AdminLinkToFormHeader %}
 						{% if logged_in_user is not null %}
 							{% if logged_in_user.getIsAdmin %}
@@ -51,6 +52,9 @@
 						</td>
 						<td>
 							{{ attendanceRecord.getAttendee.getLastName }} {{ attendanceRecord.getAttendee.getFirstName }}
+						</td>
+						<td>
+							{{ attendanceRecord.getSessionEvent.getSessionCreditRequirement }}
 						</td>
 						{% block AdminLinkToFormBody %}
 							{% if logged_in_user is not null %}
