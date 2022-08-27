@@ -19,7 +19,7 @@ ALTER TABLE `session_event` ADD `session_credit_requirement` INT DEFAULT NULL AF
 
 -- Announced Session
 ALTER TABLE `announced_session`
-	ADD `time_of_signup_start` DATETIME DEFAULT NULL AFTER `time_of_event`,
+    ADD `time_of_signup_start` DATETIME DEFAULT NULL AFTER `time_of_event`,
     ADD `announced_session_type` ENUM('single_limited', 'weekly_online_unlimited') AFTER `schedule_item_id`,
     CHANGE COLUMN `max_number_of_signups` `max_number_of_signups` INT DEFAULT NULL;
 
