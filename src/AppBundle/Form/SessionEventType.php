@@ -57,12 +57,7 @@ class SessionEventType extends AbstractType
 
 		if ($this->onAddPage) {
 			$builder
-				->add('sessionCreditRequirement', 'integer', [
-					'attr' => [
-						'min' => 0
-					],
-					'required' => true
-				])
+				->add('sessionCreditRequirement')
 				->add('scheduleItem', ChoiceType::class, array(
 					'label' => 'Órarendi Elem',
 					'mapped' => false,
