@@ -53,7 +53,7 @@
 {{ parent() }}
 
 <script src="{{ asset('assets/vendor/symfony-collection/jquery.collection.js') }}"></script>
-<script src="{{ asset('assets/vendor/moment/min/moment.min.js') }}"></script>
+<script src="{{ asset('assets/vendor/moment/min/moment-with-locales.js') }}"></script>
 <script src="{{ asset('assets/vendor/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js') }}"></script>
 <script src="{{ asset('assets/vendor/jquery-ui/jquery-ui.min.js') }}"></script>
 <script src="{{ asset('bundles/pugxautocompleter/js/autocompleter-jqueryui.js') }}"></script>
@@ -62,7 +62,8 @@
 <script>
 	$(function () {
 		$('.datetimepicker').datetimepicker({
-			format: 'YYYY-MM-DD HH:mm'
+			format: 'YYYY-MM-DD HH:mm',
+			locale: 'hu'
 		});
 	});
 </script>

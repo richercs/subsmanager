@@ -15,7 +15,11 @@
 		{{ form_errors(form) }}
 		{{ form_row(form._token) }}
 		{{ form_row(form.scheduleItem, {'label': 'Órarendi Elem'}) }}
-		{{ form_row(form.timeOfEvent, {'label': 'Időpont'}) }}
+		{% if new_announced_session.announcedSessionType == 'single_limited' %}
+			{{ form_row(form.timeOfEvent, {'label': 'Időpont'}) }}
+		{% else %}
+			{{ form_row(form.timeOfEvent, {'label': 'Tárgyhét'}) }}
+		{% endif %}
 		{{ form_row(form.timeOfSignUpStart, {'label': 'Bejelentkezés kezdete'}) }}
 		{{ form_row(form.timeFromFinalized, {'label': 'Véglegesítés időpontja'}) }}
 		{% if new_announced_session.announcedSessionType == 'single_limited' %}
@@ -36,7 +40,7 @@
 
 {% block javascript %}
 <script src="{{ asset('assets/vendor/symfony-collection/jquery.collection.js') }}"></script>
-    <script src="{{ asset('assets/vendor/moment/min/moment.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/moment/min/moment-with-locales.js') }}"></script>
     <script src="{{ asset('assets/vendor/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js') }}"></script>
     <script src="{{ asset('assets/vendor/jquery-ui/jquery-ui.min.js') }}"></script>
     <script src="{{ asset('bundles/pugxautocompleter/js/autocompleter-jqueryui.js') }}"></script>
@@ -47,26 +51,28 @@
 	<script>
 		$(function () {
 			$('.datetimepicker').datetimepicker({
-				format: 'YYYY-MM-DD HH:mm'
+				format: 'YYYY-MM-DD HH:mm',
+				locale: 'hu'
 			});
 		});
 	</script>
 
-	<script type="text/javascript">
+	{% if new_announced_session.announcedSessionType == 'single_limited' %}
+		<script type="text/javascript">
+			$(document).ready(function () {
 
-		$(document).ready(function () {
+				let setTimeFromFinalizedBasedOnTimeOfEvent = function () {
 
-			let setTimeFromFinalizedBasedOnTimeOfEvent = function () {
+					let timeOfEvent = $('#appbundle_announced_session_timeOfEvent').val();
 
-				let timeOfEvent = $('#appbundle_announced_session_timeOfEvent').val();
+					let calculatedTimeOfFinalzed = moment(timeOfEvent, "YYYY-MM-DD HH:mm").subtract(3, 'hour').format('YYYY-MM-DD HH:mm');
 
-				let calculatedTimeOfFinalzed = moment(timeOfEvent, "YYYY-MM-DD HH:mm").subtract(3, 'hour').format('YYYY-MM-DD HH:mm');
+					$('#appbundle_announced_session_timeFromFinalized').val(calculatedTimeOfFinalzed);
 
-				$('#appbundle_announced_session_timeFromFinalized').val(calculatedTimeOfFinalzed);
+				};
 
-			};
-
-			$('#appbundle_announced_session_timeOfEvent').on('dp.change', setTimeFromFinalizedBasedOnTimeOfEvent);
-		});
-	</script>
+				$('#appbundle_announced_session_timeOfEvent').on('dp.change', setTimeFromFinalizedBasedOnTimeOfEvent);
+			});
+		</script>
+	{% endif %}
 {% endblock %}
