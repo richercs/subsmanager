@@ -124,7 +124,7 @@ class AnnouncedSessionController extends Controller
 
 		/** @var ScheduleItem $scheduleItem */
 		foreach ($scheduleItemCollection as $key => $scheduleItem) {
-			if ($scheduleItem->isDeleted()) {
+			if ($scheduleItem->isDeleted() || $scheduleItem->getIsWeeklyOnline()) {
 				unset($scheduleItemCollection[$key]);
 			}
 		}

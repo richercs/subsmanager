@@ -49,9 +49,6 @@ class SessionSignUpApiController extends \Symfony\Bundle\FrameworkBundle\Control
 				// property of session sign up by user like extras
 				$alreadySignedUp = $this->get('sign_up_manager')->isUserSignedUpToSession($loggedInUser, $availableSession->getId());
 
-				// This is to calculate the time the user can start signing up to the session
-				$timeOfAvailabilityByUserSubs = $this->get('sign_up_manager')->getTimeOfAvailabilityOfUserBySubs($loggedInUser, $availableSession);
-
 				$announcedSessionDataCollection->add(array(
 					'id' => $availableSession->getId(),
 					'sessionName' => $availableSession->getScheduleItem()->getScheduledItemName(),
@@ -62,7 +59,8 @@ class SessionSignUpApiController extends \Symfony\Bundle\FrameworkBundle\Control
 					'canSignUpOnWaitList' => $this->get('sign_up_manager')->userCanSignUpToWaitList($loggedInUser, $availableSession->getId()),
 					'isListFinalized' => $availableSession->isFinalized(),
 					'extras' => $alreadySignedUp ? $this->get('sign_up_manager')->getExtrasSetByUser($loggedInUser, $availableSession->getId()) : null,
-					'timeOfAvailabilityByUser' => !empty($timeOfAvailabilityByUserSubs) ? $timeOfAvailabilityByUserSubs->format('Y.m.d. H:i') : null,
+					'timeOfAvailabilityByUser' => $availableSession->getTimeOfSignUpStart()->format('Y.m.d. H:i'),
+					'canSetExtras' => $availableSession->getAnnouncedSessionType() === AnnouncedSession::ANNOUNCED_SESSION_TYPE_SINGLE_LIMITED,
 					'locationOfEvent' => $availableSession->getScheduleItem()->getLocation()
 				));
 			} catch (\Exception $e) {

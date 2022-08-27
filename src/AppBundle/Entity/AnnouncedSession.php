@@ -342,6 +342,10 @@ class AnnouncedSession
      */
     public function isFull()
     {
+		if ($this->announcedSessionType === AnnouncedSession::ANNOUNCED_SESSION_TYPE_WEEKLY_ONLINE) {
+			return false;
+		}
+
         $this->calculateNumberOfSignees();
 
         return $this->numberOfSignees >= $this->maxNumberOfSignUps;

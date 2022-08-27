@@ -28,24 +28,16 @@ class SignUpManager
 	private $sessionSignUpsRepository;
 
 	/**
-	 * @var SubscriptionRepository
-	 */
-	private $subscriptionRepository;
-
-	/**
 	 * @param AnnouncedSessionRepository $announcedSessionRepository
 	 * @param SessionSignUpsRepository $sessionSignUpsRepository
-	 * @param SubscriptionRepository $subscriptionRepository
 	 */
 	public function __construct(
 		AnnouncedSessionRepository $announcedSessionRepository,
-		SessionSignUpsRepository   $sessionSignUpsRepository,
-		SubscriptionRepository     $subscriptionRepository
+		SessionSignUpsRepository   $sessionSignUpsRepository
 	)
 	{
 		$this->announcedSessionRepository = $announcedSessionRepository;
 		$this->sessionSignUpsRepository = $sessionSignUpsRepository;
-		$this->subscriptionRepository = $subscriptionRepository;
 	}
 
 	/**
@@ -125,7 +117,6 @@ class SignUpManager
 	 */
 	public function userCanSignUpToSession(UserAccount $loggedInUser, $id)
 	{
-
 		/** @var AnnouncedSession $announcedSession */
 		$announcedSession = $this->announcedSessionRepository->find($id);
 
@@ -148,15 +139,11 @@ class SignUpManager
 			return false;
 		}
 
-		$timeOfAvailabilityByUserSubs = $this->getTimeOfAvailabilityOfUserBySubs($loggedInUser, $announcedSession);
-
 		$now = new DateTime('now');
 
-		// Check if the current time is between the time of availability adjusted by user subscriptions status
-		// and the time the announces session is finalized
-		if (($timeOfAvailabilityByUserSubs->getTimestamp() <= $now->getTimestamp())
-			&& ($announcedSession->getTimeFromFinalized()->getTimestamp() >= $now->getTimestamp())) {
-
+		if (($announcedSession->getTimeOfSignUpStart()->getTimestamp() <= $now->getTimestamp())
+			&& ($announcedSession->getTimeFromFinalized()->getTimestamp() >= $now->getTimestamp())
+		) {
 			return true;
 		}
 		return false;
@@ -172,12 +159,15 @@ class SignUpManager
 	 */
 	public function userCanSignUpToWaitList(UserAccount $loggedInUser, $id)
 	{
-
 		/** @var AnnouncedSession $announcedSession */
 		$announcedSession = $this->announcedSessionRepository->find($id);
 
 		if (!$announcedSession) {
 			throw new Exception('Nincs ilyen azonosítójú bejelentkezéses óra: ' . $id . '!');
+		}
+
+		if ($announcedSession->getAnnouncedSessionType() !== AnnouncedSession::ANNOUNCED_SESSION_TYPE_SINGLE_LIMITED) {
+			return false;
 		}
 
 		// Check if user is already signed up to the session
@@ -190,52 +180,19 @@ class SignUpManager
 			return false;
 		}
 
-		// Check if user can sign ut to a session
+		// Check if user can sign up to a session
 		if ($this->userCanSignUpToSession($loggedInUser, $id)) {
 			return false;
 		}
 
-		$timeOfAvailabilityByUserSubs = $this->getTimeOfAvailabilityOfUserBySubs($loggedInUser, $announcedSession);
-
 		$now = new DateTime('now');
 
-		// Check if the current time is between the time of availability adjusted by user subscriptions status
-		// and the time the announces session is finalized
-		if (($timeOfAvailabilityByUserSubs->getTimestamp() <= $now->getTimestamp())
-			&& ($announcedSession->getTimeFromFinalized()->getTimestamp() >= $now->getTimestamp())) {
-
+		if (($announcedSession->getTimeOfSignUpStart()->getTimestamp() <= $now->getTimestamp())
+			&& ($announcedSession->getTimeFromFinalized()->getTimestamp() >= $now->getTimestamp())
+		) {
 			return true;
 		}
 		return false;
-	}
-
-	/**
-	 * Based on if the user has an active subscription with available usages
-	 * the time the user can start signing up is earlier at -1 day 0 hours 0 minutes
-	 * if the user has no active subscription or any available usages left
-	 * the time the user can start signing up is later at -1 day 16 hours 0 minutes
-	 *
-	 * @param UserAccount $loggedInUser
-	 * @param AnnouncedSession $announcedSession
-	 *
-	 * @return DateTime
-	 * @throws Exception
-	 */
-	public function getTimeOfAvailabilityOfUserBySubs(UserAccount $loggedInUser, AnnouncedSession $announcedSession)
-	{
-		$timeOfFinalization = $announcedSession->getTimeFromFinalized()->format('D M d Y H:i:s e');
-
-		$timeOfAvailabilityByUserSubs = new DateTime($timeOfFinalization);
-
-		$timeOfAvailabilityByUserSubs->sub(new DateInterval('P1D'));
-
-		if (!empty($this->subscriptionRepository->findUsableSubscriptionsForUser($loggedInUser))) {
-			$timeOfAvailabilityByUserSubs->setTime(0, 0, 0);
-		} else {
-			$timeOfAvailabilityByUserSubs->setTime(16, 0, 0);
-		}
-
-		return $timeOfAvailabilityByUserSubs;
 	}
 
 	/**
@@ -246,6 +203,7 @@ class SignUpManager
 	 */
 	public function signUpUserToSession(UserAccount $loggedInUser, $id, $numberOfExtras = 0)
 	{
+		/** @var AnnouncedSession $announcedSession */
 		$announcedSession = $this->announcedSessionRepository->find($id);
 
 		if (!$announcedSession) {
@@ -283,6 +241,7 @@ class SignUpManager
 	 */
 	public function waitListUserToSession(UserAccount $loggedInUser, $id, $numberOfExtras = 0)
 	{
+		/** @var AnnouncedSession $announcedSession */
 		$announcedSession = $this->announcedSessionRepository->find($id);
 
 		if (!$announcedSession) {
@@ -319,6 +278,7 @@ class SignUpManager
 	 */
 	public function signOffUserFromSession(UserAccount $loggedInUser, $id)
 	{
+		/** @var AnnouncedSession $announcedSession */
 		$announcedSession = $this->announcedSessionRepository->find($id);
 
 		if (!$announcedSession) {
@@ -387,6 +347,7 @@ class SignUpManager
 	 */
 	public function setExtrasForSignee(UserAccount $loggedInUser, $extras, $announcedSessionId)
 	{
+		/** @var AnnouncedSession $announcedSession */
 		$announcedSession = $this->announcedSessionRepository->find($announcedSessionId);
 
 		if (!$announcedSession) {
