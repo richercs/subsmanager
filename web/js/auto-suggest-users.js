@@ -98,6 +98,12 @@ $(document).ready(function () {
 							+ "\n"
 							+ "Fennmaradó: " + data['subscription_credit_left']
 						);
+						var creditRequirement = $('#appbundle_sessionevent_sessionCreditRequirement');
+						if (!isNaN(creditRequirement.val()) && creditRequirement.val() > data['subscription_credit_left']) {
+							$(subscriptionInfo).css("background-color", "red");
+						} else {
+							$(subscriptionInfo).css("background-color", "");
+						}
 					}
 					if (data['subscription_type'] === 'attendance') {
 						$(subscriptionInfo).val(
