@@ -76,6 +76,12 @@ class HomePageController extends Controller
 
 		$weeklyOnlineAvailableSessions = $announcedSessionRepository->getAvailableWeeklyOnlineSessionsOrderedByTimeOfEvent();
 
+		// Set extra info needed to list entities
+		/** @var AnnouncedSession $announcedSession */
+		foreach ($weeklyOnlineAvailableSessions as $announcedSession) {
+			$announcedSession->calculateNumberOfSignees();
+		}
+
 		/** @var ScheduleItem $scheduleItem */
 		foreach ($scheduleItemsOrdered as $key => $scheduleItem) {
 			if ($scheduleItem->isDeleted()) {
