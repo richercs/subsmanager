@@ -196,20 +196,6 @@ class SessionEventController extends Controller
 
 			// save and continue button that redirects to the edit page
 			if ($form->get('saveAndContinue')->isClicked()) {
-				// Rule - One subscription can only be present on a session event twice
-				$duplicateSubscriptions = $this->validateSubscriptionsCount($newEvent);
-
-				if (!empty($duplicateSubscriptions)) {
-					// message
-					$this->addFlash(
-						'error',
-						'Bérlet többször szerpel az űrlapon mint 2, azonosító: ' . PHP_EOL . implode(', ', $duplicateSubscriptions)
-					);
-
-					// show list
-					return $this->redirectToRoute('session_add_session_event');
-				}
-
 				// Rule - Negative credit check
 				$negativeCreditSubscriptions = $this->validateSubscriptionsCredit($newEvent, (int)$form->get('sessionCreditRequirement')->getData());
 
@@ -233,20 +219,6 @@ class SessionEventController extends Controller
 				return $this->redirectToRoute('session_edit_session_event', array(
 					'id' => $newEvent->getId()
 				));
-			}
-
-			// Rule #2 - One subscription can only be present on a session event twice
-			$duplicateSubscriptions = $this->validateSubscriptionsCount($newEvent);
-
-			if (!empty($duplicateSubscriptions)) {
-				// message
-				$this->addFlash(
-					'error',
-					'Bérlet többször szerpel az űrlapon mint 2, azonosító: ' . PHP_EOL . implode(', ', $duplicateSubscriptions)
-				);
-
-				// show list
-				return $this->redirectToRoute('session_add_session_event');
 			}
 
 			// Rule - Negative credit check
@@ -279,42 +251,6 @@ class SessionEventController extends Controller
 				'logged_in_user' => $loggedInUser
 			));
 
-	}
-
-	/**
-	 * @param SessionEvent $sessionEvent
-	 * @return array
-	 */
-	public function validateSubscriptionsCount($sessionEvent)
-	{
-		// Subscription validation
-		// Rule - One subscription can only be present on a session event twice
-		$subscriptions = new ArrayCollection();
-
-		/** @var AttendanceHistory $attendanceRecord */
-		foreach ($sessionEvent->getAttendees() as $attendanceRecord) {
-			$subscriptions->add($attendanceRecord->getSubscription());
-		}
-
-		$duplicates = new ArrayCollection();
-
-		/** @var Subscription $subscription */
-		foreach ($subscriptions as $subscription) {
-
-			$countDuplicates = 0;
-
-			foreach ($subscriptions as $subscriptionToCheck) {
-				if ($subscription == $subscriptionToCheck) {
-					$countDuplicates = $countDuplicates + 1;
-				}
-			}
-
-			if ($countDuplicates >= 3) {
-				$duplicates->add($subscription->getId());
-			}
-		}
-
-		return $duplicates->count() >= 1 ? $duplicates->toArray() : [];
 	}
 
 	/**
@@ -550,21 +486,6 @@ class SessionEventController extends Controller
 					'searchStart' => $searchStartDate,
 					'searchDue' => $searchDueDate,
 					'searchScheduleItemId' => $searchScheduleItemId,
-				));
-			}
-
-			// Rule - One subscription can only be present on a session event twice
-			$duplicateSubscriptions = $this->validateSubscriptionsCount($sessionEvent);
-
-			if (!empty($duplicateSubscriptions)) {
-				// message
-				$this->addFlash(
-					'error',
-					'Bérlet többször szerpel az űrlapon mint 2, azonosító: ' . PHP_EOL . implode(', ', $duplicateSubscriptions)
-				);
-
-				return $this->redirectToRoute('session_edit_session_event', array(
-					'id' => $sessionEvent->getId()
 				));
 			}
 
